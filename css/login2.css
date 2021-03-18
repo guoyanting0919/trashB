@@ -1,0 +1,16 @@
+@media (max-width:1024px) {
+    .news {
+      width: 90%;
+      height: 70%;
+      top:5%;
+      left:50%;
+      margin:0 0 0 -45%;
+    }
+    .login section {
+      width: 90%;
+      margin: 0 auto;
+    }
+    input {
+      width: 100%;
+    }
+  }

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+	  .li_on {
+	    border-style: solid;
+        border-width: 0 0 3px 0;
+		border-color: #f3981a;
+	  }
+	</style>
+  </head>
+  <body>
+    <div class="console_main" v-if="list!=''" v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=2 :cc=21 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <div class="main-d reservation_order">
+            <header>
+              <h1>個案基本資料</h1>
+            </header>
+            <div class="reservationOrder">
+              <div class="listReserve">
+                <ul>
+                  <li><a @click="go_to('reservation_order2.html#/get/'+$route.params.id)">訂單明細</a></li>
+                  <li><a @click="go_to('reservation_order5.html#/get/'+$route.params.id)">行車歷程</a></li>
+                  <li class="li-onc"><a @click="go_to('reservation_order3.html#/get/'+$route.params.id)">個案基本資料</a></li>
+                  <li><a @click="go_to('reservation_order4.html#/get/'+$route.params.id)">個案可用補助</a></li>                  
+                </ul> 
+              </div>
+              <div>
+                <div class="listReservePersonData_3">
+                  <div class="listReservePersonData_31">
+                    <div class="listReservePersonData_311">個案編號：{{list.CaseUser.CaseUserNo}}</div>
+                    <div class="listReservePersonData_312">
+                      <div class="listReservePersonData_3121">
+                        <img src="img/dotRed.png" alt="" />
+                        <span v-if="isstop(list.CaseUser.ExpiredDate)">停權中</span>
+                        <span>違規點數：</span>
+                        <span>{{list.TotalViolationCount}}</span>
+                        <span>停權到期日：</span>
+                        <span>{{dateFormat(list.CaseUser.ExpiredDate)}}</span>
+                      </div>
+                    </div>
+                    <div class="listReservePersonData_313" v-if="list.CaseUser.UserMode==0">自費</div>
+					<div class="listReservePersonData_313" v-if="list.CaseUser.UserMode==1">公費</div>
+                  </div>
+                  <div class="listReservePersonData_32">
+                    <div class="listReservePersonData_321">
+                      <div class="listReservePersonData_3211">
+                        <span>{{list.CaseUser.Name}}</span>
+                        <span v-if="list.CaseUser.Sex==1">男</span>
+						<span v-else-if="list.CaseUser.Sex==2">女</span>
+						<span v-else>{{list.CaseUser.Sex}}</span>
+                        <p>身分證字號：{{list.CaseUser.UID}}</p>
+                      </div>
+                      <div class="listReservePersonData_3212">
+                        <p v-if="false">身份：{{list.CaseUser.IdentityStatusChinese}}</p>
+                        <p>審核日期：{{dateFormat(list.CaseUser.ReviewDate)}}</p>
+                        <p>失效日期：{{dateFormat(list.CaseUser.InvalidDate)}}</p>
+                      </div>
+                    </div>
+                    <div class="listReservePersonData_322">
+                      <div class="listReservePersonData_3221">
+                        <div class="imgUrl">
+                          <img :src="list.CaseUser.Pic" alt="" />
+                        </div>
+
+                        <div class="basicData">
+                          <h2>
+                            基本資料
+                          </h2>
+                          <p>市話：{{list.CaseUser.Tel}}</p>
+                          <p>手機：{{list.CaseUser.Phone}}</p>
+                          <p>生日：{{dateFormat(list.CaseUser.Birthday)}}</p>
+                          <p>電子郵件：{{list.CaseUser.Email}}</p>
+                          <p>居住地址：{{list.CaseUser.CensusCounty}} {{list.CaseUser.CensusDistrict}} {{list.CaseUser.CensusAddr}}</p>
+                          <p>通訊地址：{{list.CaseUser.CommCounty}} {{list.CaseUser.CommDistrict}} {{list.CaseUser.CommAddr}}</p>
+                        </div>
+
+                        <div class="contact">
+                          <h2>聯絡人</h2>
+                          <p>聯絡人姓名：{{list.CaseUser.UrgentName}}</p>
+                          <p>關係：{{list.CaseUser.UrgentRelationship}}</p>
+                          <p>市話：{{list.CaseUser.UrgentTel}}</p>
+                          <p>手機：{{list.CaseUser.UrgentPhone}}</p>
+                          <p>電子郵件：</p>
+                          <p>{{list.CaseUser.UrgentEmail}}</p>
+                        </div>
+                      </div>
+                      <div class="listReservePersonData_3222">
+                        <h2>個案備註：</h2>
+                        {{list.CaseUser.Remark}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!--main-d-->
+          </main>
+        </div>
+      </div>
+
+ 
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/vue-router.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      const routes = [
+        { path: '/get/:id' }
+      ]
+      const router = new VueRouter({
+        routes
+      })
+      let console_main = new Vue({
+        el: ".console_main",
+		router,
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            nav_status: 1,
+			list:"",
+			user:""
+          };
+        },
+        mounted:async function() {
+          await this.check_login()
+          await axios.get("https://api.donkeymove.com/api/OrderDetails/GetOrderDetailMappingView/"+this.$route.params.id)
+          .then(res=>{
+	        this.list=res.data.response
+		    console.log(this.list)
+	      })
+		},
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+		  go_to:function(x) {
+		    document.location.href=x
+		  },
+      check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+      isstop:function(x) {
+        return moment(x).isAfter(moment())
+      },
+dateFormat:function(time) {
+    if(!time) {
+      return "無"
+    }
+    return moment(time).format("YYYY-MM-DD")
+}
+        }
+      });
+    </script>
+  </body>
+</html>

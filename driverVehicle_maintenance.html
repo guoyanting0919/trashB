@@ -1,0 +1,482 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <!-- <script src="js/iscroll-lite.js"></script> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+	<link rel="stylesheet" href="css/pagev.css">
+	<link rel="stylesheet" href="css/ui_index.css">
+    <style>
+      .main {
+        height: auto;
+        /* overflow: hidden; */
+        /* position: relative; */
+      }
+      .header {
+        box-shadow: 0 0 5px #222;
+      }
+      .main-d {
+      }
+      .main-d-top {
+        height: 50px;
+        padding: 0 0 20px 0;
+        margin: 0 0 20px 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      .main-d-top-l {
+        height: 50px;
+        float: left;
+        display: flex;
+        align-items: center;
+      }
+      .main-d-top-l-d {
+        margin: 0 10px 0 0;
+        padding: 0 10px 0 0;
+        border-style: solid;
+        border-width: 0 1px 0 0;
+        border-color: #666;
+        float: left;
+      }
+      .big {
+        font-size: 30px;
+        border-width: 0;
+      }
+      .main-d-top-r {
+        height: 50px;
+        float: right;
+        display: flex;
+        align-items: center;
+      }
+      .b {
+        padding: 10px;
+        margin: 0 10px 0 0;
+        border-radius: 30px;
+        background-color: #666;
+        color: #fff;
+        float: left;
+      }
+      .main-d1 {
+        border-style: solid;
+        border-width: 0 0 1px 0;
+        border-color: #666;
+        margin: 0 0 20px 0;
+        overflow: hidden;
+      }
+      .main-d1-d {
+        float: left;
+        width: 80px;
+        text-align: center;
+        padding: 0 0 10px 0;
+        margin: 0 20px 0 0;
+        border-style: solid;
+        border-width: 0 0 3px 0;
+        border-color: #f5f5f5;
+      }
+      .main-d1-d-on {
+        border-color: #f29700;
+      }
+      .list {
+        overflow: hidden;
+        margin: 0 0 20px 0;
+      }
+      .t1 {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .t1 td {    vertical-align: middle;    text-align: center;}
+      .t1 tr {
+      }
+      .t1 tr:nth-child(odd) {
+        background-color: #fff;
+      }
+      .t1 tr:nth-child(even) {
+        background-color: #efefef;
+      } 
+      .t1-h tr th {
+    padding: 20px 0;
+    background-color: #f29700;
+    color: #fff;
+}
+	  .t1-b { 
+    border-radius: 10px;
+    border: 1px solid #f29700;
+    color: #f29700;
+    text-align: center;
+    padding: 5px 10px;
+    margin: 5px auto;
+    width: 90px;
+    cursor: pointer;
+}
+.modal .modalCenter .modalBody .textcenter { text-align: center; margin: 0 auto;}
+.modal .modalCenter .modalBody .textcenter .btnsave {color: #FFF; margin: 15px 0; border-radius: 5px;}
+    </style>
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=5 :cc=53 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+            <div class="main-d">
+              <div class="main-d-top">
+                <div class="main-d-top-l">
+                  <div class="main-d-top-l-d big" v-if="title">車輛保養紀錄</div>
+				  <div class="main-d-top-l-d big" v-else>全部車輛保養紀錄</div>
+                </div>
+                <div class="main-d-top-r">
+                    <select name="YourLocation" class="selectStyle" style="margin-right: 26px;" v-model="urlq.compId" @change="to_search">
+                        <option value="">請選擇公司</option>  
+                        <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+                      </select>
+                  <div class="b" @click="listtype=true;clear_list();openModal()" style="cursor: pointer;">新增紀錄</div>
+                  <div class="b" style="cursor: pointer;" @click="printDiv">列印</div>
+                  <!-- <input type="text" class="main-d-top-r-in"> -->
+                </div>
+              </div>
+              <!-- <div class="main-d1">
+                <div class="main-d1-d" @click="sel(0,'all')">本月檢查紀錄</div>
+                <div class="main-d1-d" @click="sel(1,'歷史檢查紀錄')">
+                  歷史檢查紀錄
+                </div>
+              </div> -->
+              <div class="list">
+                <table class="t1" border="0">
+                <thead class="t1-h">
+                  <tr>
+                  <th>車牌號碼</th>
+                  <th>檢查時間</th>
+                  <th>里程</th>
+                  <th>保養項目</th>
+                  <th>金額</th>
+                  <th>變更</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item,index) in list">
+                    <td>{{ item.Cars.CarNo }}</td>
+                    <td>{{ dateFormat(item.MaintainDate) }}</td>
+                    <td>{{ item.MaintainMiles }}</td>
+                    <td>{{ item.MaintainContent }}</td>
+                    <td>{{ item.Amt }}</td>
+                    <td><div class="t1-b" @click="listtype=false;get_c_list(item.Id);openModal()">編輯</div></td>
+                  </tr>
+                </tbody>
+                </table>
+              </div>
+              <div class="list-null" v-if="list==null">查無資料</div>
+            </div>
+            <page-v :pagen=page :countn=pageCount :urlex="'driverVehicle_maintenance.html?id=&compId=&page='" v-if='page&&pageCount'></page-v>
+            <div class="modal" v-if="isClose">
+              <div class="modalCenter">
+                <div class="modalX" @click="closeModal" style="cursor: pointer;">
+                  <img src="img/icons8-delete_sign.png" alt="" />
+                  <span>關閉</span>
+                </div>
+                <div class="modalBody">
+                  <div class="w100XX">
+                    <div class="w50XX">
+                      <div>檢查時間<span style="color:#f00;">(必塡)</span></div>
+                      <el-date-picker v-model="list_data.MaintainDate" type="date" placeholder="選擇日期" value-format="yyyy-MM-dd"></el-date-picker>
+                    </div>
+                    <div class="w50XX">
+                      <div>里程<span style="color:#f00;">(必塡)</span></div>
+                      <input type="text" v-model="list_data.MaintainMiles" />
+                    </div>
+                  </div>
+                  <div class="w100XX">
+                    <div class="w50XX">
+                      <div>車輛<span style="color:#f00;">(必塡)</span></div>
+                      <select v-model="list_data.CarId">
+					    <option value=0>請選擇車輛</option>
+						<option v-for="(item,index) in car" :value="item.Id">{{item.CarNo}}</option>
+					  </select>
+                    </div>
+                  </div>
+                  <div>保養項目<span style="color:#f00;">(必塡)</span></div>
+                  <textarea name="" id="" cols="30" rows="10" v-model="list_data.MaintainContent" ></textarea>
+                  <div>
+                    金額<span style="color:#f00;">(必塡)</span>
+                  </div>
+                  <input type="text" v-model="list_data.Amt" />
+                  <div class="textcenter"><div @click="sub" class="btnsave">儲存</div></div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/city_sel.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+	<script src="js/element-ui.js"></script>
+  <script src="js/token.js"></script>  
+  <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script></script>
+  </body>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: {
+        isLeft: true,
+        isMainleft: true,
+        nav_status: 1,
+		user:"",
+		urlq:url_q(window.location.href),
+        list:"",
+        show_list: [],
+		page:0,
+		pageCount:0,
+		car:"",
+		check:"",
+    comp:"",
+    c_comp:"",
+    menu_id:"",
+		title:true,
+        isClose: false,
+		listtype:true,
+		list_data:{
+          "Id": 0,
+          "CarId": 0,
+          "MaintainDate": "",
+          "MaintainContent": "",
+          "MaintainMiles": "",
+          "Amt": "",
+        }
+      },
+      mounted: async function() {
+      await this.check_login()
+      if(!this.urlq.compId&&(this.user.RoleId!=30&&this.user.RoleId!=31)) {
+          location.href="./driverVehicle_maintenance.html?id="+"&compId="+this.user.CompanyId+"&page="+this.urlq.page
+        }
+		if(this.urlq.id=="") {
+        await axios.get("https://api.donkeymove.com/api/CheckResult/GetCarMaintain?page="+this.urlq.page+"&compId="+this.urlq.compId)
+        .then(res=>{
+          this.page=res.data.response.page
+		      this.pageCount=res.data.response.pageCount
+          this.list=res.data.response.data
+          if(res.data.response.data.length==0) {
+		        this.list=null
+		      }
+	      })		  
+    }
+    else {
+      await axios.get("https://api.donkeymove.com/api/CheckResult/GetCarMaintainByCid/CarId?CarId="+this.urlq.id+"&page="+this.urlq.page)
+      .then(res=>{
+		    this.page=res.data.response.page
+		    this.pageCount=res.data.response.pageCount
+	      this.list=res.data.response.data
+        console.log(this.list)
+        if(res.data.response.data.length==0) {
+		        this.list=null
+		    }
+	    })
+    }
+    await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            this.c_comp=res.data.response[0].Id
+            console.log(this.comp);
+          });
+		await axios.get("https://api.donkeymove.com/api/Cars/GetList")
+        .then(res=>{
+		  this.car=res.data.response
+		  console.log(this.list)
+	    })
+      },
+      methods: {
+        selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+        openNav: function() {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        open_black: function(e) {
+          e.preventDefault();
+          this.close_black();
+          e.currentTarget.querySelectorAll(".list-d-black")[0].style.display = "block";
+        },
+        close_black: function() {
+          let b = document.querySelectorAll(".list-d-black");
+          for (let i = 0; i < b.length; i++) {
+            b[i].style.display = "none";
+          }
+        },
+        to_search:async function() {
+          location.href="./driverVehicle_maintenance.html?id="+"&compId="+this.urlq.compId+"&page="+this.urlq.page
+	    	},
+        closeModal: function() {
+          this.isClose = false;
+        },
+
+        openModal: function() {
+          this.isClose = true;
+        },
+
+        printDiv :function() {
+          window.print();
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		edit_list:function() {
+		
+		},
+		del:function(x) {
+		  
+		},
+		sub:async function() {
+		  if(this.listtype) {
+            await this.add_list()	    
+		  }
+		  else {
+		    await this.edit_list()
+		  }
+		},
+		get_c_list:async function(x) {
+          await axios.get("https://api.donkeymove.com/api/CheckResult/GetSingleCarMaintain/id?id="+x).then(res => {
+            this.list_data=res.data.response
+		  }); 		  
+    },
+    clear_list:function() {
+      this.list_data={
+          "Id": 0,
+          "CarId": 0,
+          "MaintainDate": "",
+          "MaintainContent": "",
+          "MaintainMiles": "",
+          "Amt": "",
+        }     
+    },
+		add_list:async function() {
+      var flag=await this.check_input()
+      if(!flag) {
+        return 0
+      }
+          await axios.post("https://api.donkeymove.com/api/CheckResult/PostCarMaintain",this.list_data).then(res => {
+			  alert(res.data.msg)
+			  window.location.reload()
+          });         
+		},
+		edit_list:async function() {
+      var flag=await this.check_input()
+      if(!flag) {
+        return 0
+      }
+          await axios.put("https://api.donkeymove.com/api/CheckResult/PutCarMaintain",this.list_data).then(res => {
+            if(res.data.msg=="更新成功") {
+			  alert("修改成功")
+			  window.location.reload()
+			}
+			else {
+			  alert(res.data.msg)
+			}
+          })
+          .catch((e)=>{
+            alert(e.response.data.response[0])
+          }); 		
+		},
+    check_input:function() {
+      var flag=true
+      if(!this.list_data.MaintainDate) {
+		    alert("檢查時間勿空白")
+			  flag=false
+		  }
+      if(!this.list_data.MaintainMiles) {
+        alert("里程勿空白")
+        flag=false
+      }
+      if(!this.list_data.CarId) {
+        alert("車輛勿空白")
+        flag=false
+      }
+      if(!this.list_data.MaintainContent) {
+        alert("保養項目勿空白")
+        flag=false
+      }
+      if(!this.list_data.Amt) {
+        alert("金額勿空白")
+        flag=false
+      }
+      return flag
+    },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day;
+}
+        //   sel: function(e, x) {
+        //     let d = document.querySelectorAll(".main-d1-d");
+        //     for (let i = 0; i < d.length; i++) {
+        //       d[i].classList.remove("main-d1-d-on");
+        //     }
+        //     d[e].classList.add("main-d1-d-on");
+        //     this.show_list = [];
+        //     for (let i in this.list) {
+        //       if (this.list[i].city == x || x == "all") {
+        //         this.show_list.push(this.list[i]);
+        //       }
+        //     }
+        //   }
+      }
+    });
+
+    /*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+      alert(213)
+    })*/
+  </script>
+</html>

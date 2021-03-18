@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/s6.css" />
+	<style>
+	  .li_b {
+	    border-bottom: 0.15625vw solid #f29700;
+	  }
+	  .save-b {
+	    width:100px;
+	    height: 30px;
+		line-height: 30px;
+		background-color:#f29700;
+		color:#fff;
+		text-align:center;
+		border-radius:10px;
+		float:right;
+		margin-left: auto;
+	  }
+	  .table-p {
+	    margin:0;
+		font-size:25px;
+		font-weight:bold;
+		margin:0 0 20px 50px;
+	  }
+	  hr {
+	    margin:1.5625vw 0;
+	  }
+	</style>
+  </head>
+  <body onload="loaded()">
+    <div class="console_main" v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=6 :cc=62 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <div class="modalOrder" v-if="isOpen">
+              <div class="modalCenter">
+                <div class="modalX" @click="closeModal" style="cursor: pointer;">
+                  <img src="img/icons8-delete_sign.png" alt="" />
+                  <span>關閉</span>
+                </div>
+                <div class="modalBody">
+                  <div class="top">
+                    <div class="left">
+                      <div class="number">
+                        <span>訂單編號</span>
+                        <span>DRG9385035</span>
+                      </div>
+                      <div class="context">
+                        <p>預約時間：2019-01-11 22:00</p>
+                        <p>狀態：新訂單未審核<span>空趟取消 違規扣 2 點</span></p>
+                        <p>行程：去程</p>
+                        <p>訂單建立時間：2019/07/23</p>
+                      </div>
+                    </div>
+                    <div class="center">
+                      <div class="personal_information1">
+                        <p>
+                          <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                          <span class="otherColor">不可共乘</span>
+                        </p>
+                        <p>
+                          <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                          <span>輪椅類型：</span>
+                          <span>一般輪椅</span>
+                          <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                          <span>陪同人員：</span>
+                          <span>家屬 1 人 / 外籍 1 人</span>
+                        </p>
+                      </div>
+                      <div class="personal_information2">
+                        <div class="userData">
+                          <div class="d_flex">
+                            <div class="userPhoto">
+                              <img src="img/icons8-sheep2_filled.svg" alt="" />
+                              <span>未上傳相片</span>
+                            </div>
+                            <div class="userInfo">
+                              <h3>曾柏成</h3>
+                              <div>
+                                <p>個 案 編 號：FGG5689378</p>
+                                <p>身分證字號：F394857687</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="userAddress">
+                          <div class="d_flex">
+                            <div class="arrowB">
+                              <img src="img/icons8-long_arrow_down_filled.svg" alt="" />
+                            </div>
+                            <div class="context">
+                              <p>台北市中山區中山北路三段100號</p>
+                              <p>馬偕紀念醫院</p>
+                              <p>台北市中山區中山北路二段92號</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div></div>
+                      </div>
+                    </div>
+                    <div class="right">
+                      <div class="driver">
+                        <p>
+                          <img src="img/icons8-arrow.svg" alt="" />
+                          <span>司機未達</span>
+                        </p>
+                      </div>
+                      <div class="fee">
+                        <p>
+                          <span>自費</span>
+                          <span>$392</span>
+                        </p>
+                        <p>
+                          <span>公費</span>
+                          <span>$32</span>
+                        </p>
+                        <a @click.prevent href="">訂單歷程</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bottom">
+                    <div class="left">
+                      <div><input type="radio" name="aa" id="" /><span>搭乘時段承載量已滿</span></div>
+                      <div><input type="radio" name="aa" id="" /><span>臨時更改預約時間</span></div>
+                      <div><input type="radio" name="aa" id="" /><span>臨時更改乘車地點</span></div>
+                      <div>
+                        <input type="radio" name="aa" id="" /><span
+                          >搭乘用途不符規定（如入住機構住民要求出院接送）</span
+                        >
+                      </div>
+                      <div><input type="radio" name="aa" id="" /><span>車程遠</span></div>
+                      <div>
+                        <input type="radio" name="aa" id="" /><span>其他</span>
+                        <input type="text" />
+                      </div>
+                    </div>
+                    <div class="right">
+                      <div>
+                        <p>臨時取消扣點 1 點</p>
+                        <p>目前違規點數 5點</p>
+
+                        <p>1.乘車日前二天申請更改或取消服務者,累計三次,扣點一點</p>
+                        <p>2.於乘車當日用車前申請更改或取消服務者,扣點一點</p>
+                        <p>3.於約定乘車時間無故抵達約定乘車地點者(四小時內),扣點二點</p>
+                        <a href="">確定取消此訂單</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <header class="s6Header">
+              <h1>補助車資參數</h1>
+            </header>
+            <div class="auxiliaryFare">
+              <div class="listS6">
+                <div id="mu-b">
+                  <ul>
+                    <!-- @click="openCity()" :class="{ 'active' : isCity }" -->
+                  </ul>
+                </div>
+                <hr />
+
+                <div class="radio_wrap">
+				  <div class="save-b" @click="save_b">存檔</div>
+                </div>
+                <a href=""></a>
+              </div>
+              <div>
+                <!-- 1 list -->
+                <!-- 2 list -->
+                <!-- v-for="(mile,index) in subsidized_vehicle_miles" 
+                {{ mile.TaiwanCountyId }}
+                -->
+                <div class="listAuxiliaryFare" v-if="mode0_data">
+                  <div class="listAuxiliaryFare1">
+                    <span> {{city_name}} </span>
+                    <span style="display: none;"> 大安區 </span>
+                    <span> (里程) </span>
+                  </div>
+                  <div class="listAuxiliaryFare2_2">
+                    <div class="cont_main_s6 left">
+                      <p>車資參數基本設定</p>
+                      <div class="inputSec"><label for="">起跳金額:</label> <input type="text" v-model="mode0_data.BasicAmt" /></div>
+                      <div class="inputSec"><label for="">起跳公尺數:</label> <input type="text" v-model="mode0_data.BasicM" /></div>
+                      <div class="inputSec"><label for="">續跳公尺數:</label> <input type="text" v-model="mode0_data.JumpM" /></div>
+                      <div class="inputSec"><label for="">續跳金額:</label> <input type="text" v-model="mode0_data.JumpAmt" /></div>
+                    </div>
+                    <div class="cont_main_s6 center">
+                      <p>車資參數基本設定</p>
+                      <div class="inputSec"><label for="">國道通行費:</label> <input type="text" v-model="mode0_data.HighwayMultiple" /></div>
+                      <div class="inputSec"><label for="">夜間加成:</label> <input type="text" v-model="mode0_data.NightMultiple" /></div>
+                      <div class="inputSec"><label for="">服務費:</label> <input type="text" v-model="mode0_data.ServiceAmt" /></div>
+                    </div>
+                    <div class="cont_main_s6 right">
+                      <p>自負額比例收費倍率</p>
+                      <div class="inputSec"><label for="">平地一般戶:</label><input type="text" v-model="mode0_data.SubsidyMode2ViewModel[1].SelfMultiple" /></div>
+                      <div class="inputSec"><label for="">平地中低收:</label><input type="text" v-model="mode0_data.SubsidyMode2ViewModel[3].SelfMultiple" /></div>
+                      <div class="inputSec"><label for="">平地低收:</label><input type="text" v-model="mode0_data.SubsidyMode2ViewModel[5].SelfMultiple" /></div>
+                      <div class="inputSec"><label for="">偏區一般戶:</label><input type="text" v-model="mode0_data.SubsidyMode2ViewModel[0].SelfMultiple" /></div>
+                      <div class="inputSec"><label for="">偏區中低收:</label><input type="text" v-model="mode0_data.SubsidyMode2ViewModel[2].SelfMultiple" /></div>
+                      <div class="inputSec"><label for="">偏區低收:</label><input type="text" v-model="mode0_data.SubsidyMode2ViewModel[4].SelfMultiple" /></div> 
+                      
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- pagi -->
+              <div class="pagination">
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="./js/iscroll-lite.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script>
+      // document.querySelectorAll("#mu-b")[0].addEventListener(
+      //   "touchmove",
+      //   function(e) {
+      //     e.preventDefault();
+      //   },
+      //   { passive: false }
+      // );
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            nav_status: 1,
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            isOpen: false,
+            isCity: false,
+            list: [],
+            city_no: [{County:"台北市"}],
+            page: 1,
+            pageCount: 1,
+
+            subsidized_vehicle_miles: [],
+			mode:0,
+			mode0_data:"",
+			mode1_data:"",
+			city_name:"新北市",
+			c_city:1,
+            user:""
+          };
+        },
+        mounted: async function() {
+		  await this.check_login()
+		  await this.get_m()
+        },
+        methods: {
+          selectNav: function(number) {
+            this.nav_status = number;
+          },
+          openCity: function() {
+            this.isCity = true;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          closeModal: function() {
+            this.isOpen = false;
+          },
+          openModal: function() {
+            this.isOpen = true;
+          },
+          miles: async function() {
+            await axios.get("https://api.donkeymove.com/api/SubsidyMile/GetSubsidyMode1Amt").then(res => {
+            this.subsidized_vehicle = res.data.response.data;
+            console.log(res.data.response.data);
+            
+          });
+          },
+		  get_m:async function() {
+              await axios.get("https://api.donkeymove.com/api/SubsidyAmtCountry/Get/189").then(res => {
+                this.mode0_data = res.data.response;
+                console.log(this.mode0_data);    
+              });             
+		  },
+		  clear_b:function() {
+		    let li=document.querySelectorAll("#mu-b ul li");
+			for(let i=0;i<li.length;i++) {
+			  li[i].classList.remove("li_b")
+			}
+		  },
+		  save_b:async function() {
+			  var obj=this.mode0_data
+              await axios.put("https://api.donkeymove.com/api/SubsidyAmtCountry/Put",obj).then(res => {
+                if(res.data.msg=="更新成功") {
+				  alert("更新成功")
+                }				  
+              });
+		  },
+      check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  }
+        }
+      });
+      var myScroll;
+      function loaded() {
+        myScroll = new IScroll("#mu-b", {
+          scrollX: true,
+          freeScroll: true
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <style>
+	  .car-type-d {
+	    height:30px;
+		line-height:30px;
+		background-color:#666;
+		margin:0 0 10px 0;
+		color:#fff;
+	  }
+	</style>
+  </head>
+  <body>
+    <div class="console_main" v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=5 :cc=51 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header class="headerVehicle">
+              <h1>車輛資料詳細</h1>
+              <a href="" @click.prevent="printDiv">列印</a>
+              <a href="./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&compId=&orderby=">回列表</a>
+            </header>
+            <div class="vehicleData">
+              <article class="articleDriver1">
+                <div class="vehicle_1">
+                  <div class="vehicle_11">
+                    <div class="vehicle_111">
+                      <span>車牌</span>
+                      <span>{{vehicle_info.CarNo}}</span>
+                    </div>
+                    <div class="vehicle_112">廠牌型號：{{vehicle_info.FactoryType}}</div>
+                  </div>
+                  <div class="vehicle_12">
+                    <img src="img/dot2.svg" alt="" v-if="vehicle_info.Status" />
+                    <span v-if="vehicle_info.Status">可派發</span>
+                    <span>出廠年月</span>
+                    <span>{{ dateFormat(vehicle_info.MakeDate) }}</span>
+                    <span>最後保養日</span>
+                    <span v-if="vehicle_info.FinalMaintainDate">{{ dateFormat(vehicle_info.FinalMaintainDate) }}</span>
+                    <span>最後驗車日</span>
+                    <span v-if="vehicle_info.LastCheckDate">
+                      {{ dateFormat(vehicle_info.LastCheckDate) }}
+                    </span>
+                  </div>
+                  <a href="./driverVehicle2_edit.html">
+                    <div class="vehicle_13">
+                      <img src="img/icons8-pencil_filled.svg" alt="" />
+                      <a :href="'driverVehicle2_edit.html#/edit/'+vehicle_info.Id">
+                        <span>編輯車輛資料</span>
+                      </a>
+                    </div>
+                  </a>
+                </div>
+                <div class="vehicle_2">
+                  <div class="vehicle_21">
+                    <div class="vehicle_211">
+                      <img :src="vehicle_info.CarPic" alt="" />
+					  <div class="car-type-d" style="background-color:#30B8BA;">{{vehicle_info.CompanyName}}</div>
+                      <div class="car-type-d" v-for="(item,index) in vehicle_info.CarCategory">{{item.CarTypeName}}</div>  
+					</div>
+                    <div class="vehicle_212">
+                      <a :href="'driverVehicle_maintenance.html?id='+vehicle_info.Id+'&page=1'"><h5>查看保養紀錄</h5></a>
+                    </div>
+                  </div>
+                  <div class="vehicle_22">
+                    <div class="vehicle_221">基本資料</div>
+                    <hr />
+
+                    <div class="vehicle_222">
+                      <div class="dflexSB">
+                        <div class="w50" v-if="false">
+                          <div>綁定手機</div>
+                          <div>{{ vehicle_info.CarPhone }}</div>
+                        </div>
+                        <div class="w50">
+                          <div>車輛來源</div>
+                          <div>{{ vehicle_info.CarFrom }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50" v-if="false">
+                          <div>引擎型式</div>
+                          <div>{{ vehicle_info.EngineType }}</div>
+                        </div>
+                        <div class="w50">
+                          <div>捐贈單位</div>
+                          <div>{{ vehicle_info.DonationUnit }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB" v-if="false">
+                        <div class="w50">
+                          <div>傳動方式</div>
+                          <div>{{ vehicle_info.ModeMethod }}</div>
+                        </div>
+                        <div class="w50">
+                          <div>變速系統</div>
+                          <div>{{ vehicle_info.VariableSpeed }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>輪椅數量</div>
+                          <div>{{ vehicle_info.WheelchairNum }}</div>
+                        </div>
+                        <div class="w50" v-if="false">
+                          <div>最大馬力</div>
+                          <div>{{ vehicle_info.MaxPower }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>座椅數量</div>
+                          <div>{{ vehicle_info.SeatNum }}</div>
+                        </div>
+                        <div class="w50" v-if="false">
+                          <div>排氣量</div>
+                          <div>{{ vehicle_info.CarCC }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>車頂高度</div>
+                          <div>{{ vehicle_info.CarTop }}</div>
+                        </div>
+                        <div class="w50" v-if="false">
+                          <div>用油燃料</div>
+                          <div>{{ vehicle_info.CarFuel }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="articleDriver2">
+                <div class="articleDriver2_Title">
+                  <h3>車輛保險</h3>
+                </div>
+                <div class="articleDriver2_Content">
+                  <a href="" v-for="(item,index) in vehicle_info.CarSecure">{{item.CarTypeName}}</a>
+                </div>
+              </article>
+              <article class="articleDriver3">
+                <div class="articleDriver2_Title">
+                  <h3>車輛設備</h3>
+                </div>
+                <div class="articleDriver2_Content">
+                  <a href="" v-for="(item,index) in vehicle_info.CarDevice">{{item.CarTypeName}}</a>
+                </div>
+              </article>
+              <!-- <article class="articleDriver3"></article> -->
+              <article class="articleDriver4">
+                <div class="articleDriver2_Title">
+                  <h3>適用駕照</h3>
+                </div>
+                <div class="articleDriver2_Content">
+                  <a href="" v-for="(item,index) in vehicle_info.CarLicense">{{item.CarTypeName}}</a>
+                </div>
+              </article>
+              <article class="articleDriver5">
+                <div class="articleDriver5_Title">
+                  <h3>車輛備註</h3>
+                </div>
+                <div class="articleDriver5_Content">
+                  <p>
+                   {{ vehicle_info.Remark }}
+                  </p>
+                </div>
+              </article>
+
+              <article class="articleDriver6" v-if="false">
+                <div class="articleDriver6_Title">
+                  <h3>車輛檢查紀錄</h3>
+                </div>
+                <div class="articleDriver6_Content">
+                  <div class="tr tr1" v-for="(item,index) in check">
+                    <div class="td1">{{dateFormat(item.CreateTime)}}</div>
+                    <div class="td2">{{vehicle_info.CarNo}}</div>
+                    <div class="td3">{{item.DriverInfo.DriverName}}</div>
+                    <div class="td4"></div>
+                    <div class="td5">不合格項目:</div>
+                    <div class="td6">{{item.NoChecked}}</div>
+                  </div>
+                  <a href="" @click.prevent="show_more">更多檢查紀錄</a>
+                </div>
+              </article>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script src="js/vue-router.js"></script>
+    <script>
+      const routes = [{ path: "/get/:id" }];
+      const router = new VueRouter({
+        routes
+      });
+      let console_main = new Vue({
+        el: ".console_main",
+        router,
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            vehicle_info: {},
+            more_num:0,
+			user:"",
+			check:"",
+            nav_status: 1,
+          };
+        },
+        mounted:async function() {
+		  await this.check_login()
+          await axios.get("https://api.donkeymove.com/api/Cars/GetByIdCars/" + this.$route.params.id).then(res => {
+            this.vehicle_info = res.data.response;
+            console.log(res.data.response);
+          })
+          await this.show_more()
+        },
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          printDiv: function() {
+            window.print();
+          },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+      show_more:async function() {
+        this.more_num+=5
+        await axios.get("https://api.donkeymove.com/api/CheckResult/GetCheckCarMappingNoPage?count="+this.more_num+"&CarId="+this.$route.params.id)
+          .then(res=>{
+	        this.check=res.data.response
+		    console.log(this.check)
+	      })
+      },
+dateFormat:function(time) {
+  return moment(time).format("YYYY-MM-DD HH:mm")
+}
+        }
+      });
+    </script>
+  </body>
+</html>

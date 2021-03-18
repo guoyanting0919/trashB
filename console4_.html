@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=1 :cc=13 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header class="header_console4">
+              <h1>營運系統控制台</h1>
+              <el-date-picker :picker-options="pickerOptions" type="date" placeholder="選擇日期區間(起)" value-format="yyyy-MM-dd" v-model="data1" @change="to_search"></el-date-picker>
+			  <el-date-picker :picker-options="pickerOptions" type="date" placeholder="選擇日期區間(訖)" value-format="yyyy-MM-dd" v-model="data2" @change="to_search"></el-date-picker>
+              <div class="select_container">
+                <select name="YourLocation" class="selectStyle" v-model="c_city" @change="to_search">
+                  <option value=0>請選擇區域</option>
+				  <option v-for="(item,index) in city_no" :value="item.Id">{{item.District}}</option>
+                </select>
+              </div>
+              <div class="select_container">
+                <select name="YourLocation" class="selectStyle" v-model="c_comp" @change="to_search">
+                  <option value=0>請選擇公司</option>
+				  <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+                </select>
+              </div>
+            </header>
+            <div class="console4">
+              <div class="stitle">營收報表</div> 
+              單位(NTD)
+              <div class="canvasContainer">
+                <div class="top"><h3>綜合報表</h3></div>
+                <div class="bottom">
+                  <div id="canvas-holder" style="width:90%;height:90%;">
+                    <canvas id="myChart1" ref="c1"></canvas>
+                  </div>
+                </div>
+
+                <!-- <p>$31.156</p> -->
+              </div>
+              <div class="stitle">司機單月營收</div>
+              <div class="canvasContainerBoxs">
+                <div class="canvasContainerBox" v-for="(item,index) in list">
+                  <p>{{item.DriverName}}</p>
+                  <p>{{item.CompanyName}}</p>
+                  <p>總營收 : ${{item.TotalRevenues}}</p>
+                  <div id="canvas-holder">
+                    <canvas class="heyChart" :ref="'ccd'+index"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="pagination">
+                <div>Previous</div>
+                <div class="number active">1</div>
+                <div class="number">2</div>
+                <div class="number">3</div>
+                <div>Next</div>
+              </div> -->
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+	<script src="js/header1.js?v=124"></script>
+	<script src="js/chartb.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      var c1t;
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            nav_status: 1,
+			user:"",
+			now_time:"",
+			list:"",
+			city_no:"",
+			c_city:0,
+			comp:"",
+			c_comp:0,
+			data1:"",
+			data2:"",
+            pickerOptions: {
+              disabledDate(time) {
+                return time.getTime() > Date.now() ;
+              }
+            }
+          };
+        },
+        mounted:async function() {
+		 await this.check_login()	
+          await axios.get("https://api.donkeymove.com/api/TaiwanCountry/Get/189").then(res => {
+            this.city_no = res.data.response;
+            console.log(this.city_no);
+          });
+          await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            this.c_comp=res.data.response[0].Id
+            if(this.user.RoleId!=34) {
+              this.c_comp=0
+            }
+            console.log(this.comp);
+          });
+          await this.to_search()		  
+		},
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+		  get_city:function(x) {
+		    var arr=this.city_no.map(x=>x.CountyCode)
+			return arr.indexOf(x);
+		  },
+		  get_comp:function(x) {
+		    var arr=this.comp.map(x=>x.Id)
+			return arr.indexOf(x);		  
+		  },
+		  to_search:async function() {
+		  await axios.get("https://api.donkeymove.com/api/Report/GetDriverRevenue?_datestart="+this.data1+"&_dateend="+this.data2+"&_countyid="+this.c_city+"&_companid="+this.c_comp+"&sort=0")
+          .then(res=>{
+	        this.list=res.data.response
+			var arr_to=this.list.map(x=>x.TotalRevenues)
+			var arr_se=this.list.map(x=>x.SelfRevenues)
+			var arr_su=this.list.map(x=>x.SubsidyRevenues)
+      var arr_too=[0,0,0]
+      for(let i in arr_to) {
+        arr_too[0]+=arr_to[i]
+        arr_too[1]+=arr_se[i]
+        arr_too[2]+=arr_su[i]
+      }
+			var arr_name=this.list.map(x=>x.DriverName)
+		    console.log(res.data.response)
+			this.$nextTick(function () {
+			  var obj2=[
+			    {
+				  label: [],
+				  data:[arr_too[0],arr_too[1],arr_too[2]],
+				  backgroundColor: ['rgb(255, 99, 132)','rgb(255, 213, 0)','rgb(0, 140, 255)']
+				},
+        ]
+        if(c1t) {
+          c1t.destroy()
+        }
+        c1t=drew_chart(this.$refs.c1,'bar',['總營收','個案負擔','政府補助'],obj2,false)
+			  
+              for(let i=0;i<this.list.length;i++) {
+                var ctx = this.$refs["ccd"+i]
+				var obj=[
+                  {
+                    data: [this.list[i].SelfRevenues,this.list[i].SubsidyRevenues],
+                    backgroundColor: ['rgb(255, 99, 132)',"rgba(0,0,0,0.1)"],
+                  }
+                ]
+                drew_chart(ctx,'doughnut',["個案負擔","政府補助"],obj,true)
+			  }
+			})
+	      })		  
+		  },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+        }
+      });
+
+    </script>
+  </body>
+</html>

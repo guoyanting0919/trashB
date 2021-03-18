@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <script src="js/iscroll-lite.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/pagev.css" />
+    <link rel="stylesheet" href="css/resizelayout.css" /> 
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <div class="black" @click="show_ae=!show_ae" v-if="show_ae"></div>
+	  <div class="adde" v-if="show_ae">
+	    <div class="adde-h" v-if="sub_type">A單位新增</div>
+	    <div class="adde-h" v-else>A單位編輯</div>
+	    <div class="adde-c">
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位名稱</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.UnitName">
+		  </div>
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位統一編號</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.EINNO">
+		  </div>
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位聯絡人</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.ContactName">
+		  </div>
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位手機/市話</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.Phone">
+		  </div>
+	      <div class="adde-c-b" @click="sub">確定</div>
+	    </div>
+	  </div>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=6 :cc=67 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+          <div class="a_comp">
+            <div class="main-d">
+              <div class="main-d-top">
+                <div class="main-d-top-l">
+                  <div class="main-d-top-l-d big">A單位一覽表</div>
+                </div>
+                <div class="main-d-top-r">
+				  <a class="addList" @click="clear_ae();sub_type=true;show_ae=!show_ae" style="margin:0 20px 0 0;">新增</a>
+                  <div class="seach-d">
+                    <img src="img/icons8-search.png" class="seach-d-img" />
+                    <input type="text" class="seach-d-in" v-model="urlq.key" @keyup.enter="input_search" />
+                  </div>
+                </div>
+              </div>
+              <div class="list">
+                <ul class="list-d-title">
+                   <li>單位名稱</li>
+                   <li>統一編號</li>
+                   <li>單位聯絡人</li>
+                   <li>單位手機</li>
+                   <li>系統功能</li>
+                  
+                  </ul>
+                <ul class="list-d" v-for="(item,index) in list">
+                  <li class="list-ld">
+                    <div class="list-d-d"><span class="m-title">單位名稱：</span>{{ item.UnitName }}</div>
+                    <div class="list-d-d"><span class="m-title">統一編號：</span>{{ item.EINNO}}</div>
+                    <div class="list-d-d"><span class="m-title">單位聯絡人：</span>{{ item.ContactName}}</div>
+                    <div class="list-d-d"><span class="m-title">單位手機：</span>{{ item.Phone}}</div>
+                    <!--<div class="list-d-d"></div>-->
+                  </li>
+                  <li class="list-rd">
+                    <div class="list-rd-d bc-b" @click="show_ae=!show_ae;sub_type=false;get_c_list(item)"><img src="img/icons8-create_new_filled.png" /></div>
+                    <div class="list-rd-d bc-r" @click="del(item.Id)" v-if="user.RoleId==30"><img src="img/icons8-trash.png" /></div>
+                    <div class="list-rd-d bc-y" v-if="false"><img src="img/icons8-more_filled.png" /></div>
+                  </li>
+                </ul>
+                <div class="clear"></div>
+              </div>
+            </div>
+          </div><!--a_comp-->
+            <div class="pagination">
+              <page-v :pagen=page :countn=pageCount :urlex="'./A_comp.html?key='+urlq.key+'&page='" v-if='page&&pageCount'></page-v>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/city_sel.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/check.js"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script></script>
+  </body>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: {
+        isLeft: true,
+        isMainleft: true,
+        nav_status: 1,
+        urlq: url_q(window.location.href),
+		user:"",
+        list:"",
+        page: 1,
+        pageCount: 1,
+        key:"",
+		show_ae:false,
+		sub_type:false,
+		ae_data:{
+          "UnitName": "",
+          "Phone": "",
+          "EINNO": "",
+          "ContactName": "",
+        }
+      },
+      mounted:async function() {
+        this.urlq.key=decodeURI(this.urlq.key)
+	    await this.check_login()
+      await this.to_search()
+      },
+      methods: {
+        selectNav: function(number) {
+          this.nav_status = number;
+        },
+        openNav2: function() {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+
+        openNav: function() {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        open_black: function(e) {
+          e.preventDefault();
+          this.close_black();
+          e.currentTarget.querySelectorAll(".list-d-black")[0].style.display = "block";
+        },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		del:async function(x) {
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+            await axios.delete("https://api.donkeymove.com/api/MainUnitA/Delete?id="+x).then(res => {
+              if(res.data.msg=="刪除成功") {
+			    alert("刪除成功")
+			    window.location.reload()
+			  }
+            });
+		  }
+		  else {
+		    return 0;
+		  }
+		},
+		get_c_list:async function(x) {
+		  this.ae_data=x
+		},
+		check_input:function() {
+		  let flag=true
+		  if(this.ae_data.UnitName=="") {
+		    alert("編號未填")
+			flag=false
+		  }
+		  else if(this.ae_data.Phone=="") {
+		    alert("手機未填或格式不符")
+			flag=false
+		  }
+		  else if(this.ae_data.EINNO=="") {
+		    alert("統一編號未填")
+			flag=false
+		  }
+		  else if(this.ae_data.ContactName=="") {
+		    alert("聯絡人名稱未填")
+			flag=false
+		  }
+		  return flag
+		},
+		clear_ae:function() {
+		  this.ae_data={
+            "UnitName": "",
+            "Phone": "",
+            "EINNO": "",
+            "ContactName": "",
+          }
+		},
+    to_search:async function() {
+      await axios.get("https://api.donkeymove.com/api/MainUnitA/Get?page="+this.urlq.page+"&key="+this.urlq.key).then(res => {
+          this.page = res.data.response.page;
+          this.pageCount = res.data.response.pageCount;
+		  this.list=res.data.response.data
+        });      
+    },
+    input_search:function(){
+      location.href="./A_comp.html?key="+this.urlq.key+"&page=1"
+    },
+		sub:async function() {
+		  if(!this.check_input()) {
+		    return 0
+		  }
+		  if(this.sub_type) {
+            await axios.post("https://api.donkeymove.com/api/MainUnitA/Post",this.ae_data).then(res => {
+              if(res.data.msg=="添加成功") {
+			    alert("新增成功")
+			    window.location.reload()
+			  }
+			  else {
+			    alert(res.data.msg)
+			  }
+            });
+		  }
+		  else {
+            await axios.put("https://api.donkeymove.com/api/MainUnitA/Put",this.ae_data).then(res => {
+              if(res.data.msg=="更新成功") {
+			    alert("修改成功")
+			    window.location.reload()
+			  }
+			  else {
+			    alert(res.data.msg)
+			  }
+            });		  
+		  }
+		}
+      }
+    });
+
+    /*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+  alert(213)
+})*/
+  </script>
+</html>

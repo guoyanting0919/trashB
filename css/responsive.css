@@ -1,0 +1,614 @@
+/* ******************** console ******************** */
+/* -------------------- console1 -------------------- */
+
+@media (max-width: 1024px) {
+  .main {
+    padding-top: 88px;
+    padding-right: 38px;
+  }
+  .main header {
+    display: block;
+    height: auto;
+  }
+  .main header h1 {
+    padding-bottom: 12px;
+  }
+  .select_container.consoleOnly {
+    display: inline-block;
+    margin: 8px 0;
+    width: calc(49% + 2px);
+  }
+  .select_container.consoleOnly .selectStyle {
+    margin: 4px auto;
+    width: 100%;
+  }
+  .main.main1 .el-date-editor.el-input {
+    display: block;
+    margin: 8px auto;
+    width: 100%;
+  }
+  .chartjs-size-monitor #chart {
+    width: 100%;
+  }
+  .stitle {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 460px) {
+  .select_container.consoleOnly {
+    display: block;
+    margin: 8px 0;
+    width: 100%;
+  }
+
+  .select_container.consoleOnly .selectStyle {
+    margin: 4px auto;
+    width: 80%;
+  }
+
+  .main.main1 .el-date-editor.el-input {
+    display: block;
+    margin: 8px auto;
+    width: 80%;
+  }
+}
+
+
+
+
+
+/* -------------------- console2 -------------------- */
+
+#canvas-holder.bar-chart {
+  position: relative;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 100%;
+}
+
+@media (max-width: 1024px) {
+  .main .console4 .canvasContainer {
+    margin-top: 8px;
+    height: 480px;
+    padding-top: 40px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 {
+    position: relative;
+    margin-right: 16px;
+    margin-bottom: 16px;
+    width: calc((100% - 11px * 3) / 3);
+    height: 264px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p {
+    font-size: 1.1em;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p:nth-of-type(1) {
+    margin-top: 8px;
+    margin-left: 12px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p:nth-of-type(2) {
+    margin: 8px 12px;
+    line-height: 1.43;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2:nth-of-type(4n) {
+    margin-right: 16px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2:nth-of-type(3n) {
+    margin-right: 0;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p img {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p:nth-of-type(1) > span{
+    font-weight: bold;
+  }
+  #canvas-holder {
+    position: absolute;
+    left: 0;
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 870px) {
+  .main .console4 .canvasContainer {
+    padding-top: 24px;
+    height: 400px;
+  }
+  #canvas-holder.bar-chart {
+    width: 96%;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 {
+    height: 288px;
+  }
+}
+
+@media (max-width: 640px) {
+  .main .console4 .canvasContainer {
+    height: 360px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: calc((100% - 3px * 3) / 2);
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2:nth-of-type(3n) {
+    margin-right: 8px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2:nth-of-type(2n) {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 460px) {
+  .main .console4 .canvasContainer {
+    height: 320px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 {
+    margin-right: 0;
+    width: 100%;
+    height: 264px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2:nth-of-type(3n) {
+    margin-right: 0;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p {
+    display: inline-block;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p:nth-of-type(1) {
+    display: inline-block;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p img {
+    margin-right: 8px;
+    margin-bottom: -6px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox_console2 p:nth-of-type(1) > span{
+    vertical-align: middle;
+  }
+}
+
+
+
+
+
+/* -------------------- console4 -------------------- */
+
+#canvas-holder.bar-chart.console4 {
+  left: 48%;
+  margin-top: 0;
+  width: 97%;
+  height: 90%;
+}
+.canvasContainer.console4 {
+  margin-top: 8px;
+}
+
+@media (max-width: 1024px) {
+  .canvasContainerBox {
+    position: relative;
+  }
+  .console4 .canvasContainer.console4 {
+    padding-top: 16px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox {
+    margin-right: 16px;
+    margin-bottom: 16px;
+    width: calc((100% - 16px * 2) / 3);
+    height: 292px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox p {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox p:nth-of-type(1) {
+    margin-top: 12px;
+    margin-left: 12px;
+    font-weight: bold;
+    color: #333;
+  }
+  #canvas-holder {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .main .console4 .canvasContainer {
+    height: 360px;
+  }
+  .console4 .canvasContainerBoxs {
+    margin-bottom: 12px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: calc((100% - 3px * 3) / 2);
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox:nth-of-type(3n) {
+    margin-right: 8px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox:nth-of-type(2n) {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 460px) {
+  .console4 .canvasContainerBoxs .canvasContainerBox {
+    margin-right: 0;
+    width: 100%;
+    height: 272px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox:nth-of-type(3n) {
+    margin-right: 0;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox p {
+    display: inline-block;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox p:nth-of-type(1) {
+    display: inline-block;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox p img {
+    margin-right: 8px;
+    margin-bottom: -6px;
+  }
+  .console4 .canvasContainerBoxs .canvasContainerBox p:nth-of-type(1) > span{
+    vertical-align: middle;
+  }
+}
+
+
+
+
+
+/* -------------------- console5 -------------------- */
+
+@media (max-width: 1024px) {
+  .main .console8 .cav1 {
+    margin-top: 8px;
+    padding: 16px 12px;
+  }
+
+}
+
+
+
+
+
+/* -------------------- console6 -------------------- */
+
+@media (max-width: 1024px) {
+  .console6 .canvasContainer {
+    padding-bottom: 0;
+  }
+  .console6 .bottom #canvas-holder {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 16px;
+    width: 100%;
+    height: 300px;
+    background-color: #fff;
+    box-shadow: none;
+  }
+  .console6 .canvasContainer #myChart1 {
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+  }
+}
+
+@media (max-width: 640px) {
+  .console6 .bottom #canvas-holder {
+    margin-bottom: 8px;
+    height: 240px;
+  }
+}
+
+@media (max-width: 460px) {
+  .console6 .bottom #canvas-holder {
+    margin-bottom: 8px;
+    height: 160px;
+  }
+}
+
+
+
+
+
+/* -------------------- console8 -------------------- */
+
+@media (max-width: 1024px) {
+  .main .console8 .cav1.console8cav {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+  }
+}
+
+@media (max-width: 640px) {
+  .console6 .bottom #canvas-holder {
+    margin-bottom: 8px;
+    height: 240px;
+  }
+}
+
+
+
+
+/* ******************** reservaiton ******************** */
+/* -------------------- console8 -------------------- */
+#reservation .listReservePersonData3 .cost {
+  padding: 0;
+  background: #343434;
+}
+#reservation .listReservePersonData3 .total {
+  padding-top: 0;
+  padding-bottom: 2px;
+}
+
+@media (max-width: 1024px) {
+  #reservation .content header .el-date-editor {
+    display: inline-block;
+    margin: 8px 0;
+    margin-right: 10px;
+    width: calc(50% - 8px);
+  }
+
+  #reservation .content .main-d {
+    padding: 0;
+  }
+
+  #reservation .main-d .search {
+    display: inline-block;
+    width: calc(50% - 8px);
+  }
+  #reservation .main-d .search input {
+    margin-left: 0;
+    padding-top: 7px;
+    padding-bottom: 8px;
+    width: 100%;
+    border-radius: 4px;
+  }
+  #reservation .content header {
+    position: relative;
+  }
+  #reservation .content header .times,
+  #reservation .content header .alpha_sorfting {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 32px;
+    cursor: pointer;
+  }
+  #reservation .content header .times img,
+  #reservation .content header .alpha_sorfting img {
+    position: relative;
+    top: 4px;
+    margin-left: 4px;
+  }
+  #reservation .content header a.addList {
+    margin-top: 20px;
+    margin-right: 32px;
+    margin-left: 0;
+    padding: 4px 8px;
+    line-height: 1.43;
+  }
+
+  #reservation .listReserve {
+    margin-bottom: 24px;
+  }
+  #reservation .listReserve ul {
+    padding-bottom: 8px;
+    border-bottom: 1px dotted #ccc;
+  }
+  #reservation .listReserve ul li {
+    margin: 4px;
+    padding: 6px 8px 4px 8px;
+    width: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    line-height: 1.43;
+    color: #888;
+  }
+  #reservation .listReserve ul li.li-onc {
+    border-color: #fd8115;
+    color: white;
+    background: #fd8115;
+  }
+  
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData222 img {
+    float: none;
+    margin: 0;
+    padding: 4px 0;
+    height: 24px;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData222 .address h3 {
+    margin-bottom: 4px;
+  }
+
+  #reservation .listReservePersonData3 .order-info > div {
+    padding: 0;
+  }
+  #reservation .listReservePersonData3 .order-button {
+    padding: 8px 0;
+  }
+}
+
+@media (max-width: 870px) {
+  #reservation .listReservePersonData {
+    display: block;
+  }
+  #reservation .listReservePersonData1,
+  #reservation .listReservePersonData2,
+  #reservation .listReservePersonData3 {
+    width: 100%;
+  }
+
+  #reservation .listReservePersonData1,
+  #reservation .listReservePersonData2 {
+    padding: 0 16px;
+  }
+  #reservation .listReservePersonData1 .listReservePersonData11,
+  #reservation .listReservePersonData1 .listReservePersonData12,
+  #reservation .listReservePersonData2 .listReservePersonData21 {
+    padding: 6px 0;
+  }
+  #reservation .listReservePersonData1 .listReservePersonData12 ul li {
+    margin: 0;
+    line-height: 1.43;
+  }
+
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221,
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData222 {
+    position: relative;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221 .memberpicbox {
+    margin-left: 0;
+    max-width: 30%;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221 .person-content {
+    padding: 10px;
+    padding-left: 0;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221 .person-content div {
+    line-height: 1.6;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData222 .address {
+    left: 16px;
+  }
+  #reservation .listReservePersonData3:after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  #reservation .listReservePersonData3 .cost,
+  #reservation .listReservePersonData3 .total {
+    padding: 0;
+    letter-spacing: 1px;
+  }
+  #reservation .listReservePersonData3 .cost {
+    padding-top: 4px;
+  }
+  #reservation .listReservePersonData3 .total {
+    padding-bottom: 4px;
+  }
+  #reservation .listReservePersonData3 .order-info,
+  #reservation .listReservePersonData3 .order-button {
+    float: left;
+  }
+  #reservation .listReservePersonData3 .new-order {
+    padding: 6px 16px;
+    width: 100%;
+  }
+  #reservation .listReservePersonData3 .new-order img {
+    margin-right: 4px;
+    padding: 4px;
+    height: 24px;
+  }
+  #reservation .listReservePersonData3 .order-info {
+    padding-top: 4px;
+    width: 50%;
+  }
+  #reservation .listReservePersonData3 .order-info > div {
+    line-height: 1.5;
+    background-color: #343434;
+  }
+  #reservation .listReservePersonData3 .order-button {
+    position: relative;
+    margin: 0;
+    width: 50%;
+  }
+  #reservation .listReservePersonData3 .order-button .btnbox {
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 720px) {
+  .listReservePersonData2 .listReservePersonData22 .listReservePersonData221,
+  .listReservePersonData2 .listReservePersonData22 .listReservePersonData222 {
+    width: 50%;
+  }
+}
+
+@media (max-width: 640px) {
+  #reservation .listReserve {
+    margin-bottom: 16px;
+  }
+  #reservation .main-d .search input {
+    padding-left: 20px;
+    padding-right: 4px;
+    border-radius: 4px;
+    width: 100%;
+  }
+  #reservation .content header .times,
+  #reservation .content header .alpha_sorfting {
+    margin-right: 16px;
+  }
+  #reservation .main-d .search img {
+    left: 10px;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData21 {
+    display: block;
+  }
+  #reservation .content header a.addList {
+    margin-top: 8px;
+    margin-right: 16px;
+  }
+
+  #reservation .listReservePersonData2 .listReservePersonData21 .shareable,
+  #reservation .listReservePersonData2 .listReservePersonData21 .typeChair {
+    display: inline-block;
+    margin-right: 8px;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData21 .shareable img,
+  #reservation .listReservePersonData2 .listReservePersonData21 .typeChair img {
+    height: 14px;
+  }
+
+  #reservation .listReservePersonData2 .listReservePersonData21 .shareable span,
+  #reservation .listReservePersonData2 .listReservePersonData21 .typeChair span {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 460px) {
+  #reservation .listReservePersonData2 .listReservePersonData21 {
+    border: 0;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 {
+    display: block;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221,
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData222 {
+    width: 100%;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221 {
+    padding-bottom: 12px;
+    border: 0;
+    border-bottom: 1px solid #b5b5b5;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221 .memberpicbox {
+    margin-top: 0;
+    margin-bottom: 0;
+    height: auto;
+  }
+  #reservation .listReservePersonData2 .listReservePersonData22 .listReservePersonData221 .person-content {
+    padding: 0;
+  }
+  #reservation .listReservePersonData3 .order-info {
+    padding-top: 22px;
+    width: 56%;
+  }
+  #reservation .listReservePersonData3 .order-button {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    width: 44%;
+  }
+  #reservation .listReservePersonData3 .order-button .orderpaper {
+    margin-bottom: 8px;
+  }
+}

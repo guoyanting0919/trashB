@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-158769656-1');
+		</script>
+	<script src="js/iscroll-lite.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/Chart.css" />
+	<link rel="stylesheet" href="css/style1.css" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
+		integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/1c2ff71fc4.js" crossorigin="anonymous"></script>
+	<script src="js/axios.js"></script>
+	<style>
+		.main {
+			height: auto;
+			overflow: hidden;
+		}
+
+		.header {
+			box-shadow: 0 0 5px #222;
+		}
+
+		.main-d {}
+
+		.main-d-top {
+			height: 50px;
+			padding: 0 0 10px 0;
+			margin: 0 0 10px 0;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.main-d-top-l {
+			height: 50px;
+			float: left;
+			display: flex;
+			align-items: center;
+		}
+
+		.main-d-top-l-d {
+			margin: 0 10px 0 0;
+			padding: 0 10px 0 0;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			border-color: #666;
+			float: left;
+		}
+
+		.big {
+			font-size: 30px;
+			border-width: 0;
+		}
+
+		.main-d-top-r {
+			height: 50px;
+			float: right;
+			display: flex;
+			align-items: center;
+		}
+
+		.b {
+			padding: 10px;
+			margin: 0 10px 0 0;
+			border-radius: 30px;
+			background-color: #666;
+			color: #fff;
+			float: left;
+		}
+
+		.main-d1 {
+			border-style: solid;
+			border-width: 0 0 1px 0;
+			border-color: #666;
+			margin: 0 0 20px 0;
+			overflow: hidden;
+		}
+
+		.main-d1-d {
+			float: left;
+			padding: 0 0 10px 0;
+			border-style: solid;
+			border-width: 0 0 3px 0;
+			border-color: #F29700;
+		}
+
+		.list {}
+
+		.list-l {
+			width: 47%;
+			margin: 0 3% 0 0;
+			float: left;
+		}
+
+		.list-r {
+			width: 50%;
+			float: left;
+		}
+
+		.list-l-d {
+			padding: 0 20px;
+			height: 70px;
+			margin: 0 0 20px 0;
+			background-color: #fff;
+			box-shadow: 0 0 5px #222;
+			overflow: hidden;
+			border-radius: 10px;
+                        cursor: pointer;
+		}
+
+		.list-l-d-on {
+			background-color: #F29700;
+			color: #fff;
+		}
+
+		.list-l-d-l {
+			height: 100%;
+			float: left;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.list-l-d-r {
+			height: 100%;
+			float: right;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.list-r-d {
+			min-height: 420px;
+			padding: 0 0 80px 0;
+			margin: 0 0 20px 0;
+			background-color: #fff;
+			box-shadow: 0 0 5px #222;
+			border-radius: 10px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.list-r-d-h {
+			padding: 20px;
+			font-size: 20px;
+			font-weight: bold;
+			border-style: solid;
+			border-width: 0 0 1px 0;
+			border-color: #F29700;
+		}
+
+		.list-r-d-d {
+			padding: 20px;
+		}
+
+		.list-r-d-d-in-b {
+			overflow: hidden;
+		}
+
+		.list-r-d-d-in {
+			width: calc(100% - 60px);
+			padding: 10px;
+			font-size: 20px;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #666;
+			border-radius: 10px;
+			margin: 0 10px 20px 0;
+			float: left;
+		}
+
+		.list-r-d-d-img {
+			width: 50px;
+			height: 50px;
+			float: left;
+		}
+
+		.list-r-d-d-b {
+			width: calc(100% - 40px);
+			height: 40px;
+			line-height: 40px;
+			position: absolute;
+			background-color: #F29700;
+			color: #fff;
+			text-align: center;
+			font-size: 20px;
+			font-weight: bold;
+			border-radius: 30px;
+			bottom: 20px;
+			left: 20px;
+		}
+
+		.list-r-d-d-list-d {
+			line-height: 30px;
+			font-size: 20px;
+			padding: 10px;
+			overflow: hidden;
+		}
+
+		.list-r-d-d-list-d-img {
+			width: 30px;
+			height: 30px;
+			margin: 0 10px 0 0;
+			float: left;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="console_main" v-cloak>
+		<!-- header -->
+        <user-header :user="user"></user-header>
+		<!-- 側拉選單 -->
+		<div class="content">
+			<div>
+              <left-menu :mc=6 :cc=63 :menu="menu_id"></left-menu>
+				<!-- main -->
+				<main class="main" :class="{'active' : isMainleft}">
+					<div class="main-d">
+						<div class="main-d-top">
+							<div class="main-d-top-l">
+								<div class="main-d-top-l-d big">司機車輛設定</div>
+							</div>
+						</div>
+						<div class="main-d1" v-if="false">
+							<div class="main-d1-d">司機車輛設定</div>
+						</div>
+
+						<div class="list">
+							<div class="list-l">
+								<div class="list-l-d" v-for="(item,index) in list2"
+									@click="get_data(item.Id,index);c_img($event);div_id=item.Id;title_name=item.CarTypeName">
+									<div class="list-l-d-l"><img style="margin:0 10px 0 0;"
+											src="img/icons8-play_filled1.png">{{item.CarTypeName}}</div>
+									<div class="list-l-d-r"><img src="img/edit_copy.png"></div>
+								</div>
+							</div>
+
+							<div class="list-r" v-if="show_rd">
+
+								<div class="list-r-d">
+									<div class="list-r-d-h">{{title_name}}</div>
+									<div class="list-r-d-d">
+										<div class="list-r-d-d-in-b">
+											<input type="text" class="list-r-d-d-in" v-model="inp" />
+											<img src="img/icons8-add_filled.png" class="list-r-d-d-img" @click="add_data(div_id)">
+										</div>
+										<div class="list-r-d-d-list">
+											<div class="list-r-d-d-list-d" v-for="(item,index) in list3">
+												<img class="list-r-d-d-list-d-img" src="img/icons8-minus_filled.png" @click="del_data(item.Id)">
+												{{item.CarTypeName}}
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+
+		<!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+	</div>
+
+	<script src="js/jquery-1.8.0.js"></script>
+	<script type="text/javascript" src="js/Chart.bundle.js"></script>
+	<script src="js/lodash.js"></script>
+
+	<script src="js/vue.js"></script>
+	<script src="js/axios.js"></script>
+	<script src="js/token.js"></script>
+	<script src="js/leftmenu2.js?v=123"></script>
+	<script src="js/header1.js?v=124"></script>
+	<script src="js/polyfill.js"></script>
+	<script>
+
+	</script>
+</body>
+<script>
+	let console_main = new Vue({
+		el: '.console_main',
+		data: {
+			nav_status: 1,
+			isLeft: true,
+			isMainleft: true,
+			show_div: 0,
+			div_id: 0,
+			show_rd: false,
+			inp: "",
+			title_name: "",
+			list: [
+				{ name: "車輛來源", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "類別", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "排氣量", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "用油燃料", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "車頂高度", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "車輛保險", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "車輛設備", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "車輛檢查紀錄項目", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "駕駛身心檢查紀錄項目", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "派遣可共乘距離範圍項目", list: ["狀態1", "狀態2", "狀態3"], inp: "" },
+				{ name: "每日調度推播時間", list: ["狀態1", "狀態2", "狀態3", "狀態4"], inp: "" },
+			],
+			list2: [],
+			list3: [],
+			user:""
+		},
+		mounted:async function () {
+		    await this.check_login()
+			await axios.get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=0")
+				.then(res => {
+					this.list2 = res.data.response.data
+					console.log(res);
+				})
+				.catch(err => {
+					console.log(err);
+				})
+		},
+		methods: {
+			selectNav: function (number) {
+				this.nav_status = number;
+			},
+			openNav2: function () {
+				this.isLeft = false;
+				this.isMainleft = false;
+			},
+			openNav: function () {
+				this.isLeft = !this.isLeft;
+				this.isMainleft = !this.isMainleft;
+			},
+			c_img: function (e) {
+				let d = document.querySelectorAll(".list-l-d")
+				for (let i = 0; i < d.length; i++) {
+					d[i].querySelectorAll("img")[0].src = "img/icons8-play_filled1.png"
+					d[i].querySelectorAll("img")[1].src = "img/edit_copy.png"
+					d[i].classList.remove('list-l-d-on')
+				}
+				e.currentTarget.querySelectorAll("img")[0].src = "img/icons8-play_filled.png"
+				e.currentTarget.querySelectorAll("img")[1].src = "img/edit_copy1.png"
+				e.currentTarget.classList.add('list-l-d-on')
+			},
+			get_data: function (x) {
+				axios.get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=" + x)
+					.then(res => {
+						this.show_rd = true
+						this.list3 = res.data.response.data
+						console.log(res);
+					})
+					.catch(err => {
+						console.log(err);
+					})
+			},
+			add_data: function (x) {
+				var obj = {
+					"ParentID": x,
+					"CarTypeName": this.inp,
+					"Sort": 0
+				}
+				axios.post("https://api.donkeymove.com/api/CarsType/Post", obj)
+					.then(res => {
+						this.get_data(this.div_id)
+						console.log(res);
+					})
+					.catch(err => {
+						console.log(err);
+					})
+			},
+			del_data: function (x) {
+				var r = confirm("確定刪除?");
+                if(!r) {
+                  return 0
+                }
+				axios.delete("https://api.donkeymove.com/api/CarsType/Delete?id=" + x)
+					.then(res => {
+						this.get_data(this.div_id)
+						console.log(res);
+					})
+					.catch(err => {
+						console.log(err);
+					})
+			},
+			check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  }
+		}
+	})
+
+	/*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+		alert(213)
+	})*/
+</script>
+
+</html>

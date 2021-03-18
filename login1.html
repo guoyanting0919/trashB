@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158769656-1");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <script
+      type="text/javascript"
+      src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6"
+    ></script>
+    <style></style>
+  </head>
+  <body>
+    <div id="LOGIN" v-cloak>
+      <div class="news" v-if="show_news">
+        <div class="news-x" @click="show_news=false">X</div>
+        <div class="news-h">公告</div>
+        <div class="news-d">
+          <iframe
+            class="news-if"
+            src="https://ntpc.donkeymove.com/listCompany"
+          ></iframe>
+        </div>
+      </div>
+      <!-- 
+        yes
+        message
+        message==='login'    
+        message==='forget_newpassword'
+        message==='forget_sms'
+        message==='forget_setnewpassword'
+
+        no
+        isShow(0)==='login'    
+        isShow(1)==='forget_newpassword'
+        isShow(2)==='forget_sms'
+        isShow(3)==='forget_setnewpassword'
+      -->
+      <!-- 登入 -->
+      <div class="login" style="overflow-x: hidden" v-if="message==='login' ">
+        <section>
+          <div class="titleArea">
+            <h1>新北市政府</h1>
+            <h3>長照交通接送統一預約服務及管理系統</h3>
+          </div>
+          <div class="managerArea" style="margin-bottom: 2rem">
+            <h2>管理者Login</h2>
+            <p>為了保障您的帳號安全，建議您最少於三個月變更一次密碼</p>
+          </div>
+          <div class="inputArea">
+            <form action="" @keyup.enter="login">
+              <div class="login-input">
+                <input
+                  type="email"
+                  name=""
+                  id=""
+                  v-model="login_email"
+                  placeholder="請輸入您的帳號"
+                />
+              </div>
+              <div class="login-input">
+                <input
+                  type="password"
+                  name=""
+                  id=""
+                  v-model="login_password"
+                  placeholder="請輸入您的密碼"
+                />
+                <!--<div class="login-seepass"><i class="el-icon-view"></i></div>-->
+              </div>
+              <a class="loginBtn" @click="login">登入</a>
+            </form>
+          </div>
+
+          <a href="" class="forgetPWD" @click.prevent="isShow(1)">忘記密碼？</a>
+
+          <div
+            style="
+              color: #fff;
+              text-align: center;
+              line-height: 1.25rem;
+              margin: 2rem;
+            "
+          >
+            客服專線：02-8953-2253｜服務時間：週一至週五
+            09:00-12:00，13:30-19:00
+            <br />©小驢行股份有限公司版權所有｜系統維護：小驢行股份有限公司
+          </div>
+        </section>
+      </div>
+      <!-- 登入end -->
+
+      <!-- 忘記密碼 -->
+      <div
+        class="login forget_newpassword"
+        v-else-if="message==='forget_newpassword'"
+      >
+        <section>
+          <div class="titleArea">
+            <h1>新北市政府</h1>
+            <h3>長照交通接送統一預約服務及管理系統</h3>
+          </div>
+          <div class="managerArea">
+            <h2>忘記密碼</h2>
+            <p>請準備好您的手機</p>
+          </div>
+          <div class="inputArea">
+            <form action="">
+              <input
+                type="tel"
+                name=""
+                id=""
+                placeholder="請輸入您的帳號"
+                v-model="forget_phone"
+              />
+              <a class="loginBtn" @click.prevent="send_sms">下一步</a>
+            </form>
+          </div>
+          <p style="color: white">點選下一步，請依照步驟完成驗證註冊</p>
+        </section>
+      </div>
+      <!-- 忘記密碼end -->
+
+      <!-- 簡訊認證 -->
+      <div class="login forget_sms" v-else-if="message==='forget_sms'">
+        <section>
+          <div class="titleArea">
+            <h1>新北市政府</h1>
+            <h3>長照交通接送統一預約服務及管理系統</h3>
+          </div>
+          <div class="managerArea">
+            <h2>已發送簡訊驗證碼到您的手機</h2>
+            <p v-if="false">手機號碼:{{}}</p>
+          </div>
+          <div class="inputArea">
+            <form action="">
+              <input
+                type="text"
+                name=""
+                id=""
+                placeholder="請輸入簡訊內的驗證碼"
+                v-model="forget_sms"
+              />
+              <a class="loginBtn" @click.prevent="check_sms">下一步</a>
+            </form>
+          </div>
+          <p style="color: white">點選下一步，請依照步驟完成驗證註冊</p>
+        </section>
+      </div>
+      <!-- 簡訊認證end -->
+
+      <!-- 設定新密碼 -->
+      <div
+        class="login forget_setnewpassword"
+        v-else-if="message==='forget_setnewpassword'"
+      >
+        <section>
+          <div class="titleArea">
+            <h1>新北市政府</h1>
+            <h3>長照交通接送統一預約服務及管理系統</h3>
+          </div>
+          <div class="managerArea">
+            <h2>設定登入密碼</h2>
+            <p>8碼以上且大寫英文、小寫英文、數字、特殊符號，4選3</p>
+          </div>
+          <div class="inputArea">
+            <form action="">
+              <input
+                type="password"
+                name=""
+                id=""
+                placeholder="請輸入新的密碼"
+                v-model="forget_newpassword"
+              />
+              <input
+                type="password"
+                name=""
+                id=""
+                placeholder="再一次輸入新密碼確認"
+                v-model="re_forget_newpassword"
+              />
+              <a class="loginBtn" @click.prevent="set_new_password">完成</a>
+            </form>
+          </div>
+          <p style="color: white">點選下一步，請依照步驟完成驗證註冊</p>
+        </section>
+      </div>
+      <!-- 設定新密碼end -->
+    </div>
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="component/header.js"></script>
+    <script src="component/leftmenu.js"></script>
+    <script src="js/polyfill.js"></script>
+  </body>
+  <script>
+    var v = new Vue({
+      el: "#LOGIN",
+      data: function data() {
+        return {
+          login_email: "",
+          login_password: "",
+          forget_sms: "",
+          forget_newpassword: "",
+          re_forget_newpassword: "",
+          forget_phone: "",
+          message: "login",
+          loging: false,
+          show_news: true,
+        };
+      },
+      mounted: async function () {},
+      methods: {
+        isShow: function isShow(val) {
+          switch (val) {
+            case 0:
+              this.message = "login";
+              break;
+            case 1:
+              this.message = "forget_newpassword";
+              break;
+            case 2:
+              this.message = "forget_sms";
+              break;
+            case 3:
+              this.message = "forget_setnewpassword";
+              break;
+            default:
+              this.message = "login";
+              console.log("有問題回登入");
+          }
+          return this.message;
+        },
+        login: async function () {
+          if (this.loging) {
+            return 0;
+          }
+          this.loging = true;
+          var menu_arr = [];
+          await axios
+            .post(
+              "https://api.donkeymove.com/api/CompanyUser/CompanyUserLogin?acc=" +
+                this.login_email +
+                "&pwd=" +
+                this.login_password
+            )
+            .then(async (res) => {
+              console.log(res);
+              if (res.data.msg == "成功") {
+                localStorage.dk2_user = JSON.stringify(res.data.response);
+                await axios
+                  .get(
+                    "https://api.donkeymove.com/api/CompanyUser/GetJwtToken/api/CompanyJWTToken?name=" +
+                      this.login_email +
+                      "&pass=" +
+                      this.login_password
+                  )
+                  .then(async (res2) => {
+                    await axios.interceptors.request.use((config) => {
+                      if (sessionStorage.getItem("dk_token")) {
+                        config.headers.Authorization =
+                          "Bearer " + res2.data.token;
+                      }
+                      return config;
+                    });
+                    localStorage.dk_token = JSON.stringify({
+                      token: res2.data.token,
+                      uid: res.data.response,
+                      menu: menu_arr,
+                    });
+                    alert("登入成功");
+                    location.href = "console1.html";
+                  });
+              } else if (
+                res.data.msg ==
+                  "當前使用系統設定之密碼，首次登入需先更換密碼方可正常使用" ||
+                res.data.msg == "密碼已逾3個月未更換，需更換密碼方可正常使用"
+              ) {
+                alert(res.data.msg);
+                this.forget_phone = this.login_email;
+                this.isShow(3);
+                this.loging = false;
+              } else {
+                alert(res.data.msg);
+                this.loging = false;
+              }
+            });
+        },
+        send_sms: async function () {
+          if (this.forget_phone == "") {
+            alert("請輸入帳號");
+            return 0;
+          } else {
+            await axios
+              .get(
+                "https://api.donkeymove.com/api/CompanyUser/PushPhoneMessage?account=" +
+                  this.forget_phone
+              )
+              .then((res) => {
+                if ((res.data.msg = "成功")) {
+                  alert("已寄驗證碼至您的手機，請確認");
+                  this.isShow(2);
+                }
+              });
+          }
+        },
+        check_sms: async function () {
+          await axios
+            .get(
+              "https://api.donkeymove.com/api/CompanyUser/CheckPhoneCode?account=" +
+                this.forget_phone +
+                "&vCode=" +
+                this.forget_sms
+            )
+            .then((res) => {
+              if (res.data.msg == "正確") {
+                this.isShow(3);
+              } else {
+                alert("驗證碼不正確");
+              }
+            });
+        },
+        set_new_password: async function () {
+          if (
+            this.forget_newpassword == "" ||
+            this.re_forget_newpassword == "" ||
+            this.forget_newpassword != this.re_forget_newpassword
+          ) {
+            alert("輸入不正確");
+            return 0;
+          }
+          await axios
+            .put(
+              "https://api.donkeymove.com/api/CompanyUser/PutForgetPwd?companyUserAcc=" +
+                this.forget_phone +
+                "&Password=" +
+                this.forget_newpassword
+            )
+            .then((res) => {
+              if (res.data.msg == "更新成功") {
+                alert("修改成功");
+                this.isShow(0);
+                this.loging = false;
+              } else {
+                alert(res.data.msg);
+              }
+            });
+        },
+      },
+    });
+  </script>
+</html>

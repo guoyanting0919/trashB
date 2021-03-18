@@ -1,0 +1,709 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link
+      rel="stylesheet"
+      href="css/Chart.css"
+    />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/resizelayout.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css">
+  <style>
+	  .personalLittle_12_rc {width:10px;height:10px;background-color:#0f0;border-radius:100%;	margin:0 10px 0 0; }
+	  .rc_r {background-color:#f00; }
+    .vp-d { padding: 5px; border-bottom: 1px dotted #979797; width: calc(100% / 2 - 30px); margin-right: 15px; display: inline-block;   }
+    @media (max-width: 870px) {
+      .vp-d {width: 100%;display: block; }
+      
+     }
+    .vp-d .vp-d-d { display: inline-block; width: calc(17% - 5px);text-align: center;word-break: break-all;}
+    .vp-d .vp-d-d:nth-child(1) { width: 40%;}
+	</style>
+  </head>
+
+  <body>
+    <div class="console_main" v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=4 :cc=41 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+              <div class="main-d">
+            <header class="headerVehicle">
+              <h1>個案詳細基本資料</h1>
+              <a href="" @click.prevent="printDiv">列印</a>
+              <a href="./personal.html?page=1&key=&isDescending=true&pMode=1&orderby=">回列表</a>
+            </header>
+            <div class="personal2">
+              <article class="articlePersonal1">
+                <div class="personalLittle_1">
+                  <div class="personalLittle_11">
+                    <div class="personalLittle_111">
+                      <span>{{get_list.CaseUserNo}}</span>
+                    </div>
+                    <div class="personalLittle_112">
+                      {{dateFormat(get_list.CreateTime)}}
+                    </div>
+                  </div>
+                  <div class="personalLittle_12">
+                    <div class="personalLittle_12_rc" :class="{'rc_r':get_list.Staus==0}"></div>
+                    <span v-if="get_list.Staus==1">可派發</span>
+					<span v-else style="color:#f00;">不可派發</span>
+                  </div>
+                  <div class="personalLittle_13">
+                    <img src="img/icons8-pencil_filled.svg" alt="" />
+                    <a :href="'personal2_edit.html#/edit/'+get_list.Id" ><span>編輯個案資料</span></a>
+                  </div>
+                </div>
+                <div class="personalLittle_2">
+                  <div class="personalLittle_21">
+                    <div class="personalLittle_211">
+                      <div class="personalLittle_211left">
+
+                        <span v-if="get_list.ExpiredDate" class="noAble">停權中</span>
+
+                      </div>
+                      <div class="personalLittle_211right">
+                        <div class="porsonalpicbox"><img :src="get_list.Pic" alt="" /> </div>
+                        <div class="infolist">
+                          <span>補助方式</span>
+                          <span v-if="get_list.UserMode==0">自費個案</span>
+                          <span v-if="get_list.UserMode==1" class="dkcolor">公費個案</span>
+                          <span v-if="get_list.UserMode==2" class="dkcolor">結案</span>
+                        </div>
+                        <div class="infolist">
+                          <span>額度控管留用首月</span>
+                          <span>{{(get_list.ReviewDate==null) ? "未輸入" : dateFormat2(get_list.ReviewDate)}}</span>
+                        </div>
+                        <div class="infolist">
+                          <span>失效日期</span>
+                          <span>{{(get_list.InvalidDate==null) ? "未輸入" : dateFormat(get_list.InvalidDate)}}</span>
+                        </div>
+                        <div class="infolist">
+                          <span>失能等級</span>
+                          <span>{{get_list.CaseDisabilityLevel.TypeName}}</span>
+                        </div>
+                      </div>
+
+                      <!-- <div>慶聲計程車行-多元化計程車</div> -->
+                    </div>
+                    <!-- <div class="personalLittle_212">
+                      <h5>查看保養紀錄</h5>
+                    </div> -->
+                  </div>
+                  <div class="personalLittle_22">
+                    <div class="personalLittle_221">
+                        <span class="title">基本資料</span>
+                        <span class="depname" v-if="get_list.MainUnitA">{{get_list.MainUnitA.UnitName}}</span>
+                    </div> 
+                    <div class="personalLittle_222">
+                      <div class="dflexSB">
+                        <ul class="w50">
+                          <li>個案姓名</li>
+                          <li>{{get_list.Name}}</li>
+                        </ul>
+                        <div class="w50">
+                          <li>個案性別</li>
+                          <li>{{get_list.Sex}}</li>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <ul class="w50">
+                          <li>身份證字號</li>
+                          <li>{{get_list.UID}}</li>
+                        </ul>
+                        <ul class="w50">
+                          <li>生日</li>
+                          <li>{{ dateFormat(get_list.Birthday) }}</li>
+                        </ul>
+                      </div>
+                      <div class="dflexSB">
+                        <ul class="w50">
+                          <li>社會福利身分</li>
+                          <li>{{ get_list.CaseEconomic.TypeName }}<span style="color:#f00;">(異動日期：{{dateFormat1(get_list.UserTypeModifyDate)}})</span></li>
+                        </ul>
+                      </div>
+                      <div class="dflexSB">
+                        <ul class="w50">
+                          <li>手機</li>
+                          <li>{{get_list.Phone}}</li>
+                        </ul>
+                        <ul class="w50">
+                            <li>市話</li>
+                            <li>{{get_list.Tel}}</li>
+                          </ul>
+                      </div>
+                      <div class="dflexSB">
+                        
+                        <ul class="w50">
+                          <li>電子信箱</li>
+                          <li>{{get_list.Email}}</li>
+                        </ul>
+                      </div>
+                      <div class="dflexSB">
+                        <ul class="w50">
+                          <li>戶籍地址</li>
+                          <li>
+                            {{get_list.CensusCounty}}
+                            {{get_list.CensusDistrict}} {{get_list.CensusAddr}}
+                          </li>
+                        </ul>
+                        <ul class="w50">
+                          <li>居住地址</li>
+                          <li>
+                            {{get_list.CommCounty}} {{get_list.CommDistrict}}
+                            {{get_list.CommAddr}}
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="dflexSB">
+                        <ul class="w50">
+                          <li>綁定手機</li>
+                          <li>
+                            {{get_list.ContactUserPhone}}
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w100">
+                          <div v-if="get_list.EnableRemark">黑名單</div>
+                          <div>
+                            {{get_list.EnableRemark}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="articlePersonal2">
+                <div class="articlePersonal21_cont">
+                <div class="articlePersonal21">
+                  <div class="articlePersonal211">
+                    <div class="articlePersonal2111">
+                      <div v-if="get_list.ExpiredDate">停權中</div>
+                      <div>違規點數</div>
+                    </div>
+                    <div class="articlePersonal2112">
+                      {{ get_list.OrderViolationPoint.TotalOrderViolationPoint }}
+                    </div>
+                    <!-- <span>違規點數 </span>
+                    <span></span> -->
+                  </div>
+                  <div class="articlePersonal212">
+                    停權到期日：
+                    <span v-if="get_list.ExpiredDate!=null">{{ dateFormat(get_list.ExpiredDate) }}</sapn>
+                  </div>
+                  <div class="articlePersonal212" v-if="get_list.ExpireBy">
+                    執行停權者:
+                    <span style="color:#f00">{{get_list.ExpireBy}}</span>
+                  </div>
+                </div><!---->
+                  <div class="articlePersonal22" v-if="get_list.UserMode==1">
+                    <div>
+                    <div class="articlePersonal22Title">個案可用補助</div>
+                    <hr />
+                    <div class="articlePersonal22Content">
+                      <div class="contentsList">
+                        <div v-if="get_list.GrantMode==1">剩餘額度：$ {{ get_list.CaseUserCoupon.LastCouponAmt }}</div>
+                        <div v-else>剩餘趟次：{{ get_list.CaseUserCoupon.LastCouponCount }} 次</div>
+                        <div></div>
+                      </div>
+                      <div class="contentsList">
+                        <div v-if="get_list.GrantMode==1">使用額度：$ {{ absf(get_list.CaseUserCoupon.UseCouponAmt) }}</div>
+                        <div v-else>
+                          使用趟次：{{ get_list.CaseUserCoupon.UseCouponCount }} 次
+                        </div>
+                        <div></div>
+                      </div>
+                      <div class="contentsList">
+                        <div v-if="get_list.GrantMode==1">總額度：$ {{ get_list.CaseUserCoupon.TotalCouponAmt }}</div>
+                        <div v-else>
+                          總趟次：{{ get_list.CaseUserCoupon.TotalCouponCount }} 次
+                        </div>
+                        <div>空趟次數：{{ get_list.CaseUserCoupon.MissBoarding }} 次</div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              
+
+                
+                <div class="articlePersonal23">
+                  <div class="articlePersonal22Title">違規紀錄<button @click="to_block" v-if="is_after(get_list.ExpiredDate)&&user.RoleId==31">解除停權</button></div>
+                  <hr />
+                  <p class="articlePersonal22Content">
+                    <div class="vp-d" v-for="(item,index) in get_list.OrderViolation">
+                      <div class="vp-d-d">{{item.OrderDetails.SOrderNo}}</div>
+                      <div class="vp-d-d">{{item.Remark}}</div>
+                      <div class="vp-d-d">{{dateFormat(item.CreateTime)}}</div>
+                      <div class="vp-d-d">{{item.Point}}</div>
+                    </div>
+                  </p>
+                </div>
+              </article>
+              <article class="articlePersonal3" v-if="false">
+                <div class="articlePersonal2_Title">
+                  <h3>核定服務</h3>
+                </div>
+                <div class="articlePersonal2_Content">
+                  <a
+                    @click.prevent
+                    v-for="(item,index) in get_list.CaseService"
+                    href=""
+                    >{{ item.TypeName }}</a
+                  >
+                  <div class="clear"></div>
+                </div>
+              </article>
+              <!-- <article class="articlePersonal3"></article> -->
+              <!-- <article class="articlePersonal4"> -->
+              <!-- <div class="articlePersonal2_Title">
+                  <h3>適用駕照</h3>
+                </div>
+                <div class="articlePersonal2_Content">
+                  <a href="">職業小型車</a>
+                  <a href="">職業大貨車</a>
+                  <a href="">職業大客車</a>
+                  <a href="">職業聯結車</a>
+                </div> -->
+              <!-- </article> -->
+              <article class="articlePersonal4">
+                <div class="articlePersonal4_Title">
+                  <h3>個案備註</h3>
+                </div>
+                <div class="articlePersonal4_Content">
+                  <p>
+                    {{ get_list.Remark }}
+                  </p>
+                </div>
+              </article>
+
+              <article class="articlePersonal5">
+                <div class="articlePersonal5_Title">
+                  <h3>個案搭乘紀錄</h3>
+                </div>
+                <div class="articlePersonal5_Content">
+                  <div class="tr tr1">
+                      <div class="tdn">預約時間 / 訂單編號</div>
+                      <div class="tdn">狀　　態</div>
+                      <div class="tdn">起點 / 迄點</div>
+                      <div class="tdn">車資總額</div>
+                      <div class="tdn">政府補助</div>
+                      <div class="tdn">自負額</div>
+                      <div class="tdn">承接車行</div>
+                    </div>
+                  <template v-for="(item,index) in history">
+                    <div class="tr tr1">
+                      <div class="tdn">{{ dateFormat(item.ReservationDate) }}<br />{{ item.SOrderNo }}</div>
+                      <div class="tdn">{{ item.StatusChinese }}</div>
+                      <div class="tdn">{{ item.FromAddr || "暫無資料"}}<br />{{ item.ToAddr }}</div>
+                      <div class="tdn">{{item.Status==6 ? item.OrderTotalAmt : item.OrderTotalAmt}}</div>
+                      <div class="tdn">{{ item.SubsidyAmt }}</div>
+                      <div class="tdn">{{ item.OrderTotalAmt - item.SubsidyAmt }}</div>
+                      <div class="tdn">{{item.CompanyName || "暫無資料"}}</div>
+                      <!-- item.CompanyName -->
+                     
+                    </div>
+                    <div class="clear"></div>
+                  </template>
+
+                  <!-- <div class="tr tr2">
+                    <div class="td1">2019-05-22</div>
+                    <div class="td2">訂單編號：asdfgh1234567890</div>
+                    <div class="td3">去回程</div>
+                    <div class="td4">公費＄30</div>
+                    <div class="td5">已完成</div>
+                    <div class="td6">司機：王成至 車輛：KRI-4856</div>
+                  </div>
+                  <div class="tr tr1">
+                    <div class="td1">2019-05-22</div>
+                    <div class="td2">訂單編號：asdfgh1234567890</div>
+                    <div class="td3">去程</div>
+                    <div class="td4">公費＄30</div>
+                    <div class="td5">已完成</div>
+                    <div class="td6">司機：王成至 車輛：KRI-4856</div>
+                  </div> -->
+                  <div class="text-right"><a href="" @click.prevent="load_history">更多訂單紀錄</a></div>
+                </div>
+              </article>
+
+              <article class="articlePersonal6">
+                <div class="articlePersonal6_Title">
+                   <h3>緊急聯絡人資訊</h3>
+                </div> 
+                <div class="clear"></div>
+                <div class="Personal6Info">                   
+                  <div class="Personal6InfoItem">
+                    <div class="dflexSB">
+                      <ul class="w50">
+                        <li>聯絡人姓名</li>
+                        <li>{{get_list.UrgentName}}</li>
+                      </ul>
+                      <ul class="w50">
+                        <li>聯絡人電子信箱</li>
+                        <li>{{get_list.UrgentEmail}}</li>
+                      </ul>
+                    </div>
+                    <div class="dflexSB">
+                      <ul class="w50">
+                        <li>聯絡人市話</li>
+                        <li>{{get_list.UrgentTel}}</li>
+                      </ul>
+                      <ul class="w50">
+                        <li>聯絡人關係</li>
+                        <li>{{get_list.UrgentRelationship}}</li>
+                      </ul>
+                    </div>
+                    <div class="dflexSB">
+                      <ul class="w50">
+                        <li>聯絡人手機</li>
+                        <li>{{get_list.UrgentPhone}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div> 
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script src="js/vue-router.js"></script>
+    <script>
+      const routes = [{ path: "/get/:id" }];
+      const router = new VueRouter({
+        routes
+      });
+      let console_main = new Vue({
+        el: ".console_main",
+        router,
+        data: function() {
+          return {
+            nav_status: 1,
+            name: "韓寒寒",
+            img:
+              "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            get_list: "",
+			history:"",
+			user:"",
+			list1:"",  //身分
+			list2:"",  //經濟狀況 
+			list3:"",
+			list_count:3,
+            list: [
+              {
+                name: "曹偉建",
+                sex: "男",
+                certificationID: "A847587643",
+                birth: "1394-03-12",
+                Identity: "65歲以上失能",
+                economic_status: "中低收入戶",
+                mobile: "0974-586-345",
+                pwd: "13940312",
+                tel: "055-7364-3748",
+                email: "gerardosweeneyESU@teleosaurs.xyz",
+                residential_address: "220 新北市板橋區大觀路一段59號",
+                communication_address: "220 新北市板橋區大觀路一段59號"
+              },
+              {
+                violation_points: "0",
+                suspension_due_date: "1934-01-11"
+              },
+              {
+                boarding_times: 20,
+                note_number: 8,
+                available_times: 12,
+                remaining_number_of_turns: 3,
+                empty_time: 2,
+                total_retained_times: 4,
+                retained_times: 7
+              },
+              {
+                selfPaying_amount_remarks:
+                  "第1公里内33元，1公里後，每230公尺1.7元"
+              },
+              {
+                approved_service_lists: [
+                  "居家服務",
+                  "居家喘息服務",
+                  "居家職能治療",
+                  "輔具購買租借及居家",
+                  "日間服務",
+                  "機構喘息服務",
+                  "社區職能治療",
+                  "無障礙環境改善服務",
+                  "家庭托顧",
+                  "居家護理",
+                  "社區物理治療",
+                  "老人營餐餐飲服務",
+                  "交通接送服務",
+                  "機構服務",
+                  "密集性照護",
+                  "其他"
+                ],
+                approved_services: [
+                  "居家服務",
+                  "機構喘息服務",
+                  "交通接送服務",
+                  "機構服務"
+                ]
+              },
+              {
+                case_notes:
+                  "需看護陪同，語言失能，無法溝通，搭車顛簸容易嘔吐，需特別注意在行車中血壓異常上升社工通常於每月月初安排醫院健康檢查"
+              },
+              {
+                case_records: [
+                  {
+                    date: "2019-05-22",
+                    order_number: "asdfgh1234567890",
+                    journey: "去程",
+                    fee: "公費＄30",
+                    isfinish: "新訂單未審核",
+                    driver_car_data: ""
+                  },
+                  {
+                    date: "2019-05-22",
+                    order_number: "asdfgh1234567890",
+                    journey: "去回程",
+                    fee: "公費＄30",
+                    isfinish: "已完成",
+                    driver_car_data: "司機：王成至 車輛：KRI-4856"
+                  },
+                  {
+                    date: "2019-05-22",
+                    order_number: "asdfgh1234567890",
+                    journey: "去程",
+                    fee: "公費＄30",
+                    isfinish: "已完成",
+                    driver_car_data: "司機：王成至 車輛：KRI-4856"
+                  }
+                ]
+              },
+              {
+                emergency_contact_img: "img/woman.png",
+                emergency_contact_name: "曹明明",
+                emergency_contact_email: "TGHERTH@gmail.com",
+                emergency_contact_sex: "女",
+                emergency_contact_tel: "055-9474-5986",
+                emergency_contact_phone: "0984-384-485",
+                emergency_contact_relationship: "女兒"
+              }
+            ]
+          };
+        },
+        mounted:async function() {
+		  await this.check_login()
+          await axios.get("https://api.donkeymove.com/api/CaseUser/GetUsersByCId/"+this.$route.params.id)
+            .then(res => {
+              this.get_list = res.data.response;
+			  if(this.get_list.Sex=="1") {
+			    this.get_list.Sex="男"
+			  }
+			  else if(this.get_list.Sex=="2") {
+			    this.get_list.Sex="女"
+			  }
+			  else if(this.get_list.Sex=="3") {
+			    this.get_list.Sex="未填寫"
+			  }
+              console.log(res.data.response);
+            });
+		  await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=30")  //身分IdentityStatus
+          .then(res=>{
+		    this.list1=res.data.response.data
+			for(let i in this.list1) {
+			  if(this.get_list.IdentityStatus==this.list1[i].Id) {
+			    this.get_list.IdentityStatus=this.list1[i].TypeName
+			  }
+			}
+		    console.log(this.list1)
+	      })
+		  await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=1")  //經濟UserType
+          .then(res=>{
+		    this.list2=res.data.response.data
+			for(let i in this.list2) {
+			  if(this.get_list.UserType==this.list2[i].Id) {
+			    this.get_list.UserType=this.list2[i].TypeName
+			  }
+			}
+
+		    console.log(this.list2)
+	      })
+		  await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=3")
+          .then(res=>{
+		    this.list3=res.data.response.data
+			for(let i in this.list3) {
+			  if(this.get_list.DisabilityId==this.list3[i].Id) {
+			    this.get_list.DisabilityId=this.list3[i].TypeName
+			  }
+			}
+		    console.log(this.list3)
+	      })
+		  await axios.get("https://api.donkeymove.com/api/OrderDetails/GetDetailByCid?CaseId="+this.get_list.Id+"&GetCount="+this.list_count)
+          .then(res=>{
+		    this.history=res.data.response
+		    console.log(this.history)
+	      })
+        },
+        methods: {
+          dateFormat:function(time) {
+              var date=new Date(time);
+              var year=date.getFullYear();
+              var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+              var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+              var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+              var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+              var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+              return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+          },
+          dateSetting: function() {
+            var date = new Date();
+            var seperator1 = "-";
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+              month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+              strDate = "0" + strDate;
+            }
+            var hours =
+              date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+            var minutes =
+              date.getMinutes() < 10
+                ? "0" + date.getMinutes()
+                : date.getMinutes();
+            var seconds =
+              date.getSeconds() < 10
+                ? "0" + date.getSeconds()
+                : date.getSeconds();
+            var currentdate = year + seperator1 + month + seperator1 + strDate;
+            return currentdate;
+          },
+          selectNav: function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          printDiv: function() {
+            var html=document.querySelectorAll(".main-d")[0].innerHTML
+            document.body.innerHTML=html
+            document.querySelectorAll(".headerVehicle")[0].style.display="none"
+            window.print();
+            location.reload()
+          },
+          absf:function(x) {
+            return Math.abs(x)
+          },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		load_history:async function() {
+		  this.list_count+=9999
+		  await axios.get("https://api.donkeymove.com/api/OrderDetails/GetDetailByCid?CaseId="+this.get_list.Id+"&GetCount="+this.list_count)
+          .then(res=>{
+		    this.history=res.data.response
+		    console.log(this.history)
+	      })
+		},
+    to_block:async function() {
+      var r = confirm("確定解除停權?");
+      if (r == true) {
+      }
+      else {
+        return 0;
+      }
+		  await axios.put("https://api.donkeymove.com/api/CaseUser/PutCaseCancelStop?caseUserId="+this.get_list.Id)
+        .then(res=>{
+          alert(res.data.msg)
+          location.reload()
+	      })
+        .catch(e=>{
+          alert(e)
+        })
+    },
+    is_after:function(x) {
+      return moment(x).isAfter(moment())
+    },
+    dateFormat1:function(x) {
+      return moment(x).format("YYYY-MM-DD")
+    },
+    dateFormat2:function(x) {
+      return moment(x).format("YYYY-MM")
+    },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day;
+}
+        }
+      });
+    </script>
+  </body>
+</html>

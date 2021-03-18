@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <!-- <link rel="stylesheet" href="css/normalize.css"> -->
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <style>
+      .driverVehicle2_edit > .section2 > .section22 .service > .floatKinds .floatKinds-d {
+        background: #f3971a;
+        color: #ffffff;
+      }
+	  .personalLittle_13_edit {
+background-color: #f3971a;
+    width: 4.0625vw;
+    height: 4.0625vw;
+    border-radius: 50%;
+    font-size: 1.09375vw;
+    color: #ffffff;
+    letter-spacing: 0.09115vw;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+	margin-right:20px;
+	}
+	.floatKind-ddd-in {
+	  border-style: solid;
+      border-width: 1px;
+	  font-size:20px;
+	  
+	}
+	.driver-li-no {
+	  border-radius:10px;
+	  font-size:20px;
+	  padding:5px;
+	  border-style: solid;
+      border-width: 1px;
+	}
+  .rad-span {
+    color:#f00;
+  }
+    </style>
+  </head>
+  <body>
+    <div class="console_main" v-cloak>
+        <div class="loading-black" v-if="loading">
+            <img src="img/spinner.gif">
+          </div>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=5 :cc=51 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1 edit" :class="{'active' : isMainleft}">
+            <header class="headerVehicle">
+              <h1 v-if="$route.path=='/add'">駕駛基本資料新增</h1>
+			  <h1 v-else>駕駛基本資料編輯</h1>
+              <a style="display: none;" href="" @click.prevent>列印</a>
+              <a :href="'./driverVehicle3.html#/get/'+get_list.Id" v-if="$route.path!='/add'">回上一頁</a>
+			  <a href="./driverVehicle_driver.html?page=1&key=&orderby=&isDescending=true" v-else>回上一頁</a>
+            </header>
+            <div class="driverVehicle2_edit">
+              <div class="section1">
+                <select name="" id="" v-model="get_list.Status">
+                  <option value=1>可派發</option>
+                  <option value=0>停派</option>
+                </select>
+				<div class="personalLittle_13_edit" @click="sub"><span>儲存</span></div>
+              </div>
+              <div class="section2">
+                <div class="section21">
+                      <img src="img/man_edit.svg" alt="" @click="c_img" v-if="get_list.Pic=='string'||get_list.Pic==''">
+                      <img :src="get_list.Pic ? get_list.Pic :'img/矩形.png'" @click="c_img" v-else>
+				  <input type="file" style="display:none;" class="img_up" accept="image/png, image/jpeg" @change="img_upf($event)">
+                  <!-- <div class="section212">
+                    <span>製造日期</span>
+                    <el-date-picker
+                      v-model="c_time"
+                      type="date"
+                      placeholder=""
+                      value-format="yyyy-MM-dd"
+                      @change="new_day();$forceUpdate()"
+                    ></el-date-picker>
+                  </div>
+                  <div class="section212">
+                    <span>最後驗車</span>
+                    <el-date-picker
+                      v-model="c_time2"
+                      type="date"
+                      placeholder=""
+                      value-format="yyyy-MM-dd"
+                      @change="new_day2();$forceUpdate()"
+                    ></el-date-picker>
+                  </div> -->
+                </div>
+                <div class="section22">
+                  <div class="basicData">
+                    <h1>基本資料編輯</h1>
+                    <hr />
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>駕駛姓名<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="get_list.DriverName" />
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>手機<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="get_list.Phone" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>性別<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <select name="" id="" v-model="get_list.Sex">
+                            <option value="">請選擇</option>
+                            <option value=1>男</option>
+							<option value=2>女</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>市話</div>
+                        <div>
+                          <input type="text" v-model="get_list.Tel" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>身份證字號<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="get_list.UID" />
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>電子郵件</div>
+                        <div>
+                          <input type="text" v-model="get_list.Email" />
+                        </div>
+                      </div>					  
+                    </div>
+					<div class="d_flex">
+
+					</div>
+                    <div class="d_flex" v-if="false">
+                      <div class="w100">
+                        <div>地址<span class="rad-span">(必填)</span></div>
+                        <div style="display:flex;">
+                          <select class="list2-dd-r-d-row-sel" v-model="get_list.County"
+                            ><option v-for="(item,index) in city_sel.city_no">{{ item }}</option></select
+                          >
+                          <select class="list2-dd-r-d-row-sel" v-model="get_list.District"
+                            ><option v-for="(item,index) in city_sel[get_list.County]">{{ item }}</option></select
+                          >
+                        </div>
+                        <div>
+                          <input type="text" v-model="get_list.Addr" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                    <div class="service">
+                      <div class="serviceTitle">駕照</div>
+                      <hr />
+                      <div class="floatKinds">
+                        <div class="floaKindsMerge" v-for="(item,index) in get_menu" @click="$forceUpdate()">
+                          <div
+                            class="floatKind"
+                            :class="{'floatKinds-d':item.onc}"
+                            @click="item.onc=!item.onc;$forceUpdate()"
+                          >
+                            {{ item.CarTypeName }}
+                          </div>
+                          <div
+                            class="floatKind-ddd"
+                            :class="{'floatKind-dd':item.onc}"
+							
+                          >
+						  <input type="text" class="driver-li-no" placeholder="請輸入駕照號碼" v-model="item.LicenseNo">
+                          <el-date-picker v-model="item.ExpiredDate" type="date" placeholder="請選擇駕照過期日" value-format="yyyy-MM-dd" @input="$forceUpdate()"></el-date-picker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+					
+                    <div class="service">
+                      <div class="serviceTitle">保險</div>
+                      <hr />
+                      <div class="floatKinds">
+                        <div class="floaKindsMerge" v-for="(item,index) in get_menu2">
+                          <div
+                            class="floatKind"
+                            :class="{'floatKinds-d':item.onc}"
+                            @click="item.onc=!item.onc;$forceUpdate()"
+                          >
+                            {{ item.CarTypeName }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+					
+                    <div class="service">
+                      <div class="serviceTitle">持有證照</div>
+                      <hr />
+                      <div class="floatKinds">
+                        <div class="floaKindsMerge" v-for="(item,index) in get_menu3">
+                          <div
+                            class="floatKind"
+                            :class="{'floatKinds-d':item.onc}"
+                            @click="item.onc=!item.onc;$forceUpdate()"
+                          >
+                            {{ item.CarTypeName }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  <div class="service">
+                    <div class="serviceTitle">駕駛備註</div>
+                    <hr />
+                    <textarea name="" id="" cols="30" rows="10" v-model="get_list.Remark"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="section3">
+                <div>
+                  <img src="img/icons8-left.svg" alt="" />
+                  <a href="./driverVehicle_driver.html?key=&orderby=&isDescending=true&status=&compId=&page=1"><span>回列表</span></a>
+                </div>
+                <a @click.prevent="sub">儲存</a>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/city_sel.js"></script>
+	<script src="js/check.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script src="js/vue-router.js"></script>
+    <script>
+      const routes = [
+        { path: '/edit/:id' },
+		{ path: '/add' }
+      ]
+      const router = new VueRouter({
+        routes
+      })
+      let console_main = new Vue({
+        el: ".console_main",
+		router,
+        data: function() {
+          return {
+            loading:false,
+            nav_status: 1,
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            isChangeColor: false,
+            c_time: "",
+            c_time2: "",
+			user:"",
+            city_sel: city_sel,
+            city1: "",
+            city1_a: "",
+            city2: "",
+            city2_a: "",
+            get_list:{},
+			get_menu:[],
+			get_menu2:[],
+			get_menu3:[],
+			munu_onc:[],
+			comp:"",
+			up_img:"",
+            list: [
+              {
+                title: "駕照",
+                list: [
+                  ["小型車職業駕駛執照", false, "駕照過期日：2020-03-11"],
+                  ["大貨車職業駕駛執照", false, "駕照過期日：2020-03-11"],
+                  ["大客車職業駕駛執照", false, "駕照過期日：2020-03-11"],
+                  ["聯結車職業駕駛執照", false, "駕照過期日：2020-03-11"]
+                ]
+              },
+              {
+                title: "保險",
+                list: [
+                  ["強制險", false],
+                  ["駕駛傷害險", false],
+                  ["泡水補償險", false],
+                  ["其他汽車險", false],
+                  ["任意第三人責任險", false],
+                  ["車體險", false],
+                  ["超額責任險", false],
+                  ["竊盜險", false]
+                ]
+              },
+              {
+                title: "持有證照",
+                list: [
+                  ["照服員證照", false],
+                  ["外語領隊人員執業證", false],
+                  ["導遊證照", false],
+                  ["TQC專業企畫人員", false],
+                  ["華語領隊人員執業證", false],
+                  ["CIS國際獎勵旅遊認證", false],
+                  ["乙級按摩技術士", false]
+                ]
+              }
+            ]
+          };
+        },
+        mounted:async function() {
+          this.loading=true
+		  await this.check_login()
+          await axios.get("https://api.donkeymove.com/api/CarCompanys/GetCarCompanys").then(res => {
+            this.comp = res.data.response.data;
+            console.log(this.comp);
+          });
+          if(this.$route.path!='/add') {		
+		    await axios.get("https://api.donkeymove.com/api/DriverInfo/Get/"+this.$route.params.id)
+            .then(res=>{
+		      this.get_list=res.data.response
+		      console.log(res.data.response)
+	        })
+		  }
+		  else {
+            this.get_list={
+  "Id": 0,
+  "CompanyId": 0,
+  "Account": "",
+  "Pwd": "",
+  "Sex": "",
+  "Pic": "",
+  "DriverName": "",
+  "Phone": "",
+  "UID": "",
+  "Tel": "",
+  "Email": "",
+  "County": "",
+  "District": "",
+  "Addr": "",
+  "Remark": "",
+  "Status": 1,
+  "IsDeleted": true,
+  "Enabled": true,
+  "CreateId": 0,
+  "CreateBy": "string",
+  "CreateTime": "2019-10-24T09:51:59.267Z",
+  "ModifyId": 0,
+  "ModifyBy": "string",
+  "ModifyTime": "2019-10-24T09:51:59.267Z",
+  "DriverSaveTypes": [
+    {
+      "Id": 0,
+      "DriverId": 0,
+      "TypeId": 160,
+      "ExpiredDate": "2019-10-24T09:51:59.267Z"
+    }
+  ]
+}
+           	  
+		  }
+		    await axios.get("https://api.donkeymove.com/api/CarsType/Get?parentID=9")  //取得駕照9
+            .then(res=>{
+		      this.get_menu=res.data.response.data
+			  for(let i in this.get_menu) {
+			    for(let j in this.get_list.DriverSaveTypes) {
+                  if(this.get_menu[i].Id==this.get_list.DriverSaveTypes[j].TypeId) {
+				    this.get_menu[i].ExpiredDate=this.get_list.DriverSaveTypes[j].ExpiredDate
+				    this.get_menu[i].LicenseNo=this.get_list.DriverSaveTypes[j].LicenseNo
+					this.get_menu[i].onc=true
+				  }
+			    }
+			  }
+		      console.log(res.data.response)
+	        })
+		    await axios.get("https://api.donkeymove.com/api/CarsType/Get?parentID=206")  //取得保險6
+            .then(res=>{
+		      this.get_menu2=res.data.response.data
+			  for(let i in this.get_menu2) {
+			    for(let j in this.get_list.DriverSaveTypes) {
+                  if(this.get_menu2[i].Id==this.get_list.DriverSaveTypes[j].TypeId) {
+				    this.get_menu2[i].onc=true
+				  }
+			    }
+			  }
+		      console.log(res.data.response)
+	        })
+		    await axios.get("https://api.donkeymove.com/api/CarsType/Get?parentID=162")  //取得持有證照162
+            .then(res=>{
+		      this.get_menu3=res.data.response.data
+			  for(let i in this.get_menu3) {
+			    for(let j in this.get_list.DriverSaveTypes) {
+                  if(this.get_menu3[i].Id==this.get_list.DriverSaveTypes[j].TypeId) {
+				    this.get_menu3[i].onc=true
+				  }
+			    }
+			  }
+		      console.log(res.data.response)
+	        })
+          this.loading=false
+		},
+        computed: {
+          lists: function() {}
+        },
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          changeColor: function(e) {
+            // this.isChangeColor = !this.isChangeColor;
+            e.currentTarget;
+            console.log(e.currentTarget);
+          },
+		  sub:async function() {
+        this.loading=true
+		    if(this.check_input()) {
+		    for(let i in this.get_menu) {
+			  if(this.get_menu[i].onc) {
+			    this.munu_onc.push({TypeId:this.get_menu[i].Id,ExpiredDate:this.get_menu[i].ExpiredDate,LicenseNo:this.get_menu[i].LicenseNo})
+			  }
+			}
+		    for(let i in this.get_menu2) {
+			  if(this.get_menu2[i].onc) {
+			    this.munu_onc.push({TypeId:this.get_menu2[i].Id})
+			  }
+			}
+		    for(let i in this.get_menu3) {
+			  if(this.get_menu3[i].onc) {
+			    this.munu_onc.push({TypeId:this.get_menu3[i].Id})
+			  }
+			}
+			this.get_list.DriverSaveTypes=this.munu_onc
+		    if(this.$route.path=="/add") {
+			  await this.driver_add()
+			}
+			else {
+			  await this.driver_edit()
+			}
+      }
+        this.loading=false
+		  },
+		  driver_add:async function() {
+		    await axios.post("https://api.donkeymove.com/api/DriverInfo/Post",this.get_list)
+            .then(res=>{
+			  if(res.data.msg=="添加成功") {
+		        console.log(res)
+		        alert("新增成功")
+		        location.href = 'driverVehicle_driver.html?key=&orderby=&isDescending=true&status=1&page=1';
+	          }
+			  else {
+			    alert(res.data.msg)
+			  }
+			})	
+		  },
+		  driver_edit:async function() {
+		    await axios.put("https://api.donkeymove.com/api/DriverInfo/Put",this.get_list)
+            .then(res=>{
+			  if(res.data.msg=="更新成功") {
+		        console.log(res)
+		        alert("修改成功")
+		        location.href = 'driverVehicle_driver.html?key=&orderby=&isDescending=true&status=1&page=1';
+	          }
+			  else {
+			    alert(res.data.msg)
+			  }
+			})			    
+		  },
+		  c_img:function() {
+		    document.querySelectorAll('.img_up')[0].click()
+		  },
+		  img_upf:function(e) {
+		    let file=e.target.files[0]
+			let formData = new FormData();
+            formData.append('img', file);
+            axios.post("https://api.donkeymove.com/api/Img/Pic",formData,{
+		      headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+		    .then(res=>{
+	          if(res.data.msg=="上傳成功") {
+		        console.log("圖片上傳成功!")
+			    this.get_list.Pic="https://api.donkeymove.com/UploadFolder/"+res.data.response
+              }
+		    })			
+		  },
+		  check_input:function() {
+		    var flag=true
+		    if(this.get_list.DriverName=="") {
+			  alert("請輸入姓名")
+			  flag=false
+			}
+			else if(this.get_list.Sex==""){
+			  alert("請選擇性別")
+			  flag=false
+			}
+			else if(this.get_list.Phone==""||!check_phone(this.get_list.Phone)) {
+			  alert("未輸入手機或手機格式不符")
+			  flag=false
+			}
+			else if(this.get_list.UID==""||!check_id(this.get_list.UID)) {
+			  alert("未輸入身分證字號或身分證字號格式不符")
+			  flag=false
+			}
+			/*else if(this.get_list.County==""||this.get_list.District==""||this.get_list.Addr=="") {
+			  alert("請輸入戶籍地址")
+			  flag=false
+			}*/
+            return flag
+		  },
+		  allre:function() {
+		    this.$forceUpdate()
+		  },
+      check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  }
+        }
+      });
+    </script>
+  </body>
+</html>

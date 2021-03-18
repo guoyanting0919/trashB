@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 微軟正黑體;
+      }
+      .top {
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 5px #222;
+        overflow: hidden;
+        position: relative;
+        z-index: 4;
+      }
+      .logo {
+        height: 50px;
+        float: left;
+      }
+      .top-rd {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        float: right;
+      }
+      .inp-d {
+        width: 200px;
+        height: 50px;
+        border-radius: 30px;
+        float: left;
+        margin: 0 20px 0 0;
+      }
+      .inp-t {
+        width: 200px;
+        height: 100%;
+        padding: 0 20px;
+        border-radius: 30px;
+        background-color: #aaa;
+        border-width: 0px;
+        font-size: 30px;
+      }
+      .b {
+        padding: 10px 20px;
+        margin: 0 20px 0 0;
+        background-color: #fff;
+        border-style: solid;
+        border-width: 2px;
+        border-color: #888;
+        float: left;
+        border-radius: 30px;
+      }
+      .user-d {
+        float: left;
+      }
+      .user-img {
+        width: 50px;
+        height: 50px;
+        margin: 0 10px 0 0;
+        border-radius: 100%;
+        float: left;
+      }
+      .user-name {
+        float: left;
+      }
+      .content {
+        height: calc(100% - 91px);
+      }
+      .content-l {
+        width: 100px;
+        height: calc(100% - 40px);
+        padding: 20px 20px 20px 0;
+        background-color: #fff;
+        box-shadow: 0 0 5px #222;
+        float: left;
+        position: relative;
+        z-index: 3;
+      }
+      .content-l-d {
+        width: 100%;
+        padding: 10px 0 10px 5px;
+        text-align: center;
+        border-style: solid;
+        border-color: #fff;
+        border-width: 0 0 0 5px;
+      }
+      .content-l-d:hover {
+        border-color: #888;
+      }
+      .content-l-d-on {
+        border-color: #888;
+      }
+      .content-l-d-img {
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+      }
+      .content-l-d-s {
+      }
+      .content-l-list {
+        width: 120px;
+        height: calc(100% - 60px);
+        padding: 30px;
+        float: left;
+        background-color: #fff;
+        box-shadow: 0 0 5px #222;
+        position: relative;
+        z-index: 2;
+      }
+      .content-l-list-d {
+        padding: 10px 0;
+        text-align: center;
+      }
+
+      .content-r {
+        width: calc(100% - 120px - 180px);
+        height: 100%;
+        background-color: #eee;
+        float: left;
+        overflow-y: scroll;
+        position: relative;
+        z-index: 1;
+      }
+      .list {
+        height: calc(100% - 60px);
+        padding: 30px;
+      }
+      .list-d {
+        min-height: 50px;
+        padding: 10px 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 5px #222;
+        margin: 0 0 10px 0;
+        overflow: hidden;
+      }
+      .list-d-img {
+        width: 50px;
+        height: 50px;
+        margin: 0 30px 0 0;
+        border-radius: 100%;
+        float: left;
+      }
+      .list-d-d {
+        font-weight: bold;
+        margin: 0 20px 0 0;
+        float: left;
+      }
+      .list-d-ld {
+        width: calc(100% - 180px);
+        overflow: hidden;
+        float: left;
+      }
+      .list-d-rd {
+        width: 180px;
+        overflow: hidden;
+        float: right;
+      }
+      .list-d-rd-c {
+        width: 50px;
+        height: 50px;
+        margin: 0 10px 0 0;
+        border-radius: 100%;
+        background-color: #888;
+        float: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main" v-cloak>
+      <dc-header :user_name="name" :user_img="img"></dc-header>
+      <div class="content">
+        <dc-leftmenu
+          :list="['司機車輛使用率','司機營收報表','去回行程比率','醫療院所比率','不知道是什麼比率的比率']"
+        ></dc-leftmenu>
+        <div class="content-r" @scroll="show_more($event)">
+          <div class="list">
+            <template v-for="(item,index) in list_no">
+              <div class="list-d">
+                <div class="list-d-ld">
+                  <template v-for="(item2,index2) in Object.keys(obj[index])">
+                    <img class="list-d-img" :src="obj[index][item2]" v-if="item2=='d1'" />
+                    <div class="list-d-d" v-else>{{ obj[index][item2] }}</div>
+                  </template>
+                </div>
+                <div class="list-d-rd">
+                  <div class="list-d-rd-c bc-b"></div>
+                  <div class="list-d-rd-c bc-r"></div>
+                  <div class="list-d-rd-c bc-y"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="component/header.js"></script>
+    <script src="component/leftmenu.js"></script>
+    <script>
+      let console_main = new Vue({
+        el: ".main",
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            list_no: 10,
+            obj: [
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "路人甲",
+                d3: "男",
+                d4: "abcde123456@gmail.com",
+                d5: "123456789",
+                d6: "0987654321",
+                d7: "2019/9/20",
+                d8: "1111111",
+                d9: "11111111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "1111111111111111111111111111111111111111111111111111111111111111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              },
+              {
+                d1: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+                d2: "111",
+                d3: "111",
+                d4: "111",
+                d5: "111",
+                d6: "111",
+                d7: "111",
+                d8: "111",
+                d9: "111"
+              }
+            ]
+          };
+        },
+        mounted: function() {},
+        methods: {
+          show_more: function(e) {
+            let sh = e.currentTarget.scrollHeight;
+            let st = e.currentTarget.scrollTop;
+            let ch = e.currentTarget.clientHeight;
+            if (Math.floor(ch - (sh - st)) == 0) {
+              for (let i = 1; i <= 10; i++) {
+                if (this.obj[this.list_no]) {
+                  this.list_no++;
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+        }
+      });
+    </script>
+    <script src="js/polyfill.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<script src="js/iscroll-probe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	<script src="js/axios.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <style>
+	  body {
+		position:relative;	  
+	  }
+	  .black {
+	    width:100%;
+		height:100%;
+		background-color:rgba(0,0,0,0.6);
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:-1;
+		opacity:0;
+		transition-duration: 0.2s;
+	  }
+	  .show_b {
+	    opacity:1;
+		z-index:999;
+	  }
+	  .more-d {
+	    width:1217px;
+		height:300px;
+		background-color:#fff;
+		position:absolute;
+		top:50%;
+		left:50%;
+        margin:-150px 0 0 -608.5px;	
+        z-index:-1;		
+		opacity:0;
+		overflow-y:scroll;
+	    transition-duration: 0.2s;
+	  }
+	  .more-b {
+	    overflow:hidden;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+	  }
+	  .show_more {
+	    opacity:1;
+		z-index:1002;
+	  }
+	  .more-d-d1 {
+	    width:300px;
+		height:100%;
+		padding:20px;
+		box-sizing: border-box;	   
+        background-color:#F3981A;	
+		float:left;	
+	  }
+	  .more-d-d1-d1 {
+	    height:50px;
+	    color:#fff;
+		font-weight:bold;
+		font-size:20px;
+	
+	  }
+	  .more-d-d1-d2 {
+	    height:32px;
+		margin:178px 0 0 0;    
+	  }
+      .more-d-d1-d2-d {
+	    color:#fff;
+		font-weight:bold;
+		font-size:16px;
+	  }
+	  .more-d-d2 {
+	    width:800px;
+		height:100%;
+		box-sizing: border-box;	
+        background-color:#fff;		
+		float:left;		
+	  }
+	  .more-d-d2-d1 {
+	    height:40px;
+		padding:0 10px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+	    box-sizing: border-box;	
+		overflow:hidden;
+	  }
+	  .more-d-d2-d1-l {
+	    height:40px;
+		line-height:40px;
+	    float:left;
+	  }
+	  .more-d-d2-d1-r {
+	    height:40px;
+		line-height:40px;
+	    float:right;
+	  }
+	  .more-d-d2-d2 {
+	    height:260px;
+	    box-sizing: border-box;	
+	  }
+	  .more-d-d2-d2-l {
+	    width:300px;
+		height:100%;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#666;	    
+	    box-sizing: border-box;		 
+	    display: flex;	
+        justify-content: center;
+        align-items: center;		
+		float:left;
+	  }
+	  .more-d-d2-d2-l-d {
+	    width:300px;
+		height:100px;
+		box-sizing: border-box;	
+	    display: flex;
+	  }
+	  .more-d-d2-d2-r {
+	    width:500px;
+		height:100%;
+		padding:20px;
+	    box-sizing: border-box;	
+        float:left;		
+	  }
+	  .more-d-d2-d2-l-d-img {
+	    width:100px;
+		height:100px;
+		margin:0 10px 0 0;
+		float:left;
+		box-sizing: border-box;	
+	  }
+	  .more-d-d2-d2-l-d-r {
+	    width:200px;
+		height:100px;
+	    box-sizing: border-box;	
+	  }
+	  .more-d-d2-d2-l-d-r-name {
+	    font-size:30px;
+		font-weight:bold;
+	  }
+      .more-d-d2-d2-r-s-s {
+	    font-size:20px;
+		font-weight:bold;
+		margin:0 0 10px 0;
+	  }
+      .more-d-d2-d2-r-s-s1 {
+	    font-size:20px;
+		font-weight:bold;
+		color:#888;
+	  }
+	  .more-d-d2-d2-r-dd-bb {
+	    width:460px;
+		height:100px;
+	    box-sizing: border-box;
+	  }
+	  .more-d-d2-d2-r-dd {
+	    box-sizing: border-box;	
+        margin:20px 10px 0 0;		
+		float:left;
+	  }
+	  .more-d-d2-d2-r-dd-img {
+        width:50px;
+		height:50px;
+		margin:0 10px 0 0;
+		border-radius:100%;
+		float:left;
+	  }
+	  .more-d-d2-d2-r-dd-name {
+        font-weight:bold;
+		margin:0 0 10px 0;
+		text-align:center;
+	  }
+	  .more-d-d2-d2-r-dd-b {
+	    width:60px;
+ 		padding:10px 0;
+		border-radius:30px;
+		background-color:#666;
+		color:#fff;
+		float:left;  
+		text-align:center;
+	  }	  
+	  .more-d-d2-d2-r-dd-rbb {
+	    float:left;
+	  }
+	  .more-d-d3 {
+	    width:100px;
+		height:300px;
+		padding:20px;
+		box-sizing: border-box;	    
+		background-color:#343434;
+		float:left;
+		font-size:25px;
+		color:#fff;
+		font-weight:bold;
+		text-align:center;
+	  }
+	  .more-d-d3-b {
+	    height:30px;
+		line-height:30px;
+		color:#fff;
+		text-align:center;
+	    border-style: solid;
+        border-width: 1px;
+		border-color:#fff;
+		font-size:12px;
+		border-radius:10px;
+		margin:100px 0 0 0;
+	  }
+	  .header {
+	    box-shadow:0 0 5px #222;
+	  }
+	  .main-d {
+	    padding:20px;
+	    transition-duration: 0.2s;
+	  }
+	  .main-d-top {
+	    height:50px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+		padding:0 0 10px 0;
+		margin:0 0 10px 0;
+		display:flex;
+		justify-content:space-between;
+	  }
+	  .main-d-top-l {
+	    height:50px;
+	    float:left;	 
+		display: flex;
+        align-items: center;		
+	  }
+	  .main-d-top-l-d {
+	    margin:0 10px 0 0;
+		padding:0 10px 0 0;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#666;
+	    float:left;
+	  }
+	  .big {
+	    font-size:30px;
+        border-width: 0;
+	  }
+	  .main-d-top-r {
+	    height:50px;
+	    float:right;
+		display: flex;
+        align-items: center;	
+	  }
+	  .b {
+		padding:10px;
+		margin:0 10px 0 0;
+		border-radius:30px;
+		background-color:#666;
+		color:#fff;
+		float:left;
+	  }
+	  .list {  
+		height:500px;
+		background-color:#fff;
+        overflow: hidden;
+		transition-duration: 0.2s;
+	  }
+	  .zoom {
+	    width:100%;
+		height:100%;
+		position:fixed;
+		top:0;
+		left:0;
+		z-index:998;
+		background-color:#fff;
+	  }
+	  .blackm {
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .blackm .list {
+	    background-color:#2D2D2D;
+	  }
+	  .blackm .list-order {
+	    background-color:#2D2D2D;
+	  }
+	  .blackm .list-car-top {
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .blackm .list-car-top .list-time-d1{
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .blackm .list-car-d1 {
+	    background-color:#2D2D2D;
+	  }
+	  .blackm .list-time {
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .zoom .list {
+	    height:600px;
+	  }
+	  .list-b {  
+        white-space: nowrap;
+        display: inline-block;
+		height:500px;
+	  }
+	  .list-order {
+	    padding:10px;
+	    height:500px;
+		overflow-y:scroll;
+	    float:left;
+		background-color:#fff;
+		position:relative;
+		z-index:201;
+	  }
+	  .zoom .list-order {
+	    height:600px;
+	  }
+	  .list-order-d {
+	  	width:200px;
+		height:90px;
+		margin:0 0 10px 0;
+		background-color:#f00;
+		text-align:center;
+		display: flex;	
+        justify-content: center;
+		align-items: center;
+		line-height:1.3;
+		position:relative;
+	  }
+	  .list-time {
+	    background-color:#fff;
+	    width:100px;
+        display: inline-block;
+		float:left;
+		position:relative;
+		z-index:199;
+	  }
+	  .list-time-d1 {
+	    width:100px;
+	    height:100px;
+		text-align:center;
+		float:left;
+		box-sizing: border-box;
+		display: inline-block;
+	  }
+	  .list-car {
+	    width:240px;
+        display: inline-block;
+	  }
+	  .list-car-img {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 0;
+	    border-radius:100%;
+	  }
+	  .list-car-d {
+	    width:240px;
+		height:100px;
+		line-height:100px;
+		text-align:center;
+        box-sizing: border-box;
+		display: inline-block;
+		font-size:25px;
+		white-space: nowrap;
+		position:relative;
+	  }
+	  .list-car-d1 {
+	    width:240px;
+		height:100px;	
+	    float:left;        
+        text-align:center;	
+        background-color:#fff;		
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 3px;
+		border-color:#ddd;
+		position:relative;
+	  }
+      .list-car-d1-d {
+	 	float:left;
+		height:100%;
+		line-height:1.3;
+      }  
+      .c8 {
+	    width:calc(100% / 4);
+		height:100%;
+		float:left;
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#fff;	
+       	position:relative; 		
+	  }
+      .c4 {
+	    width:calc(100% / 3);
+		height:100%;
+		float:left;
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#fff;	
+       	position:relative; 		
+	  }
+      .c2 {
+	    width:calc(100% / 2);
+		height:100%;
+		float:left;
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#fff;	
+       	position:relative; 		
+	  }
+	  .hr1 {
+	    width:100%;
+		height:194px;
+	    position:absolute;
+		background-color:#ff0;
+		top:0;
+		left:0;
+		z-index:100;
+	  }
+	  .w {
+	    background-color:#fff;
+	  }
+	  .right-mu {
+	  	width:200px;
+		position:absolute;
+		bottom:-80px;
+		right:-190px;
+	    border-radius:10px;
+		background-color:#fff;
+		box-shadow:0 0 5px #222;
+		z-index:101;
+		overflow:hidden;
+		display:none;
+		color:#222;
+	  }
+	  .right-mu-d {
+	    height:50px;
+		line-height:50px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+		font-size:16px;
+	  }
+	  .right-mu-d:hover {
+	    background-color:#666;
+		color:#fff;
+	  }
+	  .s1 {
+	    background-color:#F18024;
+		color:#fff;
+	  }
+	  .s2 {
+	    background-color:#18A2B8;
+		color:#fff;
+	  }
+	  .bc-y {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 10px;
+	    border-radius:100%;
+	    background-color:#F18024;		
+	  }
+	  .bc-b {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 10px;
+	    border-radius:100%;
+	    background-color:#353535;		  
+	  }
+	  .bc-bl {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 10px;
+	    border-radius:100%;
+	    background-color:#18A2B8;  
+	  }
+	  .list-car-top {
+	    background-color:#fff;
+	    position:relative;
+	    z-index:200;
+		white-space: nowrap;
+	  }
+	  .list-car-table {
+	    white-space: nowrap;
+		width:1px;
+		height:420px;
+        display: inline-block;	
+	  }
+	  .list-car-table-b {	
+	    white-space: nowrap;
+	    display: inline-block;	
+	  }
+	  .list-car-d-s {
+	    display: inline-block;	
+	  }
+	  .d-b .list-car-d1{
+	    background-color:#888;
+		border-color:#888;
+	  }
+	  .d-b {
+	    background-color:#888;
+	  }
+	  .el-date-editor--date {
+	    margin:0 10px 0 0;
+	  }
+	  .el-input__inner {
+		border-radius: 30px;	  
+	  }
+	  .merge-s {
+	    font-size:30px;
+	  }
+	  .timeorcar {
+        position: relative;
+		z-index: 201;
+		background-color:#fff;
+		line-height:100px;
+	  }
+	  .div1 {
+	    width:58.5px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+	  }
+	  .div2 {
+	    width:117px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+	  }
+	  .div3 {
+	    width:175.5px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+	  }
+	  .div4 {
+	    width:234px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+	  }
+	  .div5 {
+	    width:234px;
+		height:calc(200% + 6px);
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:absolute; 
+  top:0;
+  left:0;  
+  z-index:2;
+	  }
+	  .d-b2 {
+	    background-color:#888;
+	  }
+	  [v-cloak] {
+        display: none;
+      }
+	  .c_driver {
+	    width:500px;
+		height:300px;
+		padding:20px 100px;
+		margin:-150px 0 0 -250px;
+		background-color:#fff;
+		box-sizing: border-box;
+		border-radius: 10px;
+		position:absolute;
+		top:50%;
+		left:50%;
+		opacity:0;	
+		z-index:-2;
+		transition-duration: 0.2s;		
+	  }
+	  .c_driver-on {
+	  	opacity:1;
+		z-index:1000;
+	  }
+	  .c_driver-s {
+	    font-size:20px;
+		font-weight:bold;
+		color:#666;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-sel {
+	    width:100%;
+	    border-radius: 10px;
+		padding:10px;
+		font-size:20px;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-d1 {
+	    height:80px;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-d1-img {
+	    width:80px;
+		height:80px;
+		border-radius: 100%;
+		margin:0 20px 0 0;
+		float:left;
+	  }
+	  .c_driver-d1-r {
+	    height:80px;
+	    float:left;
+		display: flex;	
+        justify-content: center;
+		align-items: center;
+	  }
+	  .c_driver-d1-r-s1 {
+	    font-size:22px;
+		font-weight:bold;
+		color:#666;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-d1-r-s2 {
+	    font-size:18px;
+		font-weight:bold;
+		color:#666;
+	  }
+	  .c_driver .b {
+	    width:100%;
+		text-align:center;
+		background-color:#F29700;
+	  }
+	  .list-car-d1-d {
+	    background-color: #F18024;
+        color: #fff;
+	  }
+	</style>
+  </head>
+  <body id="body" onload="loaded()">
+    <div class="all" v-cloak>
+    <div class="black" :class="{'show_b':show_b==true}" @click="show_b=false;c_driver_d=false;show_more_d=false"></div>
+	<div class="c_driver" :class="{'c_driver-on':c_driver_d}">
+	  <div class="c_driver-s">更換司機</div>
+	  <select class="c_driver-sel" v-model="c_driver">
+	    <option v-for="(item,index) in driver" :value="index">{{item.name}}</option>
+	  </select>
+	  <div class="c_driver-d1">
+	    <img :src="driver[c_driver].img" class="c_driver-d1-img">
+		<div class="c_driver-d1-r">
+		  <div>
+		    <div class="c_driver-d1-r-s1">{{driver[c_driver].name}}</div>
+		    <div class="c_driver-d1-r-s2">手機: {{driver[c_driver].phone}}</div>
+		  </div>
+		</div>
+	  </div>
+	  <div class="b">確定更換司機</div>
+	</div>
+	<div class="more-d" :class="{'show_more':show_more_d==true}">
+	  <div class="more-b" v-for="(item,index) in detail[num].DespatchDetail">
+	  <div class="more-d-d1">
+	    <div class="more-d-d1-d1">訂單編號:{{order[item.indexof].Id}}</div>
+		<div class="more-d-d1-d2">
+		  <div class="more-d-d1-d2-d">行程:{{order[item.indexof].got}}</div>
+		  <div class="more-d-d1-d2-d">訂單建立時間:{{order[item.indexof].case_time}}</div>
+		</div>
+	  </div>
+	  <div class="more-d-d2">
+	    <div class="more-d-d2-d1">
+		  <div class="more-d-d2-d1-l">{{order[item.indexof].share}}</div>
+		  <div class="more-d-d2-d1-r">輪椅類型:{{order[item.indexof].wtype}} 陪同人員:家屬{{order[item.indexof].meb}}人 / 外籍移工{{order[item.indexof].meb2}}人</div>
+		</div>
+		<div class="more-d-d2-d2">
+		  <div class="more-d-d2-d2-l">
+		    <div class="more-d-d2-d2-l-d">
+			  <img class="more-d-d2-d2-l-d-img" :src="order[item.indexof].case_img">
+			  <div class="more-d-d2-d2-l-d-r">
+			    <div class="more-d-d2-d2-l-d-r-name">{{order[item.indexof].name}}</div><br>
+			    個案編號:{{order[item.indexof].id}}<br>
+				身份證字號:{{order[item.indexof].case_id}}
+			  </div>
+			</div>
+		  </div>
+		  <div class="more-d-d2-d2-r">
+		    <div class="more-d-d2-d2-r-s">
+			  <div class="more-d-d2-d2-r-s-s">{{order[item.indexof].p1}}</div>
+			  <div class="more-d-d2-d2-r-s-s">{{order[item.indexof].p2}}</div>
+			  <div class="more-d-d2-d2-r-s-s1">{{order[item.indexof].p2lo}}</div>
+			</div>
+			<div class="more-d-d2-d2-r-dd-bb">
+			  <div class="more-d-d2-d2-r-dd">
+			    <img class="more-d-d2-d2-r-dd-img" src="http://images.uncyc.org/commons/thumb/8/8e/7ttWHuQ.jpg/300px-7ttWHuQ.jpg">
+                <div class="more-d-d2-d2-r-dd-rbb">
+				  <div class="more-d-d2-d2-r-dd-name">{{order[item.indexof].driver}}</div>
+                  <div class="more-d-d2-d2-r-dd-b">班表</div>					
+			    </div>
+			  </div>
+			  <div class="more-d-d2-d2-r-dd">
+			    <img class="more-d-d2-d2-r-dd-img" :src="order[item.indexof].img">
+                <div class="more-d-d2-d2-r-dd-rbb">                  
+				  <div class="more-d-d2-d2-r-dd-name">{{order[item.indexof].id}}</div>
+                  <div class="more-d-d2-d2-r-dd-b">更多</div>					
+			    </div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	  <div class="more-d-d3">
+	    <div class="more-d-d3-s"><br>${{order[item.indexof].cost}}</div>
+        <div class="more-d-d3-b" @click="merge_del(num,order[item.indexof].Id);$forceUpdate()" v-if="index!=0">取消併單</div>
+	  </div>
+	  </div>
+	  
+
+	  
+	</div>
+    <div class="console_main">
+      <!-- header -->
+      <header class="header">
+        <img class="header_logo" src="img/logo-light.png" alt="" />
+        <div class="header_wrap">
+          <div class="header_block1">
+            <div class="hamburger">
+              <img src="img/icons8-list.png" alt="" />
+            </div>
+            <div class="search">
+              <input type="text" placeholder="快速搜尋訂單編號" />
+              <img src="img/icons8-search.png" alt="" />
+            </div>
+          </div>
+
+          <div class="header_block3">
+            <div class="user_personal">
+              <img src="img/userPhoto.png" alt="" />
+              <span>林株貝</span>
+            </div>
+            <a href="http://">登出</a>
+          </div>
+        </div>
+        <!-- <hr /> -->
+      </header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <nav class="nav">
+            <!-- 父選單 -->
+            <div class="nav_fathers">
+								<div @click="selectNav(1);openNav2();" class="nav_father active">
+									<img src="img/icons8-combo_chart.png" alt="" />
+									<span>控制台</span>
+								</div>
+								<div @click="selectNav(2);openNav2();"  class="nav_father">
+									<img src="img/icons8-check.png" alt="" />
+									<span>預約訂單</span>
+								</div>
+								<div @click="selectNav(3);openNav2();"  class="nav_father">
+									<img src="img/icons8-car_rental.png" alt="" />
+									<span>派車調度</span>
+								</div>
+								<div @click="selectNav(4);openNav2();"  class="nav_father">
+									<img src="img/icons8-user_folder.png" alt="" />
+									<span>個案資料</span>
+								</div>
+								<div @click="selectNav(5);openNav2();"  class="nav_father">
+									<img src="img/icons8-time_card_filled.png" alt="" />
+									<span>司機車輛管理</span>
+								</div>
+								<div @click="selectNav(6);openNav2();"  class="nav_father">
+									<img src="img/icons8-maintenance.png" alt="" />
+									<span>系統資料管理</span>
+								</div>
+							</div>
+							<!-- 子選單1 -->
+							<div class="nav_sonsArrow " :class="{'active': isLeft}">
+								<div class="nav_sons">
+									<!-- 01 控制台-->
+									<div v-if="nav_status=== 1" class="nav_son_absolute">
+										<div class="nav_son">
+											<a href="./console1.html">
+												<img src="img/icons8-sine_filledcopy.svg" alt="" />
+												<span>本日接送狀況</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console2.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>車輛使用率比較表</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console3.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>司機個人營收</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console4.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>司機個人營收報表</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console5.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>出發區域比率</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console6.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>縣市月報表</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console7.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>出發區域比率</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console8.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>返回區域比率</span>
+											</a>
+										</div>
+	
+										<div class="nav_son">
+											<a href="./console9.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>全國月報表 </span>
+											</a>
+										</div>
+	
+										<div class="nav_son">
+											<a href="./console10.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>縣市月報表</span>
+											</a>
+										</div>
+									</div>
+									<!-- 02 預約訂單 -->
+									<div v-else-if="nav_status=== 2" class="nav_son_absolute">
+										<div class="nav_son">
+											<a href="./reservation_order.html">
+												<img src="img/icons8-sine_filledcopy.svg" alt="" />
+												<span>全部資料</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./reservation_order.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>今日任務</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./reservation_order.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>本週任務</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./reservation_order.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>本月任務</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./reservation_order.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>今年任務</span>
+											</a>
+										</div>
+									</div>
+									<!-- 03 派車調度 -->
+									<div v-else-if="nav_status=== 3" class="nav_son_absolute">
+										<div class="nav_son">
+											<a href="./car_1.html">
+												<img src="img/icons8-sine_filledcopy.svg" alt="" />
+												<span>調度單搜尋</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./car_2 _new.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>調度控制台</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./car_3.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>車籍配對管理</span>
+											</a>
+										</div>
+								
+									</div>
+									<!-- 04 個案資料-->
+									<div v-else-if="nav_status=== 4" class="nav_son_absolute">
+										<div class="nav_son">
+											<a href="./personal.html">
+												<img src="img/icons8-sine_filledcopy.svg" alt="" />
+												<span>全部個案資料</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./personal.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>新申請未審核</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./personal.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>自費個案</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./personal.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>輔助個案</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./personal.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>已封存個案</span>
+											</a>
+										</div>
+									</div>
+									<!-- 05 司機車輛管理-->
+									<div v-else-if="nav_status=== 5" class="nav_son_absolute">
+										<div class="nav_son">
+											<a href="./driverVehicle.html">
+												<img src="img/icons8-sine_filledcopy.svg" alt="" />
+												<span>車輛資料</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./driverVehicle_examine.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>車輛檢查紀錄</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./driverVehicle_maintenance.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>車輛保養紀錄</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./driverVehicle_driver.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>駕駛資料</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./driverVehicle_bodyHeart.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>身心檢查紀錄</span>
+											</a>
+										</div>
+									</div>
+									<!-- 06 系統資料管理-->
+									<div v-else-if="nav_status=== 6" class="nav_son_absolute">
+										<div class="nav_son">
+											<a href="./s_2.html">
+												<img src="img/icons8-sine_filledcopy.svg" alt="" />
+												<span>派車調度設定</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>補助車資參數</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./s_1.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>司機車輛設定</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./s_2.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>司機個人營收報表</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./s_3.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>營運單位設定</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./s_4.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>醫療院所管理</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./s_5.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>系統管理員設定</span>
+											</a>
+										</div>
+										<div class="nav_son">
+											<a href="./console8.html">
+												<img src="img/icons8-time_card_filled.png" alt="" />
+												<span>其他系統設定</span>
+											</a>
+										</div>
+									</div>
+									<div class="nav_arrow_button" @click="openNav">
+										<img src="img/icons8-forward.png" alt="" />
+									</div>
+								</div>
+								<!-- <div class="nav_arrow">
+									<div class="nav_arrow_button">
+										<img src="img/icons8-forward.png" alt="">
+									</div>
+								</div> -->
+							</div>
+
+            <!-- 陰影 button -->
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </nav>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+		    <div class="main-d" :class="{'zoom':zoom==true,'blackm':black_mode==true}">
+			  <div class="main-d-top">
+			    <div class="main-d-top-l">
+				  <div class="main-d-top-l-d big">調度控制台</div>
+				  <div class="main-d-top-l-d">{{data_time[c_index].time}}</div>
+				  <div class="main-d-top-l-d">今日趟數:50趟</div>
+				  <div class="bc-y"></div>公費
+				  <div class="bc-bl"></div>自費
+				</div>
+			    <div class="main-d-top-r">
+				  <el-date-picker v-model="c_time" type="date" placeholder="選擇日期" value-format="yyyy-MM-dd" @change="new_day();$forceUpdate()"></el-date-picker>
+				  <div class="b" @click="open_voice=!open_voice;">{{open_voice_text}}</div>
+				  <div class="b">排班完成發送推播</div>
+				  <div class="b" @click="black_mode=!black_mode">深色</div>
+				  <img src="img/icons8-expand.png" v-if="!zoom" @click="zoom=!zoom">
+				  <img src="img/icons8-collapse.png" v-if="zoom" @click="zoom=!zoom">
+				</div>
+			  </div>
+			  <div class="list" @click="close_right()">
+			  <div class="list-b">
+				
+				<div class="list-car-top">
+				  <div class="list-time-d1 timeorcar">時間/車輛</div>
+				  <div class="list-car-d-s">
+				    <div class="list-car-d" @contextmenu="show_right($event)" v-for="(item,index) in car" :id="item.id">
+					  <img class="list-car-img" :src="item.img">{{item.id}}
+						<div class="right-mu">
+						  <div class="right-mu-d">查看車輛基本資料</div>
+						  <div class="right-mu-d">查看車輛檢查紀錄</div>
+					    </div>					
+					</div>
+				  </div>
+				</div>
+				
+			    <div class="list-time">
+				  <div class="list-time-d1" v-for="(item,index) in time">{{item}}</div>
+				</div>
+				
+				<div class="list-car-table">
+				<div class="list-car-table-b">
+			    <template v-for="(item,index) in data_time[c_index].car">
+			      <div class="list-car" @dragover="bu($event)" @dragleave="bf($event)" @drop="cdrop($event,index);$forceUpdate()">
+				    <div class="list-car-d-b">
+					<template v-for="(item2,index2) in time">
+				      <div class="list-car-d1" @click="get_data(index,item2)">
+					  
+					    <template v-for="(item3,index3) in detail">
+					      <div class="list-car-d1-d" @dblclick="show_more(index3)" @dragover.stop="bu2($event)" @dragleave.stop="bf2($event)" @drop.stop="merge_order($event,item3.Id);$forceUpdate()" @contextmenu="show_right($event)" v-if="item3.time==item2&&item.Id==item3.CarId"><!--@contextmenu="show_right($event)"-->
+						    <div class="" :class="{'div1':item3.DespatchDetail[0].div[0]==1,'div2':item3.DespatchDetail[0].div[0]==2,'div3':item3.DespatchDetail[0].div[0]==3,'div4':item3.DespatchDetail[0].div[0]==4,'div5':item3.DespatchDetail[0].div[0]>4}" >
+							  <div class="list-car-d1-d">  
+								<div class="" v-for="(item4,index4) in item3.DespatchDetail">{{order[item4.indexof].name}}</div>
+						        <div>{{item3.DespatchDetail[0].m}}分</div>
+								<div class="right-mu">
+							      <div class="right-mu-d">推播此訂單</div>
+							      <div class="right-mu-d" @click="c_driver_d=true;show_b=true">司機改變司機</div>
+							      <div class="right-mu-d" @click="del(item3.Id)">刪除訂單</div>
+								</div>
+							  </div>
+							</div>
+						  </div>
+
+						</template>
+						
+					  </div>
+				    </template>
+				    </div>
+				  </div>
+			    </template>
+				</div>
+				</div>
+				
+			  </div>
+			</div>
+			</div>
+		  </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+    </div>
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="component/header.js"></script>
+    <script src="component/leftmenu.js"></script>
+
+    <script src="js/polyfill.js"></script>
+ 	<script src="js/element-ui.js"></script>
+	<script>
+  
+    </script>
+  </body>
+  <script>
+  let console_main=new Vue({
+    el: '.all',
+    data: {
+			nav_status: 1,
+	  isLeft: true,
+      isMainleft: true,
+	  num:0,
+	  zoom:false,
+	  show_b:false,
+	  show_more_d:false,
+	  black_mode:false,
+	  c_driver_d:false,
+	  c_time:"",
+	  c_index:0,
+	  c_driver:0,
+	  max_time:0,
+	  user:"",
+	  detail:[{DespatchDetail:""}],
+	  open_voice:false,
+	  open_voice_text:"語音系統關閉",
+	  s_car:"",
+	  time:["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00","21:30","22:00"],
+	  car:[
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-2222",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-3333",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-4444",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-5555",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-6666",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-7777",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+	  ],
+	  data_time:[
+	    {time:"2019-10-05",car:[
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-2222",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-3333",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-4444",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-5555",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},	
+		{id:"EZR-6666",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},
+		{id:"EZR-7777",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[]},		
+		]}
+	  ],
+	  order:[
+        {id:"GOT72639111",time:"8:00",m:7.5,c_m:7.5,div:[1],s:1,name:"用戶1",cost:100,driver:"熊貓",pn:"臺大醫院",km:10,case_id:"F111111119",got:"去回程",case_time:"2019/07/23",share:"可共乘",wtype:"一般輪椅",meb:"1",meb2:"1",p1:"台北市中山區中山北路三段100號",p2:"馬偕紀念醫院",p2lo:"台北市中山區中山北路三段92號",driver_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",case_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",place:false,merge:[]},
+		{id:"GOT72639112",time:"8:30",m:15,c_m:15,div:[2],s:2,name:"用戶2",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10,case_id:"F111111119",got:"去回程",case_time:"2019/07/23",share:"可共乘",wtype:"一般輪椅",meb:"1",meb2:"1",p1:"台北市中山區中山北路三段100號",p2:"馬偕紀念醫院",p2lo:"台北市中山區中山北路三段92號",driver_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",case_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",place:false,merge:[]},
+        {id:"GOT72639153",time:"11:30",m:45,c_m:45,div:[6],s:1,name:"用戶43",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10,case_id:"F111111119",got:"去回程",case_time:"2019/07/23",share:"可共乘",wtype:"一般輪椅",meb:"1",meb2:"1",p1:"台北市中山區中山北路三段100號",p2:"馬偕紀念醫院",p2lo:"台北市中山區中山北路三段92號",driver_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",case_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",place:false,merge:[]},	  
+   
+	  ],
+	  driver:[
+	    {id:"AAA001",img:"https://truth.bahamut.com.tw/s01/201603/fde3aa5c229bb35c28c77a745aac3176.JPG",name:"同仁",phone:"0987654321"},
+		{id:"AAA002",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtccZ-PiMeB_uhGxdgA1kvgOcsUGpYiaOfxjpkxaq5q8dYxlzH",name:"康妮",phone:"0987654321"},
+		{id:"AAA003",img:"https://storage.googleapis.com/www-cw-com-tw/article/201905/article-5ccc215628e3a.jpg",name:"大民",phone:"0987654321"},
+		{id:"AAA004",img:"https://s.yimg.com/ny/api/res/1.2/F6jbArXjz_8viJ2zuyrtOA--~A/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9ODAw/http://media.zenfs.com/zh-Hant-TW/homerun/nownews.com/b70a3e8c84b8b8b022f199f39a2ca553",name:"小民",phone:"0987654321"},
+	  ]
+	},
+	mounted:async function(){
+	  var a=document.querySelectorAll(".list-car-table-b")[0]
+	  a.style.width=a.clientWidth+500+"px";
+	  a.style.height=a.clientHeight+100+"px";
+	  
+      await this.get_or()
+	  
+	  await axios.get("http://wheat-tainan.1966.org.tw:20021/api/Cars/GetCarsWithCarType")
+	  .then(res=>{
+	    this.car=res.data.response.data;
+		console.log(this.car)
+		for(let i in this.car) {
+		  this.car[i].id=res.data.response.data[i].Id  //車子id
+		  this.car[i].img=res.data.response.data[i].CarPic  //車子圖片
+		  this.car[i].work=[]  //收到的訂單
+		}
+	  })
+	  
+      await this.get_dl()
+	  console.log(this.detail)
+	  
+	  this.data_time=[{time:"2019-10-05",car:this.car}]
+	  
+	},
+	watch:{
+	  open_voice:function() {
+	    if(this.open_voice) {
+          voices = synth.getVoices();
+          var utterThis = new SpeechSynthesisUtterance("語音系統開啟");
+          utterThis.pitch = 1;
+          utterThis.rate = 1;
+          utterThis.voice = voices[20];
+          synth.speak(utterThis);
+		  this.open_voice_text="語音系統開啟"
+          console.log("語音系統開啟")	
+		}
+		else {
+          voices = synth.getVoices();
+          var utterThis = new SpeechSynthesisUtterance("語音系統關閉");
+          utterThis.pitch = 1;
+          utterThis.rate = 1;
+          utterThis.voice = voices[20];
+          synth.speak(utterThis);
+		  this.open_voice_text="語音系統關閉"
+          console.log("語音系統關閉")		
+		}
+	  }
+	},
+	methods:{
+		selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+
+      openNav: function() {
+        this.isLeft = !this.isLeft;
+        this.isMainleft = !this.isMainleft;
+      },
+	  show_right:function(e) {
+	    e.preventDefault();
+		this.close_right()
+	    e.currentTarget.querySelectorAll(".right-mu")[0].style.display="block"
+	  },
+	  close_right:function() {
+	    let rd=document.querySelectorAll(".right-mu")
+		for(let i=0;i<rd.length;i++) {
+		  rd[i].style.display="none"
+		}
+	  },
+	  show_more:function(i) {
+	    this.num=i
+		this.show_b=true
+		this.show_more_d=true
+	  },
+	  bu:function (e) {
+        e.currentTarget.classList.add('d-b')
+        event.preventDefault();
+      },
+      bf:function (e) {
+        e.currentTarget.classList.remove('d-b')
+      },
+	  bu2:function (e) {
+        e.currentTarget.classList.add('d-b2')
+        event.preventDefault();
+      },
+      bf2:function (e) {
+        e.currentTarget.classList.remove('d-b2')
+      },
+	  new_day:function() {
+		let pos = this.data_time.map(function(e) { return e.time; })
+        let c_obj=JSON.parse( JSON.stringify(this.car) )
+		if(pos.indexOf(this.c_time)==-1) {
+		  this.data_time.push({time:this.c_time,car:c_obj})
+		  this.c_index=this.data_time.length-1
+		  console.log(this.data_time)
+		}
+		else {
+		  this.c_index=pos.indexOf(this.c_time)
+		}
+	  },
+	  /*seach_car:function (){  //搜尋車輛
+	    let car=document.querySelectorAll("#"+this.s_car)[0]
+		let x=car.offsetLeft
+		myScroll.scrollBy(-(x-337),0,1000);
+	    document.querySelectorAll(".list-car-d-s")[0].style.transform = "translate("+-(x-337)+"px,0px) ";
+	  },*/
+	  max_time_de:function(x) {
+	    this.max_time=x
+	  },
+	  max_time_up:function(x,y) {
+	    if(this.order[y].m>this.order[x].m) {
+		  this.order[x].c_m=this.order[y].m
+		}
+	  },
+	  delay:function(x) {
+	    return new Promise(function(resolve) {
+          setTimeout(()=> {
+            resolve();
+          }, x);
+        });
+	  },
+	  get_dl:async function() {  //更新調度單
+	    await axios.get("http://wheat-tainan.1966.org.tw:20021/api/Despatch/Get")  //獲取調度單
+	    .then(async res=>{
+	      this.detail=res.data.response.data
+		  console.log(this.detail)
+		  for(let i in this.detail) {
+		    await axios.get("http://wheat-tainan.1966.org.tw:20021/api/Despatch/Get/"+res.data.response.data[i].Id)
+		    .then(async res2=>{
+		      this.detail[i].DespatchDetail=res2.data.response.DespatchDetail
+			  this.detail[i].time=this.detail[i].StartDate.split("T")[1].split(":")[0]+":"+this.detail[i].StartDate.split("T")[1].split(":")[1]
+		        for(let j in this.detail[i].DespatchDetail) {
+			  	  let map_list=this.order.map(x => x.id);
+			      let num=map_list.indexOf(this.detail[i].DespatchDetail[j].OrderDetailId)
+			      this.detail[i].DespatchDetail[j].indexof=num
+				  this.detail[i].DespatchDetail[j].m=this.order[num].m
+				  this.detail[i].DespatchDetail[j].div=this.order[num].div
+				  this.order[num].place=true
+			    }
+		    })
+		  }
+	    })
+	  },
+	  get_or:async function() {
+      await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/Get")
+      .then(res=>{
+	    this.order=res.data.response.data;
+	    console.log(this.order)
+		for(let i in this.order) {
+		  var get_time=res.data.response.data[i].ReservationDate.split("T")[1].split(":")[0]+":"+res.data.response.data[i].ReservationDate.split("T")[1].split(":")[1]
+		  this.order[i].id=res.data.response.data[i].Id  //訂單id
+		  this.order[i].time=get_time  //預約時間
+		  this.order[i].m=res.data.response.data[i].ExpectedMinute  //預估時間
+		  this.order[i].c_m=res.data.response.data[i].ExpectedMinute  //總時間
+		  this.order[i].s=res.data.response.data[i].SubsidyMode  //公費or自費
+		  this.order[i].name="個案"+i //個案名字(!)
+		  this.order[i].cost=res.data.response.data[i].TotalAmt  //總金額
+		  this.order[i].driver="駕駛"+i  //駕駛名字(!)
+		  this.order[i].pn="出發地點"  //出發地點(地名)(!)
+		  this.order[i].km=res.data.response.data[i].TotalMileage  //預估里程
+		  this.order[i].case_id=123  //個案ID(!)
+		  this.order[i].got=res.data.response.data[i].SubsidyMode  //去回程
+		  this.order[i].case_time=res.data.response.data[i].CreateTime  //訂單建立時間
+		  this.order[i].share=res.data.response.data[i].CanShared  //是否共乘
+		  this.order[i].wtype=res.data.response.data[i].WheelchairId  //輪椅類型
+		  this.order[i].meb=res.data.response.data[i].FamilyWith  //陪同家屬
+		  this.order[i].meb2=res.data.response.data[i].ForeignFamilyWith  //陪同外籍
+		  this.order[i].p1=res.data.response.data[i].FromAddr  //出發地點(地址)
+		  this.order[i].p2=res.data.response.data[i].ToAddr  //到達地點(地址)
+		  this.order[i].p2lo="目標地點"  //到達地點(地名)(!)
+		  this.order[i].driver_img="https://images2.gamme.com.tw/news2/2017/49/24/q6CVnZ2YlKOeqKU.jpg"  //駕駛圖片(!)
+		  this.order[i].case_img="https://images2.gamme.com.tw/news2/2017/49/24/q6CVnZ2YlKOeqKU.jpg"  //車輛圖片(!)
+		  this.order[i].place=false  //是否放置
+		  this.order[i].merge=[]  //合併訂單ID
+		  this.order[i].div=[Math.round(this.order[i].m/7.5)]
+		  if(this.order[i].div[0]==0) {
+		    this.order[i].div[0]=1
+		  }
+		}
+	  })
+	  },
+	  add_despatch:async function(x) {  //新增調度單
+	    var flag=false
+	    var obj={
+          "DriverInfoId": 59,
+          "CarId": x.car_id,
+          "StartDate": x.time,
+          "DespatchDetail": [
+            {"OrderDetailId": x.order_id}
+          ]
+        }
+	    await axios.post("http://wheat-tainan.1966.org.tw:20021/api/Despatch/Post",obj)
+	    .then(res=>{
+		  if(res.data.msg=="添加成功") {
+			flag=res.data.response
+			console.log("調度成功!")
+			console.log(res.data.response)
+		  }
+		  else {
+			flag=false
+			console.log("調度失敗!")
+		  }
+	    })
+		return flag
+	  },
+	  del_despatch:async function(x) {  //刪除調度單
+	    var flag=false
+	    await axios.delete("http://wheat-tainan.1966.org.tw:20021/api/Despatch/Delete?id="+x)
+	    .then(res=>{
+          if(res.data.msg=="刪除成功") {
+		    console.log("刪除成功!")
+		    flag=true
+		  }
+		  else {
+		    console.log("刪除失敗!")
+		    flag=false
+		  }
+		})
+		return flag
+	  },
+		check_login:function() {
+		  if(localStorage.dk2_user) {
+		    this.user=JSON.parse(localStorage.dk2_user)
+		  }
+		  else {
+		    location.href = 'login1.html';
+		  }
+		}
+	  /*rez:function() {
+	    return 0
+	  }*/
+	}
+  })
+var myScroll;
+function loaded () {
+	myScroll = new IScroll('.list-car-table', {
+		scrollX: true,
+		scrollY: true,
+		probeType: 3,
+		momentum:false,
+		mouseWheel: true
+	});
+	myScroll.on('scroll', function(){
+	  document.querySelectorAll(".list-time")[0].style.transform = "translate(0px,"+this.y+"px) ";
+	  document.querySelectorAll(".list-car-d-s")[0].style.transform = "translate("+this.x+"px,0px) ";
+	});
+}
+  </script>
+</html>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158769656-1");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <style>
+      .li_on {
+        border-style: solid;
+        border-width: 0 0 3px 0;
+        border-color: #f3981a;
+      }
+      .star {
+        margin: 20px 46px;
+      }
+      .star-d-h {
+        font-size: 22px;
+        margin: 0 0 10px 0;
+      }
+      .star-d-d {
+        font-size: 30px;
+        margin: 0 0 10px 0;
+        color: #aaa;
+      }
+      .star-on {
+        color: orange;
+      }
+      .star-d-d-s {
+        margin: 0 0 0 100px;
+        color: #000;
+      }
+      .edit-order-black {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+      }
+      .edit-order {
+        width: 500px;
+        overflow: hidden;
+        border-radius: 10px;
+        position: fixed;
+        top: 10%;
+        left: 50%;
+        z-index: 1000;
+        margin: 0 0 0 -250px;
+      }
+      .edit-order-h {
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        color: #fff;
+        background-color: #f3981a;
+        font-size: 20px;
+      }
+      .edit-order-c {
+        padding: 20px;
+        text-align: center;
+        background-color: #fff;
+        font-size: 20px;
+        overflow: hidden;
+      }
+      .edit-order-b {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: #fff;
+        background-color: #f3981a;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="console_main" v-if="list!=''" v-cloak>
+      <!-- header -->
+      <div
+        class="edit-order-black"
+        @click="edit_show=!edit_show"
+        v-if="edit_show"
+      ></div>
+      <div class="edit-order" v-if="edit_show">
+        <div class="edit-order-h">編輯訂單</div>
+        <div class="edit-order-c">
+          <div v-if="edit.type">
+            <p>{{status_arr[edit.item.Status]}}</p>
+            <el-date-picker
+              v-model="edit.day"
+              type="date"
+              placeholder="選擇日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+            <input
+              type="text"
+              v-model="edit.time"
+              placeholder="請輸入時間(hh:mm)"
+            />
+          </div>
+          <div v-if="edit.item.Status==6">
+            <input
+              type="text"
+              style="width: 100%; border: 1px solid #979797; border-radius: 3px"
+              v-model="edit.receiveAmt"
+              placeholder="實收金額"
+            />
+            <input
+              type="text"
+              style="width: 100%; border: 1px solid #979797; border-radius: 3px"
+              v-model="edit.remark"
+              placeholder="備註"
+            />
+            <select v-model="edit.RealFamily">
+              <option value="">實際陪同人數</option>
+              <option value="0">0人</option>
+              <option value="1">1人</option>
+              <option value="2">2人</option>
+              <option value="3">3人</option>
+              <option value="4">4人</option>
+              <option value="5">5人</option>
+              <option value="6">6人</option>
+              <option value="7">7人</option>
+            </select>
+            <select v-model="edit.IsRideWith">
+              <option value="">是否共乘</option>
+              <option value="true">是</option>
+              <option value="false">否</option>
+            </select>
+          </div>
+        </div>
+        <div class="edit-order-b" @click="edit_log">確定</div>
+      </div>
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc="2" :cc="21" :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <div class="main-d reservation_order">
+              <header>
+                <h1>行車歷程</h1>
+              </header>
+              <div class="reservationOrder">
+                <div class="listReserve">
+                  <ul>
+                    <li>
+                      <a
+                        @click="go_to('reservation_order2.html#/get/'+$route.params.id)"
+                        >訂單明細</a
+                      >
+                    </li>
+                    <li class="li-onc">
+                      <a
+                        @click="go_to('reservation_order5.html#/get/'+$route.params.id)"
+                        >行車歷程</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click="go_to('reservation_order3.html#/get/'+$route.params.id)"
+                        >個案基本資料</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click="go_to('reservation_order4.html#/get/'+$route.params.id)"
+                        >個案可用補助</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div class="order5">
+                  <div class="left">
+                    <div class="box">
+                      <h2>{{list.CaseUser.Name}}</h2>
+                      <p>個 案 編 號：{{list.CaseUser.CaseUserNo}}</p>
+                      <p>身分證字號：{{list.CaseUser.UID}}</p>
+                      <div class="memberpicbox">
+                        <img :src="list.CaseUser.Pic" alt="" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="center">
+                    <div class="boxAll" v-for="(item,index) in list2">
+                      <div class="box1">
+                        <p
+                          style="
+                            width: 32px;
+                            height: 32px;
+                            margin: 0;
+                            font-size: 18px;
+                            line-height: 50px;
+                            text-align: center;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 200px;
+                            background-color: #f3981a;
+                            font-weight: 700;
+                          "
+                          v-if="index==0"
+                        >
+                          去
+                        </p>
+                        <p
+                          style="
+                            width: 32px;
+                            height: 32px;
+                            margin: 0;
+                            font-size: 18px;
+                            line-height: 50px;
+                            text-align: center;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 200px;
+                            background-color: #f3981a;
+                            font-weight: 700;
+                          "
+                          v-if="index==1"
+                        >
+                          回
+                        </p>
+                        <p>
+                          <img src="img/icons8-cab_left.svg" alt="" />
+                          <span
+                            >{{item.OrderDetails.FromAddr}}<span
+                              v-if="item.OrderDetails.FromAddrRemark"
+                              >({{item.OrderDetails.FromAddrRemark}})
+
+                              <span
+                                style="
+                                  font-size: 14px;
+                                  color: #888;
+                                  display: inline-block;
+                                  margin-right: 0.5rem;
+                                  font-weight: 700;
+                                "
+                                >緯度{{list.OrderDetails.FromLat}}</span
+                              >
+                              <span
+                                style="
+                                  font-size: 14px;
+                                  color: #888;
+                                  display: inline-block;
+                                  margin-right: 0.5rem;
+                                  font-weight: 700;
+                                "
+                                >經度{{list.OrderDetails.FromLon}}</span
+                              >
+                            </span>
+                          </span>
+                          <img
+                            src="img/icons8-long_arrow_down_filled.svg"
+                            alt=""
+                          />
+                          <span
+                            >{{item.OrderDetails.ToAddr}}<span
+                              v-if="item.OrderDetails.ToAddrRemark"
+                              >({{item.OrderDetails.ToAddrRemark}})
+
+                              <span
+                                style="
+                                  font-size: 14px;
+                                  color: #888;
+                                  display: inline-block;
+                                  margin-right: 0.5rem;
+                                  font-weight: 700;
+                                "
+                                >緯度{{list.OrderDetails.ToLat}}</span
+                              >
+                              <span
+                                style="
+                                  font-size: 14px;
+                                  color: #888;
+                                  display: inline-block;
+                                  margin-right: 0.5rem;
+                                  font-weight: 700;
+                                "
+                                >經度{{list.OrderDetails.ToLon}}</span
+                              >
+                            </span></span
+                          >
+                        </p>
+                      </div>
+                      <div class="box2">
+                        <div class="circles">
+                          <div
+                            class="circle"
+                            v-for="(item2,index2) in item.OrderDetails.OrderStatusLog"
+                            :class="{'active':item.OrderDetails.Status==item2.Status}"
+                          ></div>
+                        </div>
+                        <div class="listsTime">
+                          <div
+                            class="lists"
+                            v-for="(item2,index2) in item.OrderDetails.OrderStatusLog"
+                          >
+                            <div class="list">
+                              {{status_arr[item2.Status]}}<span
+                                style="color: #f00"
+                                @click="edit.type=true;edit_show=!edit_show;edit.item=item2"
+                                >(修改)</span
+                              >
+                            </div>
+                            <div class="time">
+                              {{dateFormat(item2.CreateDate)}}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="box3">
+                        <img src="img/icons8-plasmid_filled.svg" alt="" />
+                        <span v-if="item.OrderDetails.CanShared">可共乘</span>
+                        <span v-else>不可共乘</span>
+                        <img
+                          src="img/icons8-plasmid_filledcopy.svg"
+                          alt=""
+                          v-if="item.OrderDetails.WheelchairId"
+                        />
+                        <span v-if="item.OrderDetails.WheelchairId"
+                          >輪椅類型：</span
+                        >
+                        <span v-if="item.OrderDetails.WheelchairId"
+                          >{{item.OrderDetails.WheelchairId}}</span
+                        >
+                        <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                        <span>陪同人員：</span>
+                        <span
+                          ><!--家屬-->
+                          {{item.OrderDetails.FamilyWith}} 人
+                          <!--/ 外籍 {{item.OrderDetails.ForeignFamilyWith}} 人--></span
+                        >
+                      </div>
+                      <div class="box4">
+                        <!-- <img src="img/fakeMap.png" alt="" /> -->
+                        <!-- google map -->
+                        <!-- <div
+                          class="fakeMap"
+                          style="
+                            width: 100%;
+                            height: 300px;
+                            background: #afafaf;
+                          "
+                          v-if="true"
+                        ></div> -->
+                      </div>
+                      <div class="box5">
+                        <span>司機：{{item.DriverName}}</span>
+                        <span>車輛編號：{{item.CarNo}}</span>
+                        <span>實收金額：{{item.OrderDetails.ReceivedAmt}}</span>
+                        <span
+                          >預估行車時間(去) {{item.OrderDetails.ExpectedMinute}}
+                          分鐘</span
+                        >
+                        <span
+                          >預估里程數(總)
+                          {{item.OrderDetails.TotalMileage/1000}} 公里</span
+                        >
+                      </div>
+
+                      <div
+                        class="star"
+                        v-if="item.OrderDetailEvaluation&&false"
+                      >
+                        <div class="star-d">
+                          <div class="star-d-h">
+                            1. 請問您本次長照交通接送服務預約方式為何?
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.ReservationType}}
+                          </div>
+                          <div class="star-d-h">
+                            2. 請問您對本市長照車司機的服務態度滿不滿意？
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.ServiceAttitude==1 ?
+                            "非常不滿意" :
+                            item.OrderDetailEvaluation.ServiceAttitude==2 ?
+                            "不滿意" :
+                            item.OrderDetailEvaluation.ServiceAttitude==3 ?
+                            "普通" :
+                            item.OrderDetailEvaluation.ServiceAttitude==4 ?
+                            "很滿意" : "非常滿意"}}
+                          </div>
+                          <div class="star-d-h">
+                            3. 請問您對本市長照車內(外)整潔程度滿不滿意？
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.CarClean==1 ?
+                            "非常不滿意" :
+                            item.OrderDetailEvaluation.CarClean==2 ? "不滿意" :
+                            item.OrderDetailEvaluation.CarClean==3 ? "普通" :
+                            item.OrderDetailEvaluation.CarClean==4 ? "很滿意" :
+                            "非常滿意"}}
+                          </div>
+                          <div class="star-d-h">
+                            4.
+                            請問您對本市長照司機服務路況及交通行車安全滿不滿意？
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.DriverSafe==1 ?
+                            "非常不滿意" :
+                            item.OrderDetailEvaluation.DriverSafe==2 ? "不滿意"
+                            : item.OrderDetailEvaluation.DriverSafe==3 ? "普通"
+                            : item.OrderDetailEvaluation.DriverSafe==4 ?
+                            "很滿意" : "非常滿意"}}
+                          </div>
+                          <div class="star-d-h">
+                            5. 請問司機是否準時抵達指定預約上車地？
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.IsArriveOnTime ? "是" :
+                            "否"}} {{item.OrderDetailEvaluation.ArriveRemark}}
+                          </div>
+                          <div class="star-d-h">
+                            6.
+                            請問您對本市長照車輛〝新北長照2.0〞交通服務特約車辨識度清楚明白嗎？
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.CarResolution==1 ?
+                            "非常不清楚" :
+                            item.OrderDetailEvaluation.CarResolution==2 ?
+                            "不清楚" :
+                            item.OrderDetailEvaluation.CarResolution==3 ? "普通"
+                            : item.OrderDetailEvaluation.CarResolution==4 ?
+                            "很清楚" : "非常清楚"}}
+                          </div>
+                          <div class="star-d-h">
+                            7.
+                            請問您對本市提供長照交通接送服務之整體服務滿不滿意？
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.CustomerScore==1 ?
+                            "非常不滿意" :
+                            item.OrderDetailEvaluation.CustomerScore==2 ?
+                            "不滿意" :
+                            item.OrderDetailEvaluation.CustomerScore==3 ? "普通"
+                            : item.OrderDetailEvaluation.CustomerScore==4 ?
+                            "很滿意" : "非常滿意"}}
+                          </div>
+                          <div class="star-d-h">
+                            8.
+                            請問您認為本市提供長照交通接送服務尚有哪些需要改進的服務?
+                          </div>
+                          <div class="star-d-d">
+                            {{item.OrderDetailEvaluation.ImproveItem}}
+                          </div>
+                        </div>
+                      </div>
+
+                      <hr style="margin: 2rem 0" />
+                    </div>
+
+                    <div class="driverRemarks" v-if="list.DespatchDetail">
+                      <h2>司機備註</h2>
+                      <span
+                        v-if="list.DespatchDetail.Remark&&list.DespatchDetail.Remark!='null'"
+                        >{{list.DespatchDetail.Remark}}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="right">
+                    <div class="box" v-if="false">
+                      <p>自費</p>
+                      <p>${{to1}}</p>
+                      <p>公費</p>
+                      <p>${{to2}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--main-d-->
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1h_cyazZLo1DExB0h0B2JBuOfv-yFtsM"
+    ></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/vue-router.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      const routes = [{ path: "/get/:id" }];
+      const router = new VueRouter({
+        routes,
+      });
+      let console_main = new Vue({
+        el: ".console_main",
+        router,
+        data: function () {
+          return {
+            name: "韓寒寒",
+            edit_show: false,
+            edit: {
+              item: "",
+              type: true,
+              day: "",
+              time: "",
+              receiveAmt: "",
+              remark: "",
+              RealFamily: "",
+              IsRideWith: "",
+            },
+            status_arr: [
+              "新訂單",
+              "已排班",
+              "已出發",
+              "已抵達",
+              "客上",
+              "客下",
+              "已完成",
+              "未執行",
+              "個案取消",
+              "服務單位取消",
+              "空趟",
+              "無派車",
+              "變更時間",
+            ],
+            img:
+              "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            list: "",
+            list2: "",
+            sevfor: "",
+            time_data: "",
+            city1: "",
+            city2: "",
+            city3: "",
+            wtype: "",
+            to1: 0,
+            to2: 0,
+            goback: false,
+            climb: true,
+            share: false,
+            nav_status: 1,
+            stroke: [
+              { name: "基隆市忠孝東路6段8號", time: "2019/05/11 18:38" },
+              { name: "台北市復興南路6段8號", time: "2019/05/11 18:38" },
+            ],
+            user: "",
+            c_list: [],
+          };
+        },
+        mounted: async function () {
+          await this.check_login();
+          await axios
+            .get(
+              "https://api.donkeymove.com/api/OrderDetails/GetOrderDetailMappingView/" +
+                this.$route.params.id
+            )
+            .then((res) => {
+              this.list = res.data.response;
+              console.log(res.data.response);
+            });
+          await axios
+            .get(
+              "https://api.donkeymove.com/api/Orders/GetOrderMapping?id=" +
+                this.list.OrderDetails.OrderId
+            ) //利用母訂單ID來取得子訂單
+            .then(async (res) => {
+              if (res.data.msg == "成功") {
+                this.list2 = res.data.response;
+                console.log(this.list2);
+                for (let i in this.list2) {
+                  this.list2[i].OrderDetails.OrderStatusLog.sort(function (
+                    a,
+                    b
+                  ) {
+                    return a.Status - b.Status;
+                  });
+                }
+              }
+            });
+          for (let i in this.list2) {
+            this.to1 += this.list2[i].OrderDetails.SelfPayAmt;
+            this.to2 += this.list2[i].OrderDetails.SubsidyAmt;
+          }
+          await this.delay(500);
+          for (let i in this.list2) {
+            // this.initMap(i);
+          }
+        },
+        methods: {
+          selectNav: function (number) {
+            this.nav_status = number;
+          },
+          openNav2: function () {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function () {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          sonc: function (e) {
+            this.goback = !this.goback;
+            if (this.goback == false) {
+              e.currentTarget.classList.remove("sonc");
+              e.currentTarget.childNodes[0].classList.remove("sonc-d");
+              document.querySelectorAll(".b1")[0].classList.remove("w100");
+              this.stroke.splice(this.stroke.length - 1, 1);
+            } else {
+              e.currentTarget.classList.add("sonc");
+              e.currentTarget.childNodes[0].classList.add("sonc-d");
+              document.querySelectorAll(".b1")[1].classList.add("w100");
+              this.stroke.push(this.stroke[0]);
+            }
+          },
+          initMap: function (x) {
+            var geocoder = new google.maps.Geocoder();
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
+            var map = new google.maps.Map(
+              document.querySelectorAll(".fakeMap")[x],
+              {
+                zoom: 7,
+                center: { lat: 41.85, lng: -87.65 },
+              }
+            );
+            directionsRenderer.setMap(map);
+
+            for (let i in this.list2[x].OrderDetails.OrderDetailSitemap) {
+              new google.maps.Marker({
+                position: {
+                  lat: this.list2[x].OrderDetails.OrderDetailSitemap[i].lat,
+                  lng: this.list2[x].OrderDetails.OrderDetailSitemap[i].lon,
+                },
+                map: map,
+                title: this.list2[x].OrderDetails.OrderDetailSitemap[i]
+                  .CreateDate,
+              });
+            }
+
+            this.calculateAndDisplayRoute(
+              directionsService,
+              directionsRenderer,
+              x
+            );
+          },
+          calculateAndDisplayRoute: function (
+            directionsService,
+            directionsRenderer,
+            x
+          ) {
+            var from =
+              this.list2[x].OrderDetails.FromLat +
+              "," +
+              this.list2[x].OrderDetails.FromLon;
+            var to =
+              this.list2[x].OrderDetails.ToLat +
+              "," +
+              this.list2[x].OrderDetails.ToLon;
+            directionsService.route(
+              {
+                origin: { query: from },
+                destination: { query: to },
+                provideRouteAlternatives: true,
+                avoidTolls: true,
+                travelMode: "DRIVING",
+              },
+              (response, status) => {
+                if (status === "OK") {
+                  response.routes.sort(function (a, b) {
+                    return a.legs[0].distance.value - b.legs[0].distance.value;
+                  });
+                  response.routes = [response.routes[0]];
+                  directionsRenderer.setDirections(response);
+                } else {
+                  window.alert("Directions request failed due to " + status);
+                }
+              }
+            );
+          },
+          check_s: function (x, y) {
+            var arr = this.list2[x].OrderDetails.OrderStatusLog.map(
+              (x) => x.Status
+            );
+            return arr.indexOf(y);
+          },
+          check_time: function (x, y) {
+            var arr = this.list2[x].OrderDetails.OrderStatusLog.map(
+              (x) => x.Status
+            );
+            return this.list2[x].OrderDetails.OrderStatusLog[arr.indexOf(y)]
+              .CreateDate;
+          },
+          delay: function (x) {
+            return new Promise(function (resolve) {
+              setTimeout(() => {
+                resolve();
+              }, x);
+            });
+          },
+          go_to: function (x) {
+            document.location.href = x;
+          },
+          edit_log: async function () {
+            if (this.edit.item.Status != 6) {
+              await axios
+                .put(
+                  "https://api.donkeymove.com/api/OrderDetails/PutDetailStatusAfter?OrderDetailId=" +
+                    this.edit.item.OrderDetailId +
+                    "&StatusInt=" +
+                    this.edit.item.Status +
+                    "&StatusTime=" +
+                    this.edit.day +
+                    " " +
+                    this.edit.time
+                )
+                .then((res) => {
+                  alert(res.data.msg);
+                  location.reload();
+                });
+            } else {
+              await axios
+                .put(
+                  "https://api.donkeymove.com/api/OrderDetails/PutDetailStatusAfter?OrderDetailId=" +
+                    this.edit.item.OrderDetailId +
+                    "&receiveAmt=" +
+                    this.edit.receiveAmt +
+                    "&remark=" +
+                    this.edit.remark +
+                    "&RealFamily=" +
+                    this.edit.RealFamily +
+                    "&IsRideWith=" +
+                    this.edit.IsRideWith +
+                    "&StatusInt=" +
+                    this.edit.item.Status +
+                    "&StatusTime=" +
+                    this.edit.day +
+                    " " +
+                    this.edit.time
+                )
+                .then((res) => {
+                  alert(res.data.msg);
+                  location.reload();
+                });
+            }
+          },
+          dateFormat: function (time) {
+            return moment(time).format("YYYY-MM-DD HH:mm");
+          },
+          check_login: async function (x) {
+            if (localStorage.dk2_user) {
+              this.user = JSON.parse(localStorage.dk2_user);
+              await get_left_menu(this.user.Id, async (re) => {
+                this.menu_id = re;
+                this.$forceUpdate();
+              });
+            } else {
+              location.href = "login1.html";
+            }
+          },
+        },
+        watch: {
+          stroke: {
+            handler(newName, oldName) {
+              this.initMap();
+            },
+            deep: true,
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

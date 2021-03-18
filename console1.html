@@ -1,0 +1,379 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/resizelayout.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css">
+    <link rel="stylesheet" href="css/console1.css">
+    <link rel="stylesheet" href="css/responsive.css">
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+
+      <!-- Start Mobile Menu
+      <nav class="mobile-menu">
+      
+        <div class="mobile-menu__header">
+          <a href="#" class="menu-burger-icon">
+            <img src="img/icon_mobile-menu.svg" alt="">
+          </a>
+          <img src="img/logo-light.png" alt="" class="header_logo">
+        </div>
+      
+        <ul class="menu-list">
+      
+          <li class="search-bar">
+            <div class="search">
+              <input type="text" placeholder="快速搜尋訂單編號">
+              <img src="img/icons8-search.png" alt="">
+            </div>
+          </li>
+      
+          <li class="category order active">
+            <a href="#">
+              <img src="img/icons8-combo_chartACTIVE.png" alt="" class="mobile-menu-icon">
+              <span class="item-title">控制台</span>
+            </a>
+      
+            <ul class="second-list">
+              <li class="second-item today active">
+                <a href="#">
+                  <img src="img/icons8-sine_filledActive.png" alt="" class="mobile-menu-icon">
+                  <span class="item-title">本日接送狀況</span>
+                </a>
+              </li>
+              <li class="second-item today">
+                <a href="#">
+                  <img src="img/icons8-sine_filledcopy.svg" alt="" class="mobile-menu-icon">
+                  <span class="item-title">本日接送狀況</span>
+                </a>
+              </li>
+              <li class="second-item today">
+                <a href="#">
+                  <img src="img/icons8-sine_filledcopy.svg" alt="" class="mobile-menu-icon">
+                  <span class="item-title">本日接送狀況</span>
+                </a>
+              </li>
+            </ul>
+      
+          </li>
+          <li class="category order">
+            <a href="#">
+              <img src="img/icons8-check.png" alt="" class="mobile-menu-icon">
+              <span class="item-title">預約訂單</span>
+            </a>
+          </li>
+          <li class="category order">
+            <a href="#">
+              <img src="img/icons8-car_rental.png" alt="" class="mobile-menu-icon">
+              <span class="item-title">派車調度</span>
+            </a>
+          </li>
+          <li class="category personal">
+            <a href="#">
+              <img src="img/icons8-user_folder.png" alt="" class="mobile-menu-icon">
+              <span class="item-title">個案資料</span>
+            </a>
+          </li>
+          <li class="category car">
+            <a href="#">
+              <img src="img/icons8-time_card_filled.png" alt="" class="mobile-menu-icon">
+              <span class="item-title">司機車輛管理</span>
+            </a>
+          </li>
+          <li class="category data">
+            <a href="#">
+              <img src="img/icons8-maintenance.png" alt="" class="mobile-menu-icon">
+              <span class="item-title">系統資料管理</span>
+            </a>
+          </li>
+      
+          <li class="app-download first">
+            <a href="#">
+              <img src="img/ios_download.png" alt="" class="app-download__img ios">
+            </a>
+          </li>
+          <li class="app-download last">
+            <a href="#">
+              <img src="img/android_download.png" alt="" class="app-download__img android">
+            </a>
+          </li>
+      
+        </ul>
+
+        <div class="mobile-menu__logout">登出</div>
+      </nav>
+      End Mobile Menu -->
+
+      <!-- header -->
+      <div class="loading-black" v-if="loading">
+        <img src="img/spinner.gif">
+      </div>
+      <user-header :user="user"></user-header>
+      <user-header-m :user="user" :menu="menu_id"></user-header-m>
+      <!-- 側拉選單 -->
+      <div class="content consolecont">
+        <div>
+          <left-menu :mc=1 :cc=11 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header>
+              <h1>營運系統控制台</h1>
+              <div class="select_container consoleOnly">
+                <select name="YourLocation" class="selectStyle" v-model="c_city" @change="to_search">
+                  <option value=0>請選擇區域</option>
+				  <option v-for="(item,index) in city_no" :value="item.Id">{{item.District}}</option>
+                </select>
+              </div>
+			  
+              <div class="select_container consoleOnly">
+                <select name="YourLocation" class="selectStyle" v-model="c_comp" @change="to_search">
+                  <option value=0>請選擇公司</option>
+				  <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+                </select>
+              </div>
+              
+              <el-date-picker v-model="data1"
+                              type="date" placeholder="選擇日期" value-format="yyyy-MM-dd"
+                              @change="to_search"></el-date-picker>
+            
+            </header>
+            <div class="stitle">本日接送狀況</div>
+            
+            <article class="article1" v-if="list">
+              <div class="article1Data">
+                <img src="img/icons8-car_theft.png" alt="" />
+                <div>總趟次</div>
+                <div class="article1Data__text">{{list[list.length-1].ReportPickViewModel.TotalCount}}</div>
+              </div>
+              <div class="article1Data">
+                <img src="img/icons8-grades.png" alt="" />
+                <div>已完成</div>
+                <div class="article1Data__text">{{list[list.length-1].ReportPickViewModel.CompleteCount}}</div>
+              </div>
+              <div class="article1Data">
+                <img src="img/icons8-creating_filled.png" alt="" />
+                <div>空趟</div>
+                <div class="article1Data__text">{{list[list.length-1].ReportPickViewModel.MissCount}}</div>
+              </div>
+              <div class="article1Data">
+                <img src="img/icons8-do_not_tilt.png" alt="" />
+                <div>未執行</div>
+                <div class="article1Data__text">{{list[list.length-1].ReportPickViewModel.NotPerformedCount}}</div>
+              </div>
+              <div class="article1Data">
+                <img src="img/icons8-double_tick.png" alt="" />
+                <div>達成率</div>
+                <div class="article1Data__text">{{list[list.length-1].ReportPickViewModel.AchievedRate}}%</div>
+              </div>
+            </article>
+            <div class="stitle">本周接送狀況</div> 
+            單位(趟)
+            <article id="canvas-holder1" style="width: 95%;height:300px; margin: 0 auto; ">
+              <canvas id="chart" ref="c1"></canvas>
+            </article>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/header1_m.js"></script>
+	<script src="js/yyyymmdd.js"></script>
+	<script src="js/chartb.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      var ctxt;
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            nav_status: 1,
+            loading:false,
+			user:"",
+			c_time:"",
+			list:"",
+			city_no:"",
+			c_city:0,
+			comp:"",
+			c_comp:0,
+                        data1:"",
+            pickerOptions: {
+              disabledDate(time) {
+                return time.getTime() > Date.now() ;
+              }
+            }
+          };
+        },
+        mounted:async function() {
+          this.loading=true
+		 await this.check_login()	  
+          await axios.get("https://api.donkeymove.com/api/TaiwanCountry/Get/189").then(res => {
+            this.city_no = res.data.response;
+            console.log(this.city_no);
+          });
+          await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            this.c_comp=res.data.response[0].Id
+            if(this.user.RoleId!=34) {
+              this.c_comp=0
+            }
+            console.log(this.comp);
+          });
+          await this.to_search()
+          this.loading=false
+		},
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+		  get_city:function(x) {
+		    var arr=this.city_no.map(x=>x.CountyCode)
+			return arr.indexOf(x);
+		  },
+		  get_comp:function(x) {
+		    var arr=this.comp.map(x=>x.Id)
+			return arr.indexOf(x);		  
+		  },
+		  check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day;
+},
+          to_search:async function() {
+            if(!this.data1) this.data1=""
+            this.loading=true
+            await axios.get("https://api.donkeymove.com/api/Report/GetDatePickWeekly/_date?_date="+this.data1+"&_countyid="+this.c_city+"&_companid="+this.c_comp).then(res => {
+	          this.list=res.data.response
+            this.list.reverse()
+			  var arr1=this.list.map(x=>x.ReportPickViewModel.AchievedRate)
+			  var arr2=this.list.map(x=>x.ReportPickViewModel.CompleteCount)
+			  var arr3=this.list.map(x=>x.ReportPickViewModel.MissCount)
+			  var arr4=this.list.map(x=>x.ReportPickViewModel.NotPerformedCount)
+			  var arr5=this.list.map(x=>x.ReportPickViewModel.TotalCount)
+			  var arr6=this.list.map(x=>this.dateFormat(x.DetailDate))
+		      var obj=[
+                {
+	              label: '已完成',
+				  fill: false,
+                  backgroundColor: 'rgb(119, 255, 0)',
+				  borderColor: 'rgb(119, 255, 0)',
+                  data: arr2
+                },
+                {
+	              label: '空趟',
+				  fill: false,
+                  backgroundColor: 'rgb(220, 238, 17)',
+				  borderColor: 'rgb(220, 238, 17)',
+                  data: arr3
+                },
+                {
+	              label: '未執行',
+				  fill: false,
+                  backgroundColor: 'rgb(238, 28, 17)',
+				  borderColor: 'rgb(238, 28, 17)',
+                  data: arr4
+                },
+                {
+	              label: '總趟次',
+				  fill: false,
+                  backgroundColor: 'rgb(17, 153, 238)',
+				  borderColor: 'rgb(17, 153, 238)',
+                  data: arr5
+                },
+              ]
+              var ctx = this.$refs.c1
+              if(ctxt) {
+                ctxt.destroy()
+              }
+              ctxt=drew_chart(ctx,'line',arr6,obj,true)
+          console.log(res.data.response)
+          console.log(ctxt)
+            });
+            this.loading=false
+		  }
+        }
+      });
+/*
+{
+                label: 'My First dataset',
+                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                data: [10, 30, 39, 20, 25, 34, -10],
+                fill: false,
+            }, {
+                label: 'My Second dataset',
+                fill: false,
+                backgroundColor: window.chartColors.blue,
+                borderColor: window.chartColors.blue,
+                data: [18, 33, 22, 19, 11, 39, 30],
+            }
+*/
+    </script>
+  </body>
+</html>

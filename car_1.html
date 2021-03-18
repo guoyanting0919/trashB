@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-158769656-1');
+		</script>
+	<script src="js/iscroll-probe.js"></script>
+	<script src="js/axios.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+	<link rel="stylesheet" href="css/style1.css" />
+	<link rel="stylesheet" href="css/style1.css" />
+    <style>
+	  body {
+		position:relative;	  
+	  }
+	  .black {
+	    width:100%;
+		height:100%;
+		background-color:rgba(0,0,0,0.6);
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:-1;
+		opacity:0;
+		transition-duration: 0.2s;
+	  }
+	  .show_b {
+	    opacity:1;
+		z-index:999;
+	  }
+	  .more-d {
+	    width:1217px;
+		height:300px;
+		background-color:#fff;
+		position:absolute;
+		top:50%;
+		left:50%;
+        margin:-150px 0 0 -608.5px;	
+        z-index:-1;		
+		opacity:0;
+		overflow-y:scroll;
+	    transition-duration: 0.2s;
+	  }
+	  .more-b {
+	    overflow:hidden;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+	  }
+	  .show_more {
+	    opacity:1;
+		z-index:1002;
+	  }
+	  .more-d-d1 {
+	    width:300px;
+		height:100%;
+		padding:20px;
+		box-sizing: border-box;	   
+        background-color:#F3981A;	
+		float:left;	
+	  }
+	  .more-d-d1-d1 {
+	    height:50px;
+	    color:#fff;
+		font-weight:bold;
+		font-size:20px;
+	
+	  }
+	  .more-d-d1-d2 {
+	    height:32px;
+		margin:178px 0 0 0;    
+	  }
+      .more-d-d1-d2-d {
+	    color:#fff;
+		font-weight:bold;
+		font-size:16px;
+	  }
+	  .more-d-d2 {
+	    width:800px;
+		height:100%;
+		box-sizing: border-box;	
+        background-color:#fff;		
+		float:left;		
+	  }
+	  .more-d-d2-d1 {
+	    height:40px;
+		padding:0 10px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+	    box-sizing: border-box;	
+		overflow:hidden;
+	  }
+	  .more-d-d2-d1-l {
+	    height:40px;
+		line-height:40px;
+	    float:left;
+	  }
+	  .more-d-d2-d1-r {
+	    height:40px;
+		line-height:40px;
+	    float:right;
+	  }
+	  .more-d-d2-d2 {
+	    height:260px;
+	    box-sizing: border-box;	
+	  }
+	  .more-d-d2-d2-l {
+	    width:300px;
+		height:100%;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#666;	    
+	    box-sizing: border-box;		 
+	    display: flex;	
+        justify-content: center;
+        align-items: center;		
+		float:left;
+	  }
+	  .more-d-d2-d2-l-d {
+	    width:300px;
+		height:100px;
+		box-sizing: border-box;	
+	    display: flex;
+	  }
+	  .more-d-d2-d2-r {
+	    width:500px;
+		height:100%;
+		padding:20px;
+	    box-sizing: border-box;	
+        float:left;		
+	  }
+	  .more-d-d2-d2-l-d-img {
+	    width:100px;
+		height:100px;
+		margin:0 10px 0 0;
+		float:left;
+		box-sizing: border-box;	
+	  }
+	  .more-d-d2-d2-l-d-r {
+	    width:200px;
+		height:100px;
+	    box-sizing: border-box;	
+	  }
+	  .more-d-d2-d2-l-d-r-name {
+	    font-size:30px;
+		font-weight:bold;
+	  }
+      .more-d-d2-d2-r-s-s {
+	    font-size:20px;
+		font-weight:bold;
+		margin:0 0 10px 0;
+	  }
+      .more-d-d2-d2-r-s-s1 {
+	    font-size:20px;
+		font-weight:bold;
+		color:#888;
+	  }
+	  .more-d-d2-d2-r-dd-bb {
+	    width:460px;
+		height:100px;
+	    box-sizing: border-box;
+	  }
+	  .more-d-d2-d2-r-dd {
+	    box-sizing: border-box;	
+        margin:20px 10px 0 0;		
+		float:left;
+	  }
+	  .more-d-d2-d2-r-dd-img {
+        width:50px;
+		height:50px;
+		margin:0 10px 0 0;
+		border-radius:100%;
+		float:left;
+	  }
+	  .more-d-d2-d2-r-dd-name {
+        font-weight:bold;
+		margin:0 0 10px 0;
+		text-align:center;
+	  }
+	  .more-d-d2-d2-r-dd-b {
+	    width:60px;
+ 		padding:10px 0;
+		border-radius:30px;
+		background-color:#666;
+		color:#fff;
+		float:left;  
+		text-align:center;
+	  }	  
+	  .more-d-d2-d2-r-dd-rbb {
+	    float:left;
+	  }
+	  .more-d-d3 {
+	    width:100px;
+		height:300px;
+		padding:20px;
+		box-sizing: border-box;	    
+		background-color:#343434;
+		float:left;
+		font-size:25px;
+		color:#fff;
+		font-weight:bold;
+		text-align:center;
+	  }
+	  .more-d-d3-b {
+	    height:30px;
+		line-height:30px;
+		color:#fff;
+		text-align:center;
+	    border-style: solid;
+        border-width: 1px;
+		border-color:#fff;
+		font-size:12px;
+		border-radius:10px;
+		margin:100px 0 0 0;
+	  }
+	  .header {
+	    box-shadow:0 0 5px #222;
+	  }
+	  .main-d {
+	    padding:20px;
+	    transition-duration: 0.2s;
+	  }
+	  .main-d-top {
+	    height:50px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+		padding:0 0 10px 0;
+		margin:0 0 10px 0;
+		display:flex;
+		justify-content:space-between;
+	  }
+	  .main-d-top-l {
+	    height:50px;
+	    float:left;	 
+		display: flex;
+        align-items: center;		
+	  }
+	  .main-d-top-l-d {
+	    margin:0 10px 0 0;
+		padding:0 10px 0 0;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#666;
+	    float:left;
+	  }
+	  .big {
+	    font-size:30px;
+        border-width: 0;
+	  }
+	  .main-d-top-r {
+	    height:50px;
+	    float:right;
+		display: flex;
+        align-items: center;	
+	  }
+	  .b {
+		padding:10px;
+		margin:0 10px 0 0;
+		border-radius:30px;
+		background-color:#666;
+		color:#fff;
+		float:left;
+	  }
+	  .list {  
+		height:800px;
+		background-color:#fff;
+        overflow: hidden;
+		transition-duration: 0.2s;
+	  }
+	  .zoom {
+	    width:100%;
+		height:100%;
+		position:fixed;
+		top:0;
+		left:0;
+		z-index:998;
+		background-color:#fff;
+	  }
+	  .blackm {
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .blackm .list {
+	    background-color:#2D2D2D;
+	  }
+	  .blackm .list-order {
+	    background-color:#2D2D2D;
+	  }
+	  .blackm .list-car-top {
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .blackm .list-car-top .list-time-d1{
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .blackm .list-car-d1 {
+	    background-color:#2D2D2D;
+	  }
+	  .blackm .list-time {
+	    background-color:#2D2D2D;
+		color:#fff;
+	  }
+	  .zoom .list {
+	    height:600px;
+	  }
+	  .list-b {  
+        white-space: nowrap;
+        display: inline-block;
+		height:500px;
+	  }
+	  .list-order {
+	    padding:10px;
+	    height:500px;
+		overflow-y:scroll;
+	    float:left;
+		background-color:#fff;
+		position:relative;
+		z-index:201;
+	  }
+	  .zoom .list-order {
+	    height:600px;
+	  }
+	  .list-order-d {
+	  	width:350px;
+		height:120px;
+		margin:0 0 10px 0;
+		background-color:#f00;
+		text-align:center;
+		display: flex;	
+        justify-content: center;
+		align-items: center;
+		line-height:1.3;
+		position:relative;
+		font-weight:bold;
+	  }
+	  .list-order-d-d1 {
+	    width:230px;
+		height:120px;
+		display: inline-block;
+		word-break: break-all;
+		color:#000;
+		background-color:#fff;
+		box-sizing: border-box;
+		padding:10px;
+		display: flex;	
+		align-items: center;
+	  }
+	  .list-order-d-d1 div {
+	    width:100%;
+	    word-break: break-all;
+	  }
+	  .list-order-d-d2 {
+	    width:120px;
+		height:120px;
+		display: inline-block;
+		color:#fff;
+		box-sizing: border-box;
+		padding:10px;
+		display: flex;	
+		align-items: center;
+	  }
+	  .list-time {
+	    background-color:#fff;
+	    width:100px;
+        display: inline-block;
+		float:left;
+		position:relative;
+		z-index:199;
+	  }
+	  .list-time-d1 {
+	    width:100px;
+	    height:100px;
+		text-align:center;
+		float:left;
+		box-sizing: border-box;
+		display: inline-block;
+	  }
+	  .list-car {
+	    width:240px;
+        display: inline-block;
+	  }
+	  .list-car-img {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 0;
+	    border-radius:100%;
+	  }
+	  .list-car-d {
+	    width:240px;
+		height:100px;
+		line-height:100px;
+		text-align:center;
+        box-sizing: border-box;
+		display: inline-block;
+		font-size:25px;
+		white-space: nowrap;
+		position:relative;
+	  }
+	  .list-car-d1 {
+	    width:240px;
+		height:100px;	
+	    float:left;        
+        text-align:center;	
+        background-color:#fff;		
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 3px;
+		border-color:#ddd;
+		position:relative;
+	  }
+      .list-car-d1-d {
+	 	float:left;
+		height:100%;
+		line-height:1.3;
+      }  
+      .c8 {
+	    width:calc(100% / 4);
+		height:100%;
+		float:left;
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#fff;	
+       	position:relative; 		
+	  }
+      .c4 {
+	    width:calc(100% / 3);
+		height:100%;
+		float:left;
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#fff;	
+       	position:relative; 		
+	  }
+      .c2 {
+	    width:calc(100% / 2);
+		height:100%;
+		float:left;
+		box-sizing: border-box;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#fff;	
+       	position:relative; 		
+	  }
+	  .hr1 {
+	    width:100%;
+		height:194px;
+	    position:absolute;
+		background-color:#ff0;
+		top:0;
+		left:0;
+		z-index:100;
+	  }
+	  .w {
+	    background-color:#fff;
+	  }
+	  .right-mu {
+	  	width:200px;
+		position:absolute;
+		bottom:-80px;
+		right:-190px;
+	    border-radius:10px;
+		background-color:#fff;
+		box-shadow:0 0 5px #222;
+		z-index:101;
+		overflow:hidden;
+		display:none;
+		color:#222;
+	  }
+	  .right-mu-d {
+	    height:50px;
+		line-height:50px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+		font-size:16px;
+	  }
+	  .right-mu-d:hover {
+	    background-color:#666;
+		color:#fff;
+	  }
+	  .s1 {
+	    background-color:#F18024;
+		color:#fff;
+	  }
+	  .s2 {
+        background-color: #353535;
+		color:#fff;
+	  }
+	  .s3 {
+	    background-color:#18A2B8;
+		color:#fff;
+	  }
+	  .bc-y {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 10px;
+	    border-radius:100%;
+	    background-color:#F18024;		
+	  }
+	  .bc-b {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 10px;
+	    border-radius:100%;
+	    background-color:#353535;		  
+	  }
+	  .bc-bl {
+	    width:30px;
+		height:30px;
+		margin:0 10px 0 10px;
+	    border-radius:100%;
+	    background-color:#18A2B8;  
+	  }
+	  .list-car-top {
+	    background-color:#fff;
+	    position:relative;
+	    z-index:200;
+		white-space: nowrap;
+	  }
+	  .list-car-table {
+	    white-space: nowrap;
+		width:1px;
+		height:420px;
+        display: inline-block;	
+	  }
+	  .list-car-table-b {	
+	    white-space: nowrap;
+	    display: inline-block;	
+	  }
+	  .list-car-d-s {
+	    display: inline-block;	
+		
+	  }
+	  .d-b .list-car-d1{
+	    background-color:#888;
+		border-color:#888;
+	  }
+	  .d-b {
+	    background-color:#888;
+	  }
+	  .el-date-editor--date {
+	    margin:0 10px 0 0;
+	  }
+	  .el-input__inner {
+		border-radius: 30px;	  
+	  }
+	  .merge-s {
+	    font-size:30px;
+	  }
+	  .timeorcar {
+        position: relative;
+		z-index: 201;
+		background-color:#fff;
+		line-height:100px;
+	  }
+	  .div1 {
+	    width:58.5px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+  padding:10px;
+	  }
+	  .div2 {
+	    width:117px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+  padding:10px;
+	  }
+	  .div3 {
+	    width:175.5px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+  padding:10px;
+	  }
+	  .div4 {
+	    width:234px;
+		height:100%;
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:relative;
+  padding:10px;
+	  }
+	  .div5 {
+	    width:234px;
+		height:calc(200% + 6px);
+		float:left;
+		  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  position:absolute; 
+  top:0;
+  left:0;  
+  z-index:2;
+  box-sizing: border-box;
+  padding:10px;
+	  }
+	  .d-b2 {
+	    background-color:#888;
+	  }
+	  [v-cloak] {
+        display: none;
+      }
+	  .c_driver {
+	    width:500px;
+		height:300px;
+		padding:20px 100px;
+		margin:-150px 0 0 -250px;
+		background-color:#fff;
+		box-sizing: border-box;
+		border-radius: 10px;
+		position:absolute;
+		top:50%;
+		left:50%;
+		opacity:0;	
+		z-index:-2;
+		transition-duration: 0.2s;		
+	  }
+	  .c_driver-on {
+	  	opacity:1;
+		z-index:1000;
+	  }
+	  .c_driver-s {
+	    font-size:20px;
+		font-weight:bold;
+		color:#666;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-sel {
+	    width:100%;
+	    border-radius: 10px;
+		padding:10px;
+		font-size:20px;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-d1 {
+	    height:80px;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-d1-img {
+	    width:80px;
+		height:80px;
+		border-radius: 100%;
+		margin:0 20px 0 0;
+		float:left;
+	  }
+	  .c_driver-d1-r {
+	    height:80px;
+	    float:left;
+		display: flex;	
+        justify-content: center;
+		align-items: center;
+	  }
+	  .c_driver-d1-r-s1 {
+	    font-size:22px;
+		font-weight:bold;
+		color:#666;
+		margin:0 0 20px 0;
+	  }
+	  .c_driver-d1-r-s2 {
+	    font-size:18px;
+		font-weight:bold;
+		color:#666;
+	  }
+	  .c_driver .b {
+	    width:100%;
+		text-align:center;
+		background-color:#F29700;
+	  }
+	  .list-car-data {
+	    width:100%;
+	    height:16px;
+	    font-size:16px;
+		position:absolute;
+		bottom:0px;
+		left:0px;
+		line-height: 0px;
+	  }
+	</style>
+  </head>
+  <body id="body" onload="loaded()">
+    <div class="all" v-cloak>
+			<div class="ex-black" v-if="show_ex" @click="show_ex=!show_ex"></div>
+			<div class="ex-table" v-if="show_ex">
+			  <div class="ex-table-h">匯出車輛使用證明單</div>
+			  <div class="ex-talbe-r-c">
+				<input type="text" class="ex-talbe-r-c-in" placeholder="請輸入訂單編號" v-model="ex_no">
+				<el-date-picker v-model="ex_data1" type="date" placeholder="選擇開始日期" value-format="yyyy-MM-dd"></el-date-picker>
+				<el-date-picker v-model="ex_data2" type="date" placeholder="選擇結束日期" value-format="yyyy-MM-dd"></el-date-picker>
+				<div class="ex-talbe-r-c-b" @click="export_table">確定匯出</div>
+			  </div>
+			</div>
+    <div class="black" :class="{'show_b':show_b==true}" @click="show_b=false"></div>
+	<div class="more-d" :class="{'show_more':show_b==true}">
+	  <div class="more-d-d1">
+	    <div class="more-d-d1-d1">訂單編號:{{data_time[c_index].car[num1].work[num2].id}}</div>
+		<div class="more-d-d1-d1">行程:{{data_time[c_index].car[num1].work[num2].got}}</div>
+		<div class="more-d-d1-d1">訂單建立時間:{{data_time[c_index].car[num1].work[num2].case_time}}</div>
+	  </div>
+	  <div class="more-d-d2">
+	    <div class="more-d-d2-d1">
+		  <div class="more-d-d2-d1-l">{{data_time[c_index].car[num1].work[num2].share}}</div>
+		  <div class="more-d-d2-d1-r">輪椅類型:{{data_time[c_index].car[num1].work[num2].wtype}} 陪同人員:家屬{{data_time[c_index].car[num1].work[num2].meb}}人 / 外籍{{data_time[c_index].car[num1].work[num2].meb2}}人</div>
+		</div>
+		<div class="more-d-d2-d2">
+		  <div class="more-d-d2-d2-l">
+		    <div class="more-d-d2-d2-l-d">
+			  <img class="more-d-d2-d2-l-d-img" :src="data_time[c_index].car[num1].work[num2].case_img">
+			  <div class="more-d-d2-d2-l-d-r">
+			    <div class="more-d-d2-d2-l-d-r-name">{{data_time[c_index].car[num1].work[num2].name}}</div><br>
+			    個案編號:{{data_time[c_index].car[num1].work[num2].id}}<br>
+				身份證字號:{{data_time[c_index].car[num1].work[num2].case_id}}
+			  </div>
+			</div>
+		  </div>
+		  <div class="more-d-d2-d2-r">
+		    <div class="more-d-d2-d2-r-s">
+			  <div class="more-d-d2-d2-r-s-s">{{data_time[c_index].car[num1].work[num2].p1}}</div>
+			  <div class="more-d-d2-d2-r-s-s">{{data_time[c_index].car[num1].work[num2].p2}}</div>
+			  <div class="more-d-d2-d2-r-s-s1">{{data_time[c_index].car[num1].work[num2].p2lo}}</div>
+			</div>
+			<div>
+			  <div class="more-d-d2-d2-r-dd">
+			    <img class="more-d-d2-d2-r-dd-img" src="http://images.uncyc.org/commons/thumb/8/8e/7ttWHuQ.jpg/300px-7ttWHuQ.jpg">
+                <div class="more-d-d2-d2-r-dd-name">{{data_time[c_index].car[num1].work[num2].driver}}</div>
+                <div class="more-d-d2-d2-r-dd-b">班表</div>					
+			  </div>
+			  <div class="more-d-d2-d2-r-dd">
+			    <img class="more-d-d2-d2-r-dd-img" :src="data_time[c_index].car[num1].img">
+                <div class="more-d-d2-d2-r-dd-name">{{data_time[c_index].car[num1].id}}</div>
+                <div class="more-d-d2-d2-r-dd-b">更多</div>					
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	  <div class="more-d-d3">
+	    <div class="more-d-d3-s"><br>${{data_time[c_index].car[num1].work[num2].cost}}</div>
+	  </div>
+	</div>
+    <div class="console_main">
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=3 :cc=31 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+		    <div class="main-d" :class="{'zoom':zoom==true}">
+			  <div class="main-d-top">
+			    <div class="main-d-top-l">
+				  <div class="main-d-top-l-d big" @click="pdf_export()">查詢調度單</div>
+				  <div class="main-d-top-l-d">{{now_time}}</div>
+				  <!--<div class="main-d-top-l-d">今日趟數:50趟</div>-->
+				  <div class="bc-y"></div>已排班
+				  <div class="bc-b"></div>客上
+				  <div class="bc-bl"></div>完成
+				</div>
+			    <div class="main-d-top-r">
+						<select name="YourLocation" class="selectStyle" v-model="c_comp" @change="get_dp(c_comp)">
+								<option value=0>請選擇公司</option>
+								<option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+							  </select>
+				  <el-date-picker v-model="now_time" type="date" placeholder="選擇日期" value-format="yyyy-MM-dd" @change="get_dp(c_comp);$forceUpdate()"></el-date-picker>
+				  <div class="b" @click="print()">列印調度單</div>
+				  <a class="addList" @click="show_ex=!show_ex">車輛使用證明單</a>
+				  <img src="img/icons8-expand.png" v-if="!zoom" @click="zoom=!zoom">
+				  <img src="img/icons8-collapse.png" v-if="zoom" @click="zoom=!zoom">
+				</div>
+			  </div>
+			  <div class="list" @click="close_right()">
+			  <div class="list-b">
+				
+				<div class="list-car-top">
+				  <div class="list-time-d1 timeorcar">時間/車輛</div>
+				  <div class="list-car-d-s" style="background-color: #fff">
+				    <div class="list-car-d" @contextmenu="show_right($event)" v-for="(item,index) in car" :id="item.Id">
+					  <img class="list-car-img" :src="item.CarPic">{{item.CarNo}} ({{item.DriverName}})
+					    <div class="list-car-data">
+						  <span>座位 : {{item.SeatNum}}</span> | 
+						  <span>輪椅 : {{item.WheelchairNum}}</span>
+						</div>					
+					</div>
+				  </div>
+				</div>
+				
+			    <div class="list-time">
+				  <div class="list-time-d1" v-for="(item,index) in time">{{item}}</div>
+				</div>
+				
+				<div class="list-car-table">
+				<div class="list-car-table-b">
+			    <template v-for="(item,index) in car">
+			      <div class="list-car" >
+				    <div class="list-car-d-b">
+					<template v-for="(item2,index2) in time">
+				      <div class="list-car-d1">
+					  
+					    <template v-for="(item3,index3) in detail">
+					      <div class="list-car-d1-d" v-if="item3.time==item2&&item3.DespatchDetails[0].CarNo==item.CarNo"><!--@contextmenu="show_right($event)"-->
+						    <div :class="{'div1':item3.m>=0&&item3.m<=7.5,'div2':item3.m>7.5&&item3.m<=15,'div3':item3.m>15&&item3.m<=22.5,'div4':item3.m>22.5&&item3.m<=30,'div5':item3.m>30,'s1':item3.DespatchDetails[0].OrderDetails.Status<4,'s2':item3.DespatchDetails[0].OrderDetails.Status>=4&&item3.DespatchDetails[0].OrderDetails.Status<6,'s3':item3.DespatchDetails[0].OrderDetails.Status>=6}">
+                              <div v-for="(item4,index4) in item3.DespatchDetails">
+							    {{item4.CaseUser.Name}}
+							  </div>
+							  <div>{{item3.DespatchDetails[0].OrderDetails.ExpectedMinute}}分鐘</div>
+							</div>
+						  </div>
+						</template>
+						
+					  </div>
+				    </template>
+				    </div>
+				  </div>
+			    </template>
+				</div>
+				</div>
+				
+			  </div>
+			</div>
+			</div>
+		  </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+    </div>
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/yyyymmdd.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+	<script src="js/token.js"></script>
+	<script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+	<script src="js/polyfill.js"></script>
+	<script src="js/xlsx.js"></script>
+	<script src="js/element-ui.js"></script>
+	<script src="js/html2pdf.bundle.js"></script>
+	<script>
+  
+    </script>
+  </body>
+  <script>
+  let console_main=new Vue({
+    el: '.all',
+    data: {
+		nav_status: 1,
+	  isLeft: true,
+      isMainleft: true,
+	  num1:0,
+	  num2:0,
+	  c_comp:0,
+	  comp:"",
+	  zoom:false,
+	  show_b:false,
+	  time: ["05:00","05:15","05:30","05:45","06:00","06:15","06:30","06:45","07:00","07:15","07:30","07:45","08:00","08:15", "08:30","08:45", "09:00","09:15", "09:30","09:45", "10:00","10:15", "10:30","10:45", "11:00","11:15", "11:30","11:45", "12:00","12:15","12:30","12:45", "13:00","13:15", "13:30","13:45", "14:00","14:15", "14:30","14:45", "15:00","15:15", "15:30","15:45", "16:00","16:15", "16:30","16:45", "17:00","17:15", "17:30","17:45", "18:00","18:15", "18:30","18:45", "19:00","19:15", "19:30","19:45", "20:00","20:15", "20:30","20:45", "21:00", "21:15","21:30","21:45", "22:00","22:15","22:30","22:45","23:00", "23:15","23:30","23:45"],
+	  now_time:"",
+	  detail:"",
+	  driver:"",
+	  car:"",
+	  c_index:0,
+	  user:"",
+	  show_ex:false,
+	  ex_no:"",
+	  ex_data1:"",
+	  ex_data2:"",
+	  data_time:[{time:"2019-10-05",car:[
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:"GOT72639187",time:"8:00",m:4,s:3,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10,case_id:"F111111119",got:"去回程",case_time:"2019/07/23",share:"可共乘",wtype:"一般輪椅",meb:"1",meb2:"1",p1:"台北市中山區中山北路三段100號",p2:"馬偕紀念醫院",p2lo:"台北市中山區中山北路三段92號",driver_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",case_img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg"},
+		  {id:222,time:"8:00",m:4,s:2,name:"王曉明",cost:50,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:333,time:"8:00",m:3,s:3,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:444,time:"8:00",m:3,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"8:30",m:30,s:3,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"9:30",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"14:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"11:00",m:31,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"22:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-6666",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:1571,time:"8:00",m:16,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"8:30",m:15,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"8:30",m:15,s:2,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"9:00",m:10,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"9:00",m:10,s:2,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"9:00",m:10,s:3,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"11:00",m:31,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"12:00",m:31,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+
+		]},
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:8888,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:999,time:"15:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:8888,time:"10:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:999,time:"16:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:8888,time:"8:30",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:999,time:"9:30",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+          {id:354345,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"10:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"11:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"12:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"13:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"14:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"21:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"22:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+          {id:354345,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"10:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"11:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"12:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"13:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"14:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"21:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"22:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+          {id:354345,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1},
+          {id:354345,time:"9:00",m:30,s:1},
+		]},
+        {id:"EZR-0",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1},
+		]},
+        {id:"EZR-0000",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1},
+          {id:354345,time:"9:00",m:30,s:1},
+		]}
+	  ]},
+{time:"2019-10-06",car:[
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:1111111,time:"8:30",m:30,s:3,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"9:30",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1111111,time:"14:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"11:00",m:31,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"22:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-6666",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:1571,time:"8:30",m:15,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"8:30",m:15,s:2,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"9:00",m:10,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"9:00",m:10,s:2,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:1571,time:"9:00",m:10,s:3,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"11:00",m:31,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:"hr1",time:"12:00",m:31,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+
+		]},
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:8888,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:999,time:"15:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:8888,time:"10:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:999,time:"16:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:8888,time:"8:30",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:999,time:"9:30",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+          {id:354345,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"10:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"11:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"12:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"13:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"14:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"21:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"22:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+          {id:354345,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"10:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"11:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"12:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"13:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"14:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"21:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"22:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+          {id:354345,time:"9:00",m:30,s:1,name:"王曉明",cost:100,driver:"陳靜香",pn:"臺大醫院",km:10},
+		  {id:354345,time:"10:00",m:30,s:1},
+		  {id:354345,time:"11:00",m:30,s:1},
+		]},
+        {id:"EZR-9999",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1},
+          {id:354345,time:"9:00",m:30,s:1},
+		  {id:354345,time:"10:00",m:30,s:1},
+		]},
+        {id:"EZR-0",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1},
+		]},
+        {id:"EZR-0000",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",work:[
+		  {id:354345,time:"8:00",m:30,s:1},
+
+		]}
+	  ]}
+	  ]
+	},
+	mounted:async function(){
+	  await this.check_login()
+	  this.now_time=this.c_time
+	  await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            console.log(this.comp);
+          });
+	  this.c_comp=this.comp[0].Id
+	  await this.get_dp(this.c_comp);
+	  loaded()
+	},
+	computed: {
+	  c_time: function(){
+	    var arr=new Date().yyyymmdd()
+	    return arr[0]+"-"+arr[1]+"-"+arr[2]
+	  }
+	},
+	methods:{
+		selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+      openNav: function() {
+        this.isLeft = !this.isLeft;
+        this.isMainleft = !this.isMainleft;
+      },
+	  show_right:function(e) {
+	    e.preventDefault();
+		this.close_right()
+	    e.currentTarget.querySelectorAll(".right-mu")[0].style.display="block"
+	  },
+	  close_right:function() {
+	    let rd=document.querySelectorAll(".right-mu")
+		for(let i=0;i<rd.length;i++) {
+		  rd[i].style.display="none"
+		}
+	  },
+	  show_more:function(i,j) {
+	    this.num1=i
+		this.num2=j
+		this.show_b=true
+	  },
+	  list_zoom:function() {
+	  },
+	  /*new_day:function() {
+		let pos = this.data_time.map(function(e) { return e.time; })
+		if(pos.indexOf(this.c_time)==-1) {
+		  this.c_time="2019-10-05"
+		  this.c_index=0
+          alert("查無此調度單")
+		}
+		else {
+		  this.c_index=pos.indexOf(this.c_time)
+		}
+	  },*/
+	  get_data:function(index,time) {
+	    let arr=[0,0]
+		for(let i in this.data_time[this.c_index].car[index].work) {
+		  if(this.data_time[this.c_index].car[index].work[i].time==time) {
+		    arr[0]++
+			arr[1]+=this.data_time[this.c_index].car[index].work[i].m
+		  }
+		}
+		return arr
+	  },
+	  print:function() {
+	    document.body.innerHTML=document.querySelectorAll('.list')[0].innerHTML
+		window.print()
+	  },
+	  export_table:async function() {
+		location.href="./car_prove.html?orderNo="+this.ex_no+"&startDate="+this.ex_data1+"&endDate="+this.ex_data2		
+      },
+	  get_dp:async function(x) {  //獲取全部調度單
+	    await axios.get("https://api.donkeymove.com/api/Despatch/GetAllGroup?CompanyId="+x+"&key="+this.now_time)
+	    .then(async res=>{
+	      this.detail=res.data.response
+		  this.car=this.split_d()
+		  for(let i in this.detail) {
+		    this.detail[i].time=this.detail[i].DespatchDetails[0].Despatch.StartDate.split("T")[1].split(":")[0]+":"+this.detail[i].DespatchDetails[0].Despatch.StartDate.split("T")[1].split(":")[1]
+		    this.detail[i].m=this.detail[i].DespatchDetails[0].OrderDetails.ExpectedMinute
+		  }
+		  console.log(this.detail)
+		  this.$forceUpdate()
+		  await this.delay(0)
+		  loaded()
+	    })
+	  },
+	  get_dr:async function() {  //獲取全部司機
+	    await axios.get("https://api.donkeymove.com/api/DriverInfo/GetDriversWithType")
+	    .then(res=>{
+	      this.driver=res.data.response.data
+		  console.log(this.driver)
+	    })  
+	  },
+	  delay: function (x) {
+				return new Promise(function (resolve) {
+					setTimeout(() => {
+						resolve();
+					}, x);
+				});
+	  },
+	  split_d:function() {
+		var obj=[]
+		for(let i in this.detail) {
+		  var arr=obj.map(x=>x.CarNo)
+          var c={
+		    CarNo:this.detail[i].DespatchDetails[0].CarNo,
+			CarPic:this.detail[i].DespatchDetails[0].CarPic,
+			SeatNum:this.detail[i].DespatchDetails[0].SeatNum,
+			WheelchairNum:this.detail[i].DespatchDetails[0].WheelchairNum,
+			DriverName:this.detail[i].DespatchDetails[0].DriverName
+		  }
+		  if(arr.indexOf(c.CarNo)==-1) {
+            obj.push(c)
+		  }
+		}
+		return obj;
+	  },
+	  check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  }
+	}
+  })
+  var myScroll;
+function loaded () {
+	myScroll = new IScroll('.list-car-table', {
+		scrollX: true,
+		scrollY: true,
+		probeType: 3,
+		momentum:false,
+		mouseWheel: true
+	});
+	myScroll.on('scroll', function(){
+	  document.querySelectorAll(".list-time")[0].style.transform = "translate(0px,"+this.y+"px) ";
+	  document.querySelectorAll(".list-car-d-s")[0].style.transform = "translate("+this.x+"px,0px) ";
+	});
+}
+/*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+  alert(213)
+})*/
+  </script>
+</html>

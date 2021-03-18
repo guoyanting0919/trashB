@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-158769656-1');
+		</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/ui_index.css">
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/console6.css" />
+  <link rel="stylesheet" href="css/resizelayout.css" />
+  <link rel="stylesheet" href="css/mobileMenu.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <user-header-m :user="user" :menu="menu_id"></user-header-m>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=1 :cc=16 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1" :class="{'active' : isMainleft}">
+          <header>
+            <h1>營運系統控制台</h1>
+   
+            <div class="select_container">
+              <el-date-picker :default-value="this.c_time" :picker-options="pickerOptions" v-model="data1" type="month"
+                placeholder="選擇年月" value-format="yyyy-MM" @change="to_search"></el-date-picker>
+            </div>
+            <div class="select_container consoleOnly">
+              <select name="YourLocation" class="selectStyle" v-model="c_city" @change="to_search">
+                <option value=0>請選擇區域</option>
+                <option v-for="(item,index) in city_no" :value="item.Id">{{item.District}}</option>
+              </select>
+            </div>
+            <div class="select_container consoleOnly">
+              <select name="YourLocation" class="selectStyle" v-model="c_comp" @change="to_search">
+                <option value=0>請選擇公司</option>
+                <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+              </select>
+            </div>
+          </header>
+          <div class="console6">
+            <div class="stitle">區域月報表</div>
+            單位(趟)
+            <div class="canvasContainer" style="height:auto;overflow:hidden;">
+              <div class="top">
+                <!--<p>
+                    <span>{{data1}}</span>
+                     <span>{{city_no[get_city(c_city)].County}}</span>-->
+                <!--<span>{{comp[get_comp(c_comp)].CompanyName}}</span>-->
+                <!--<img src="img/blueCircle.svg" alt="" />
+                    <span>去程</span>
+                    <img src="img/greenCircle.svg" alt="" />
+                    <span>回程</span>
+                  </p>
+                  <hr />-->
+              </div>
+              <div v-if="list=='無資料'">無資料</div>
+              <div class="bottom" v-if="list">
+                <div id="canvas-holder" v-for="(item,index) in list">
+                  <canvas id="myChart1" :ref="'ccd'+index"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/header1_m.js"></script>
+  <script src="js/yyyymmdd.js"></script>
+  <script src="js/r_color.js"></script>
+  <script src="js/chartb.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    var c1t=[];
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          isRotate: false,
+          isMainleft: true,
+          nav_status: 1,
+          user: "",
+          data1: "",
+          city_no: "",
+          c_city: 0,
+          comp: "",
+          c_comp: 0,
+          list: "",
+          pickerOptions: {
+            disabledDate(time) {
+              return time.getTime() > Date.now();
+            }
+          }
+        };
+      },
+      mounted: async function () {
+        await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/TaiwanCountry/Get/189").then(res => {
+          this.city_no = res.data.response;
+          console.log(this.city_no);
+        });
+        await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+          this.comp = res.data.response;
+          this.c_comp=res.data.response[0].Id
+          if(this.user.RoleId!=34) {
+              this.c_comp=0
+            }
+          console.log(this.comp);
+        });
+        await this.to_search()
+      },
+      computed: {
+        c_time: function () {
+          var arr = new Date().yyyymmdd()
+          return arr[0] + "-" + arr[1] + "-" + arr[2]
+        }
+      },
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        get_city: function (x) {
+          var arr = this.city_no.map(x => x.CountyCode)
+          return arr.indexOf(x);
+        },
+        get_comp: function (x) {
+          var arr = this.comp.map(x => x.Id)
+          return arr.indexOf(x);
+        },
+        to_search: async function () {
+          if(!this.data1) this.data1=""
+          await axios.get("https://api.donkeymove.com/api/Report/GetSingleCounty/_countyid?_countyid=" + this.c_city + "&date=" + this.data1 + "&_companid=" + this.c_comp).then(res => {
+            if (res.data.msg == "無資料") {
+              this.list = "無資料"
+              return 0
+            }
+            this.list = res.data.response
+            console.log(this.list);//horizontalBar
+            this.$nextTick(function () {
+              for (let i in this.list) {
+                var ctx = document.querySelectorAll("#myChart1")[i]
+                var obj = [
+                  {
+                    label: this.list[i].County,
+                    data: [this.list[i].CompleteCount, this.list[i].MissCount, this.list[i].NotPerformedCount, this.list[i].TotalCount],
+                    backgroundColor: r_color()
+                  }
+                ]
+                if(c1t[i]) {
+                  c1t[i].destroy()
+                }
+                c1t[i]=drew_chart(ctx, 'horizontalBar', ["已完成"+" ("+this.list[i].CompleteCount+")", "空趟"+" ("+this.list[i].MissCount+")", "未執行"+" ("+this.list[i].NotPerformedCount+")", "總趟數"+" ("+this.list[i].TotalCount+")"], obj,true)
+              }
+              console.log(res.data.response);
+            });
+          })
+        },
+        check_login: async function (x) {
+          if (localStorage.dk2_user) {
+            this.user = JSON.parse(localStorage.dk2_user)
+            await get_left_menu(this.user.Id, async (re) => {
+              this.menu_id = re
+              this.$forceUpdate()
+            })
+          }
+          else {
+            location.href = 'login1.html';
+          }
+        },
+      }
+    });
+  </script>
+</body>
+
+</html>

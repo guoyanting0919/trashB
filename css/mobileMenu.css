@@ -1,0 +1,144 @@
+/* --- variable --- */
+.mobile-menu {
+  width: 320px;
+  background: #fff;
+  position: fixed;
+  top: 64px;
+  left: -320px;
+  z-index: 1000;
+  height: 100%;
+  -webkit-box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+          box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+  overflow: scroll;
+  transition-duration: 0.5s;
+}
+
+.mobile-menu.open {
+  left: 0px;
+}
+
+@media (min-width: 1025px) {
+  .mobile-menu.open {
+    left: 0px;
+  }
+}
+
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  -webkit-box-shadow: 0 0 5px #222;
+          box-shadow: 0 0 5px #222;
+  z-index: 1001;
+}
+
+@media (max-width: 1024px) {
+  .mobile-header {
+    display: block;
+  }
+}
+
+.menu-burger-icon {
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+  padding: 8px;
+}
+
+.menu-burger-icon img {
+  display: block;
+}
+
+.mobile-menu-icon {
+  height: 24px;
+}
+
+.menu-list {
+  padding: 0 16px;
+  padding-bottom: 140px;
+}
+
+.menu-list .category a, .menu-list .category .item-title {
+  display: inline-block;
+}
+
+.menu-list .category a {
+  position: relative;
+  padding: 16px 0;
+  width: 100%;
+}
+
+.menu-list .category .item-title {
+  position: absolute;
+  display: inline-block;
+  top: 50%;
+  left: 32px;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+
+.menu-list .category.active > a > .item-title {
+  color: #fd8115;
+}
+
+.menu-list .category.active .second-list {
+  display: block;
+}
+
+.menu-list .search-bar {
+  padding: 24px 0;
+}
+
+.menu-list .search-bar .search input {
+  width: 100%;
+}
+
+.second-list {
+  display: none;
+  margin-left: 16px;
+  margin-bottom: 16px;
+}
+
+.second-list .second-item a {
+  padding: 8px 0;
+}
+
+.second-list .second-item.active > a > .item-title {
+  color: #fd8115;
+}
+
+.app-download a {
+  display: inline-block;
+  padding: 4px 0;
+}
+
+.app-download.first {
+  margin-top: 16px;
+}
+
+.app-download__img {
+  height: 48px;
+}
+
+.mobile-menu__logout {
+  position: absolute;
+  left: 0;
+  bottom: 64px; /* .mobile-menu, .mobile-header 64px */
+  border-top: 1px solid #ddd;
+  padding: 16px 0;
+  width: 320px;
+  text-align: center;
+  color: #666;
+  background: white;
+  cursor: pointer;
+}
+/*# sourceMappingURL=mobileMenu.css.map */

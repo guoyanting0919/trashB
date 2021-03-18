@@ -1,0 +1,342 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-158769656-1');
+    </script>
+  <script src="js/iscroll-lite.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/s4.css" />
+   
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+    <div class="black" @click="show_ae=!show_ae" v-if="show_ae"></div>
+	<div class="adde" v-if="show_ae">
+	  <div class="adde-h" v-if="sub_type">醫療院所新增</div>
+	  <div class="adde-h" v-else>醫療院所編輯</div>
+	  <div class="adde-c">
+	    <div class="adde-c-d">
+		  <div class="adde-c-d-s">醫療院所名稱</div>
+		  <input type="text" class="adde-c-d-in" v-model="ae_data.AddrName">
+		</div>
+	    <div class="adde-c-d">
+		  <div class="adde-c-d-s">醫療院所市話</div>
+		  <input type="text" class="adde-c-d-in" v-model="ae_data.Phone">
+    </div>
+    <div class="adde-c-d">
+		  <div class="adde-c-d-s">緯度</div>
+		  <input type="text" class="adde-c-d-in" placeholder="緯度" v-model="ae_data.lat">
+		</div>
+	    <div class="adde-c-d">
+		  <div class="adde-c-d-s">經度</div>
+		  <input type="text" class="adde-c-d-in" placeholder="經度" v-model="ae_data.lon">
+		</div>
+	    <div class="adde-c-d">
+		  <div class="adde-c-d-s">醫療院所地址</div>
+		  <select class="adde-c-d-se"  v-model="ae_data.CountyId">
+		    <option v-for="(item,index) in city_sel.city_no">{{ item }}</option>
+		  </select>
+		  <select class="adde-c-d-se" v-model="ae_data.DistinctId">
+		    <option v-for="(item,index) in city_sel[ae_data.CountyId]">{{ item }}</option>
+		  </select>
+		  <input type="text" class="adde-c-d-in addtextinfo" v-model="ae_data.Addr">
+		</div>
+	    <div class="adde-c-b" @click="sub">確定</div>
+	  </div>
+	</div>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=6 :cc=65 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main" :class="{'active' : isMainleft}">
+          <div class="main-d">
+            <div class="main-d-top">
+              <div class="main-d-top-l">
+                <div class="main-d-top-l-d big">醫療院所管理</div>
+              </div>
+              <div class="main-d-top-r">
+			    <div class="b" @click="del_arr">刪除</div>
+                <div class="b" @click="show_ae=!show_ae;sub_type=true;clear();">新增</div>
+                <input type="text" class="main-d-top-r-in" v-model="key" @keyup.enter="to_search()" placeholder="請輸入關鍵字"/>
+              </div>
+            </div>
+            <div class="main-d1">
+              <a href="./s_4.html?county=&key=&page=1"><div class="main-d1-d" :class="{'main-d1-d-on':urlq.county==''}">全台灣</div></a>
+              <a v-for="(item,index) in city_no" :href="'./s_4.html?county='+item.County+'&key=&page=1'" v-if="item.Id"><div class="main-d1-d" :class="{'main-d1-d-on':is_c(item)}">{{item.County}}</div></a>
+            </div>
+            <div class="list">
+              <table class="t1-h" border="0">
+                <tr>
+                  <td>
+                    <input type="checkbox" v-model="allcheck" :checked="allcheck" />全選
+                  </td>
+                  <td>名稱</td>
+                  <td>市話</td>
+                  <td>縣市</td>
+                  <td>區域</td>
+                  <td>地址</td>
+                  <!--<td></td>-->
+                </tr>
+              </table>
+
+              <table class="t1" border="0">
+                <tr v-for="(item,index) in list">
+                  <td>
+                    <input type="checkbox" v-model="item.check" :checked="item.check" class="checkbox"/><span @click="edit(index);sub_type=false;show_ae=!show_ae" class="editbox btn">編輯</span>
+                  </td>
+                  <td>{{ item.AddrName }}</td>
+                  <td>{{ item.Phone }}</td>
+                  <td>{{ item.CountyId }}</td>
+                  <td>{{ item.DistinctId }}</td>
+                  <td>{{ item.Addr }}<span v-if="item.lat&&item.lon">({{item.lat+","+item.lon}})</span></td>
+                  <td  @click="del(item.Id)" v-if="false">刪除</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="pagination">
+            <page-v :pagen=page :countn=pageCount :urlex="'./s_4.html?county='+urlq.county+'&key='+urlq.key+'&page='" v-if='page&&pageCount'></page-v>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script type="text/javascript" src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+  <script src="js/city_sel.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/city_sel.js"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/url_q.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script></script>
+</body>
+<script>
+  let console_main = new Vue({
+    el: '.console_main',
+    data: {
+      isLeft: true,
+      isMainleft: true,
+      allcheck: false,
+      nav_status: 1,
+      list: "",
+      page: 1,
+      pageCount: 1,
+      key:"",
+	  user:"",
+	  show_list:[],
+    city_no:"",
+	  show_ae:false,
+	  sub_type:true,
+	  city_sel: city_sel,
+      urlq:url_q(window.location.href),
+      ae_data:{
+        "Id": 0,
+        "CountyId": 0,
+        "DistinctId": 0,
+        "Phone": "",
+        "AddrName": "",
+        "Addr": "",
+        "lat":"",
+		    "lon":"",
+      }
+    },
+    // pagi未接好
+    mounted: async function () {
+	  await this.check_login()
+    await axios.get("https://api.donkeymove.com/api/TaiwanCountry/GetTaiwanCounty").then(res => {
+            this.city_no = res.data.response;
+            console.log(this.city_no);
+          });
+      await this.sel();
+    },
+    watch: {
+      allcheck: function (value) {
+        if (value) {
+          for (let i in this.list) {
+            this.list[i].check = true
+          }
+        }
+        else {
+          for (let i in this.list) {
+            this.list[i].check = false
+          }
+        }
+      }
+    },
+    methods: {
+      selectNav: function (number) {
+        this.nav_status = number;
+      },
+      openNav2: function () {
+        this.isLeft = false;
+        this.isMainleft = false;
+      },
+
+      openNav: function () {
+        this.isLeft = !this.isLeft;
+        this.isMainleft = !this.isMainleft;
+      },
+      open_black: function (e) {
+        e.preventDefault();
+        this.close_black()
+        e.currentTarget.querySelectorAll(".list-d-black")[0].style.display = "block"
+      },
+      close_black: function () {
+        let b = document.querySelectorAll(".list-d-black")
+        for (let i = 0; i < b.length; i++) {
+          b[i].style.display = "none"
+        }
+      },
+      sel:async function () {
+        await axios.get("https://api.donkeymove.com/api/AddrTurnName/Get?_county="+this.urlq.county+"&page="+this.urlq.page+"&key="+this.urlq.key).then(res => {
+          this.page = res.data.response.page;
+          this.pageCount = res.data.response.pageCount;
+		      this.list=res.data.response.data
+        });
+      },
+      to_search:function() {
+        location.href="./s_4.html?county="+this.urlq.county+"&page=1"+"&key="+this.key
+      },
+	  del_arr:async function() {
+      let arr=[]
+      let flag=false
+      for(let i in this.list) {
+		    if(this.list[i].check) {
+		      arr.push(this.list[i].Id)
+          if(this.list[i].check!=undefined) {
+            flag=true
+          }
+		    }
+		  }
+      if(!flag) {
+        alert("未選擇任何資料")
+        return 0
+      }
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+		for(let i in arr) {
+          await axios.delete("https://api.donkeymove.com/api/AddrTurnName/Delete?id="+arr[i]).then(res => {
+		    console.log(res.data.msg)
+          });	
+        }
+        alert("刪除成功")
+        window.location.reload();
+		  }
+		  else {
+		    return 0;
+		  }	    		
+	  },
+	  edit:function(x) {
+	    this.ae_data=this.list[x]
+	  },
+	  clear:function() {
+	    this.ae_data={
+          "Id": 0,
+          "CountyId": 0,
+          "DistinctId": 0,
+          "Phone": "",
+          "AddrName": "",
+          "Addr": ""
+        }
+	  },
+    is_c:function(x) {
+      return decodeURI(this.urlq.county)==x.County
+    },
+	  sub:async function() {
+	    if(this.sub_type) {
+          await axios.post("https://api.donkeymove.com/api/AddrTurnName/Post",this.ae_data).then(res => {
+            if(res.data.msg=="添加成功") {
+		      alert("新增成功")
+			  location.reload();
+		    }
+			else {
+			  alert(res.data.msg)
+			}
+          });		  
+		}
+		else {
+          await axios.put("https://api.donkeymove.com/api/AddrTurnName/Put",this.ae_data).then(res => {
+            if(res.data.msg=="更新成功") {
+		      alert("更新成功")
+			  location.reload();
+		    }
+			else {
+			  alert(res.data.msg)
+			}
+          });
+		}
+	  },
+	  del:async function(x) {
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+            await axios.delete("https://api.donkeymove.com/api/AddrTurnName/Delete?id="+x).then(res => {
+              if(res.data.msg=="刪除成功") {
+		        alert("刪除成功")
+			    window.location.reload();
+		      }
+            });
+		  }
+		  else {
+		    return 0;
+		  }
+	  },
+	  check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+      text2id:function(x) {
+        var arr=this.city_no.map(x=>x.County)
+        var index=arr.indexOf(x)
+        return this.city_no[index].Id
+      }
+    }
+  })
+
+  /*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+    alert(213)
+  })*/
+</script>
+
+</html>

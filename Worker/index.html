@@ -1,0 +1,27 @@
+<html>
+<head>
+</head>
+<body>
+<div class="main">
+
+</div>
+</body>
+<script>
+var num=0
+var myWorker = new Worker("index.js");
+myWorker.postMessage(num);
+myWorker.onmessage =async function(e) {
+  document.querySelectorAll(".main")[0].innerHTML=e.data
+  await delay(1000)
+  num++
+  myWorker.postMessage(num);
+}
+function delay(x) {
+  return new Promise(function(resolve) {
+    setTimeout(()=> {
+      resolve();
+    }, x);
+  });
+}
+</script>
+</html>

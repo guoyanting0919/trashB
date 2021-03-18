@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/resizelayout.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css">
+    <link rel="stylesheet" href="css/responsive.css">
+  </head>
+  <body>
+    <div class="console_main" v-cloak>
+      <div class="loading-black" v-if="loading">
+        <img src="img/spinner.gif">
+      </div>
+      <user-header :user="user"></user-header>
+      <user-header-m :user="user" :menu="menu_id"></user-header-m>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=1 :cc=12 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header class="header_console4">
+              <h1>營運系統控制台</h1>
+              <el-date-picker :picker-options="pickerOptions" type="date" placeholder="選擇日期區間(起)" value-format="yyyy-MM-dd" v-model="data1" @change="to_search"></el-date-picker>
+			  <el-date-picker :picker-options="pickerOptions" type="date" placeholder="選擇日期區間(訖)" value-format="yyyy-MM-dd" v-model="data2" @change="to_search"></el-date-picker>
+              <div class="select_container consoleOnly">
+                <select name="YourLocation" class="selectStyle" v-model="c_city" @change="draw">
+                  <option value=0>請選擇區域</option>
+				  <option v-for="(item,index) in city_no" :value="item.Id">{{item.District}}</option>
+                </select>
+              </div>
+              <div class="select_container consoleOnly">
+                <select name="YourLocation" class="selectStyle" v-model="c_comp" @change="draw">
+                  <option value=0>請選擇公司</option>
+				  <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+                </select>
+              </div>
+            </header>
+            <div class="console4">
+              <div class="stitle">車輛使用率比較表</div> 
+              單位(%)
+              <div class="canvasContainer">
+                <div id="canvas-holder" class="bar-chart" ref="c1">
+                  <canvas id="myChart1" ref="c1"></canvas>
+                </div>
+                <!-- <h3>彭怡文</h3>
+                <p>$31.156</p> -->
+              </div>
+              <div class="stitle">車輛使用率</div> 
+              <div class="canvasContainerBoxs" v-if="list!=''">
+			  
+                <div class="canvasContainerBox_console2" v-for="(item,index) in list">
+                  <p>
+                    <img src="img/icons8-people_in_car_filled.svg" alt="" />
+                    <span>{{item.CarNo}}</span>
+                  </p>
+                  <p>{{item.CompanyName}}</p>
+                  <div id="canvas-holder" style="width:100%">
+                    <canvas class="heyChart" :ref="'ccd'+index"></canvas>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/header1_m.js"></script>
+	<script src="js/yyyymmdd.js"></script>
+	<script src="js/chartb.js"></script>
+	<script src="js/r_color.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      var c1t;
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            cv_arr:[],
+            menu_id:"",
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            nav_status: 1,
+            loading:false,
+			user:"",
+			data1:"",
+			data2:"",
+			city_no:"",
+			c_city:0,
+			comp:"",
+			c_comp:0,
+			list:"",
+            pickerOptions: {
+              disabledDate(time) {
+                return time.getTime() > Date.now() ;
+              }
+            }
+          };
+        },
+        mounted:async function() {
+		 await this.check_login()
+          await axios.get("https://api.donkeymove.com/api/TaiwanCountry/Get/189").then(res => {
+            this.city_no = res.data.response;
+            console.log(this.city_no);
+          });
+          await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            this.c_comp=res.data.response[0].Id
+            if(this.user.RoleId!=34) {
+              this.c_comp=0
+            }
+            console.log(this.comp);
+          });
+          await this.draw()
+		},
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+		  get_city:function(x) {
+		    var arr=this.city_no.map(x=>x.CountyCode)
+			return arr.indexOf(x);
+		  },
+		  get_comp:function(x) {
+		    var arr=this.comp.map(x=>x.Id)
+			return arr.indexOf(x);		  
+		  },
+		  to_search:async function() {
+        if(!this.data1) this.data1=""
+        if(!this.data2) this.data2=""
+		  await axios.get("https://api.donkeymove.com/api/Report/GetCarUseRate?_datestart="+this.data1+"&_dateend="+this.data2+"&_countyid=0&_companid=0&sort=1")
+          .then(res=>{
+	        this.list=res.data.response
+		    console.log(res.data.response)
+			this.$nextTick(function () {
+              for(let i=0;i<this.list.length;i++) {
+			    var obj=[
+                  {
+	                label: 'Dataset 2',
+                    backgroundColor: ['rgb(255, 99, 132)',"rgba(0,0,0,0.1)"],
+                    data: [this.list[i].UseRate,100-this.list[i].UseRate]
+                  }
+                ]
+                var ctx = this.$refs["ccd"+i]
+                if(this.cv_arr[i]) this.cv_arr[i].destroy()
+                this.cv_arr[i]=drew_chart(ctx,'doughnut',["使用率","未使用率"],obj,true)
+			  }
+			})
+	      })		  
+		  },
+		  draw:async function() {
+        await axios.get("https://api.donkeymove.com/api/Report/GetCarUseRate?_datestart="+this.data1+"&_dateend="+this.data2+"&_companid="+this.c_comp+"&_countyid="+this.c_city+"&sort=1")
+          .then(res=>{
+	        this.list=res.data.response
+		    console.log(res.data.response)
+			var arr1=this.list.map(x=>x.CarNo)
+			var arr2=this.list.map(x=>x.UseRate)
+			var arr_color=[]
+			this.$nextTick(function () {
+			  for(let i in this.list) {
+			    arr_color.push(r_color())
+			  }
+              for(let i=0;i<this.list.length;i++) {
+			    var obj=[
+                  {
+                    backgroundColor: arr_color,
+                    data: [this.list[i].UseRate,100-this.list[i].UseRate]
+                  }
+                ]
+                var ctx = this.$refs["ccd"+i]
+                if(this.cv_arr[i]) this.cv_arr[i].destroy()
+                this.cv_arr[i]=drew_chart(ctx,'doughnut',["使用率","未使用率"],obj,true)
+			  }
+			  var c1=document.getElementById('myChart1');
+			  var obj2=[
+                {
+				  label: '使用率',
+                  backgroundColor:arr_color,
+                  data: arr2
+                }
+              ]
+        if(c1t) {
+          c1t.destroy()
+        }
+			  c1t=drew_chart_remove_lab(c1,'bar',arr1,obj2)
+			})
+	      })	  
+		  },
+		  check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+        }
+      });
+
+      /*var ctx1 = document.getElementById("myChart1").getContext("2d");
+      var jsonfile = {
+        jsonarray: [
+          {
+            name: "Jan",
+            age: 50
+          },
+          {
+            name: "Feb",
+            age: 100
+          },
+        ]
+      };
+
+      var labels = jsonfile.jsonarray.map(function(e) {
+        return e.name;
+      });
+      var data = jsonfile.jsonarray.map(function(e) {
+        return e.age;
+      });
+
+      function draw(el, x,arr1,arr2) {
+var chart = new Chart(el, {
+    type: x,
+    data: {
+        labels: [1,2,3],
+        datasets: [{
+            label: '# of Votes',
+            data: [4,5,6]
+        }]
+    }
+});
+      }
+      options: {
+        responsive: true;
+        //maintainAspectRatio: false;
+      }
+      //draw(ctx1, "bar");
+
+      //甜圈圈
+      // var ctx = document.getElementById("heyChart");
+      var ctx = document.querySelectorAll(".heyChart");
+      var myPieChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          datasets: [
+            {
+              data: [83.3, 33.3],
+              backgroundColor: ["rgb(83,126,255)", "rgba(241,241,241,0.5)"]
+            }
+          ],
+
+          // These labels appear in the legend and in the tooltips when hovering different arcs
+          labels: ["家裡", "醫院"]
+        },
+        options: {
+          // title: {
+          //   display: true,
+          //   text: "Custom Chart Title"
+          // },
+          responsive: true,
+          maintainAspectRatio: true
+        }
+
+        // options: {
+        //   scales: {
+        //     yAxes: [
+        //       {
+        //         ticks: {
+        //           beginAtZero: true
+        //         }
+        //       }
+        //     ]
+        //   }
+        // }
+      });
+      function draw(el, x) {
+        var myChart = new Chart(el, {
+          type: x,
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                fillColor: "#CCCCFF",
+                strokeColor: "rgba(220,220,220,1)",
+                label: "板橋區",
+                data: [65, 59, 90, 81, 56, 55, 40, 65, 59, 90, 81, 56],
+                backgroundColor: [
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)"
+                ]
+              },
+              {
+                fillColor: "#CCFFCC",
+                strokeColor: "#CCFFCC",
+                label: "新莊區",
+                data: [35, 89, 40, 31, 26, 85, 80, 35, 69, 30, 21, 26],
+                backgroundColor: [
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)"
+                ]
+              },
+              {
+                fillColor: "#FFFFCC",
+                strokeColor: "#FFFFCC",
+                label: "中和區",
+                data: [25, 39, 80, 11, 96, 105, 10, 35, 69, 20, 51, 96],
+                backgroundColor: [
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)"
+                ]
+              },
+              {
+                fillColor: "#99FFFF",
+                strokeColor: "#99FFFF",
+                label: "新店區",
+                data: [65, 59, 90, 81, 56, 55, 40, 65, 59, 90, 81, 56],
+                backgroundColor: [
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)"
+                ]
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+          maintainAspectRatio: false
+          }
+        });
+      }
+      draw(ctx1, "bar");*/
+    </script>
+  </body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <style>
+        .ex-table {
+          width: 600px;
+          margin: -300px 0 0 -300px;
+        }
+        .ex-table table {
+          width: 100%;
+        }
+        .ex-talbe-r-c {
+          max-height:500px;
+          overflow-y: scroll;
+        }
+        .ex-table td {
+          padding: 10px;
+        }
+        .ex-table table td {
+          border-style: solid;
+          border-width: 1px;
+        }
+        </style>
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <div class="ex-black" v-if="show_ex" @click="show_ex=!show_ex"></div>
+      <div class="ex-table" v-if="show_ex">
+        <div class="ex-table-h">打卡紀錄</div>
+        <div class="ex-talbe-r-c">
+          <table border="1">
+            <tr>
+              <td>日期</td>
+              <td>上班時間</td>
+              <td>下班時間</td>
+            </tr>
+            <tr v-for="(item,index) in p_list">
+              <td>{{dateFormat2(item.CreateDate)}}</td>
+              <td>{{dateFormat1(item.OnTime)}}</td>
+              <td>{{dateFormat1(item.OffTime)}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=5 :cc=54 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header class="headerVehicle">
+              <h1>駕駛基本資料詳細</h1>
+              <a href="" @click.prevent>列印</a>
+              <a href="./driverVehicle_driver.html?key=&orderby=&isDescending=true&status=&compId=&page=1">回列表</a>
+            </header>
+            <div class="driverData">
+              <article class="articleDriver1">
+                <div class="driver_1">
+                  <div class="driver_11">
+                    <div class="driver_111">
+                      <span>{{get_list.CompanyName}}</span>
+                    </div>
+                    <div class="driver_112"></div>
+                  </div>
+
+                  <div class="driver_12" v-if="get_list.DriverLicense[0]">
+                    <img src="img/dot2.svg" alt="" />
+                    <span>{{get_list.Status}}</span>
+                    <span>駕照號碼</span>
+                    <span>{{get_list.DriverLicense[0].LicenseNo}}</span>
+                    <span>駕照過期日</span>
+                    <span>{{get_list.DriverLicense[0].ExDate}}</span>
+                  </div>
+                  <button @click="show_ex=!show_ex">查看打卡紀錄</button>
+                  <div class="driver_13">
+                    <img src="img/icons8-pencil_filled.svg" alt="" />
+                    <a :href="'driverVehicle3_edit.html#/edit/'+get_list.Id"><span>編輯司機資料</span></a>
+                  </div>
+                </div>
+                <div class="driver_2">
+                  <div class="driver_21">
+                    <div class="driver_211">
+                      <img :src="get_list.Pic" alt="" />
+                      <!-- <div>多元計程車</div>
+                      <div>慶聲計程車行-多元化計程車</div> -->
+                    </div>
+                    <!-- <div class="driver_212">
+                      <h5>查看保養紀錄</h5>
+                    </div> -->
+                  </div>
+                  <div class="driver_22">
+                    <div class="driver_221">基本資料</div>
+                    <hr />
+
+                    <div class="driver_222">
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>駕駛姓名</div>
+                          <div>{{get_list.DriverName}}</div>
+                        </div>
+                        <div class="w50">
+                          <div>手機</div>
+                          <div>{{get_list.Phone}}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>性別</div>
+                          <div>{{get_list.Sex==1 ? "男":"女"}}</div>
+                        </div>
+                        <div class="w50">
+                          <div>市話</div>
+                          <div>{{get_list.Tel}}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>身分證字號</div>
+                          <div>{{get_list.UID}}</div>
+                        </div>
+                        <div class="w50">
+                          <div>電子郵件</div>
+                          <div>{{get_list.Email}}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB" v-if="false">
+                        <div class="w50">
+                          <div>地址</div>
+                          <div>{{get_list.County}} {{get_list.District}} {{get_list.Addr}}</div>
+                        </div>
+                        <div class="w50">
+                          <div></div>
+                          <div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="articleDriver2">
+                <div class="articleDriver21">
+                  <img src="img/icons8-graph.png" alt="" />
+                  <div>總趟次</div>
+                  <div>{{get_list.TotalCount}}</div>
+                </div>
+                <div class="articleDriver21">
+                  <img src="img/icons8-in_progress_filled.png" alt="" />
+                  <div>已完成</div>
+                  <div>{{get_list.SuccessCount}}</div>
+                </div>
+                <div class="articleDriver21">
+                  <img src="img/icons8-mind_map.png" alt="" />
+                  <div>空趟</div>
+                  <div>{{get_list.NoSeatCount}}</div>
+                </div>
+                <div class="articleDriver21">
+                  <img src="img/icons8-high_priority.png" alt="" />
+                  <div>未執行</div>
+                  <div>{{get_list.UnExecutionCount}}</div>
+                </div>
+                <div class="articleDriver21">
+                  <img src="img/icons8-double_tick_filled.png" alt="" />
+                  <div>達成率</div>
+                  <div>{{get_list.AchievingRate}}</div>
+                </div>
+              </article>
+
+              <article class="articleDriver3">
+                <div class="articleDriver3_Title">
+                  <h3>持有駕照</h3>
+                </div>
+                <div class="articleDriver3_Content">
+                  <div v-for="(item,index) in get_list.DriverLicense">
+                    <a href="">{{item.CarTypeName}}</a>
+                    <div>駕照過期日：{{item.ExDate}}</div>
+                  </div>
+                </div>
+              </article>
+              <article class="articleDriver4">
+                <div class="articleDriver3_Title">
+                  <h3>持有證照</h3>
+                </div>
+                <div class="articleDriver3_Content">
+                  <a href="" v-for="(item,index) in get_list.DriverProLicense">{{item}}</a>
+                </div>
+              </article>
+
+              <article class="articleDriver4">
+                <div class="articleDriver3_Title">
+                  <h3>保險</h3>
+                </div>
+                <div class="articleDriver3_Content">
+                  <a href="" v-for="(item,index) in get_list.DriverSecure">{{item}}</a>
+                </div>
+              </article>
+
+              <article class="articleDriver4">
+                <div class="articleDriver3_Title">
+                  <h3>備註</h3>
+                </div>
+                <div class="articleDriver3_Content articleDriver3_Content_6">
+                  <p>
+                    {{get_list.Remark}}
+                  </p>
+                </div>
+              </article>
+
+              <article class="articleDriver5" v-if="false">
+                <div class="articleDriver5_Title">
+                  <h3>身心檢查紀錄</h3>
+                </div>
+                <div class="articleDriver5_Content">
+                  <div class="tr tr1">
+                    <div class="td1">酒測值</div>
+                    <div class="td2">血壓值</div>
+                    <div class="td3">額溫值</div>
+                    <div class="td4">心律值</div>
+                    <div class="td5">檢查時間</div>
+                    <div class="td6">不合格項目</div>
+                  </div>
+                  <div class="tr tr1" v-for="(item,index) in list">
+                    <div class="td1">{{item.WineMeasurement}}</div>
+                    <div class="td2">{{item.DiastolicBlood+"/"+item.SystolicBlood}}</div>
+                    <div class="td3">{{item.TemperatureValue}}</div>
+                    <div class="td4">{{item.HeartRate}}</div>
+                    <div class="td5">{{dateFormat(item.CreateTime)}}</div>
+                    <div class="td6">{{item.HasSituationNoChecked}}{{item.HasSituationAndChecked}}</div>
+                  </div>
+                  <a href="" @click.prevent="show_more">更多檢查紀錄</a>
+                </div>
+              </article>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script src="js/vue-router.js"></script>
+	<script>
+      const routes = [
+        { path: '/get/:id' }
+      ]
+      const router = new VueRouter({
+        routes
+      })
+      let console_main = new Vue({
+        el: ".console_main",
+	    router,
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            get_list:"",
+			list:"",
+            nav_status: 1,
+			user:"",
+      more_num:5,
+      p_list:"",
+      show_ex:false
+          };
+        },
+        mounted:async function() {
+		  await this.check_login()
+		  await axios.get("https://api.donkeymove.com/api/DriverInfo/GetMapByID/"+this.$route.params.id)
+          .then(res=>{
+		    this.get_list=res.data.response
+		    console.log(res.data.response)
+	      })
+		  await axios.get("https://api.donkeymove.com/api/CheckResult/GetCheckDriverList?driverId="+this.$route.params.id+"&takeCount=5")
+          .then(res=>{
+		    this.list=res.data.response
+		    console.log(res.data.response)
+        })
+        await axios.get("https://api.donkeymove.com/api/DriverInfo/GetListPunchByDriver/"+this.$route.params.id)
+          .then(res=>{
+		    this.p_list=res.data.response
+        this.p_list.reverse()
+        console.log(this.p_list)
+        })
+		},
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		show_more:async function() {
+      this.more_num+=5
+		  await axios.get("https://api.donkeymove.com/api/CheckResult/GetCheckDriverList?driverId="+this.$route.params.id+"&takeCount="+this.more_num)
+          .then(res=>{
+		    this.list=res.data.response
+		    console.log(res.data.response)
+	      })		  
+		},
+    dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day+" "+hours+":"+minutes;
+},
+dateFormat1:function(time) {
+    var data=time ? data=moment(time).format('HH:mm') : "無"
+    return data
+},
+dateFormat2:function(time) {
+    var data=time ? data=moment(time).format('YYYY-MM-DD') : "無"
+    return data
+}
+        }
+      });
+    </script>
+  </body>
+</html>

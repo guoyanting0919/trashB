@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <header class="header">
+        <img class="header_logo" src="img/logo-light.png" alt="" />
+        <div class="header_wrap">
+          <div class="header_block1">
+            <div class="hamburger">
+              <img src="img/icons8-list.png" alt="" />
+            </div>
+            <div class="search">
+              <input type="text" placeholder="快速搜尋訂單編號" />
+              <img src="img/icons8-search.png" alt="" />
+            </div>
+          </div>
+
+          <div class="header_block3">
+            <div class="user_personal">
+              <img src="img/userPhoto.png" alt="" />
+              <span>林株貝</span>
+            </div>
+            <a href="http://">登出</a>
+          </div>
+        </div>
+        <!-- <hr /> -->
+      </header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <nav class="nav">
+            <!-- 父選單 -->
+            <div class="nav_fathers">
+              <div class="nav_father active">
+                <img src="img/icons8-combo_chart.png" alt="" />
+                <span>控制台</span>
+              </div>
+              <div class="nav_father">
+                <img src="img/icons8-check.png" alt="" />
+                <span>預約訂單</span>
+              </div>
+              <div class="nav_father">
+                <img src="img/icons8-car_rental.png" alt="" />
+                <span>派車調度</span>
+              </div>
+              <div class="nav_father">
+                <img src="img/icons8-user_folder.png" alt="" />
+                <span>個案資料</span>
+              </div>
+              <div class="nav_father">
+                <img src="img/icons8-time_card_filled.png" alt="" />
+                <span>司機車輛管理</span>
+              </div>
+              <div class="nav_father">
+                <img src="img/icons8-maintenance.png" alt="" />
+                <span>系統資料管理</span>
+              </div>
+            </div>
+            <!-- 子選單 -->
+            <div class="nav_sonsArrow " :class="{'active': isLeft}">
+              <div class="nav_sons">
+                <div class="nav_son_absolute">
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                  <div class="nav_son">
+                    <img src="img/icons8-time_card_filled.png" alt="" />
+                    <span>司機車輛管理</span>
+                  </div>
+                </div>
+
+                <div class="nav_arrow_button" @click="openNav">
+                  <img src="img/icons8-forward.png" alt="" />
+                </div>
+              </div>
+              <!-- <div class="nav_arrow">
+                <div class="nav_arrow_button">
+                  <img src="img/icons8-forward.png" alt="">
+                </div>
+              </div> -->
+            </div>
+
+            <!-- 陰影 button -->
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </nav>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <template v-if="true">
+              <header class="headerVehicle">
+                <h1>個案基本資料詳細</h1>
+                <a href="" @click.prevent>列印</a>
+                <a href="" @click.prevent>回列表</a>
+              </header>
+              <div class="personal2">
+                <article class="articlePersonal1">
+                  <div class="personalLittle_1">
+                    <div class="personalLittle_11">
+                      <div class="personalLittle_111">
+                        <span>HTIU389785465465</span>
+                      </div>
+                      <div class="personalLittle_112">註冊時間： 2019/03/22</div>
+                    </div>
+                    <div class="personalLittle_12">
+                      <img src="img/dot2.svg" alt="" />
+                      <span>可派發</span>
+                    </div>
+                    <div class="personalLittle_13">
+                      <img src="img/icons8-pencil_filled.svg" alt="" />
+                      <span>編輯車輛資料</span>
+                    </div>
+                  </div>
+                  <div class="personalLittle_2">
+                    <div class="personalLittle_21">
+                      <div class="personalLittle_211">
+                        <img src="img/person.png" alt="" />
+                        <div>補助方式 自費個案</div>
+                        <!-- <div>慶聲計程車行-多元化計程車</div> -->
+                      </div>
+                      <!-- <div class="personalLittle_212">
+                            <h5>查看保養紀錄</h5>
+                          </div> -->
+                    </div>
+                    <div class="personalLittle_22">
+                      <div class="personalLittle_221">基本資料</div>
+                      <hr />
+
+                      <div class="personalLittle_222">
+                        <div class="dflexSB">
+                          <div class="w50">
+                            <div>個案姓名</div>
+                            <div>{{ list[0].name }}</div>
+                          </div>
+                          <div class="w50">
+                            <div>個案性別</div>
+                            <div>{{ list[0].sex }}</div>
+                          </div>
+                        </div>
+                        <div class="dflexSB">
+                          <div class="w50">
+                            <div>身份證字號</div>
+                            <div>{{ list[0].certificationID }}</div>
+                          </div>
+                          <div class="w50">
+                            <div>生日</div>
+                            <div>{{ list[0].birth }}</div>
+                          </div>
+                        </div>
+                        <div class="dflexSB">
+                          <div class="w50">
+                            <div>身份</div>
+                            <div>{{ list[0].Identity }}</div>
+                          </div>
+                          <div class="w50">
+                            <div>經濟狀況</div>
+                            <div>{{ list[0].economic_status }}</div>
+                          </div>
+                        </div>
+                        <div class="dflexSB">
+                          <div class="w50">
+                            <div>手機</div>
+                            <div>{{ list[0].mobile }}</div>
+                          </div>
+                          <div class="w50">
+                            <div>登入密碼</div>
+                            <div>{{ list[0].pwd }}</div>
+                          </div>
+                        </div>
+                        <div class="dflexSB">
+                          <div class="w50">
+                            <div>市話</div>
+                            <div>{{ list[0].tel }}</div>
+                          </div>
+                          <div class="w50">
+                            <div>電子信箱</div>
+                            <div>{{ list[0].email }}</div>
+                          </div>
+                        </div>
+                        <div class="dflexSB">
+                          <div class="w50">
+                            <div>居住地址</div>
+                            <div>{{ list[0].residential_address }}</div>
+                          </div>
+                          <div class="w50">
+                            <div>通訊地址</div>
+                            <div>{{ list[0].communication_address }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="articlePersonal2">
+                  <div class="articlePersonal21">
+                    <div class="articlePersonal211">
+                      <span>違規點數 </span>
+                      <span>{{ list[1].violation_points }}</span>
+                    </div>
+                    <div class="articlePersonal212">停權到期日：{{ list[1].suspension_due_date }}</div>
+                  </div>
+                  <div class="articlePersonal22">
+                    <div class="articlePersonal22Title">個案可用補助</div>
+                    <hr />
+                    <div class="articlePersonal22Content">
+                      <div class="contentsList">
+                        <div>本月搭乘趟次：{{ list[2].boarding_times }}</div>
+                        <div>本月照會趟數：{{ list[2].note_number }}</div>
+                        <div></div>
+                      </div>
+                      <div class="contentsList">
+                        <div>本月可用趟次：{{ list[2].available_times }}</div>
+                        <div>本月剩餘趟數：{{ list[2].remaining_number_of_turns }}</div>
+                        <div></div>
+                      </div>
+                      <div class="contentsList">
+                        <div>本月空趟趟次：{{ list[2].empty_time }}</div>
+                        <div>總共空趟趟次：{{ list[2].total_retained_times }}</div>
+                        <div>留用趟次：{{ list[2].retained_times }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="articlePersonal23">
+                    <div class="articlePersonal22Title">自費金額備註</div>
+                    <hr />
+                    <p class="articlePersonal22Content">{{ list[3].selfPaying_amount_remarks }}</p>
+                  </div>
+                </article>
+                <article class="articlePersonal3">
+                  <div class="articlePersonal2_Title">
+                    <h3>核定服務</h3>
+                  </div>
+                  <div class="articlePersonal2_Content">
+                    <a @click.prevent v-for="(case_note,i) in list[4].approved_service" href="">{{ case_note }}</a>
+                  </div>
+                </article>
+                <!-- <article class="articlePersonal3"></article> -->
+                <!-- <article class="articlePersonal4"> -->
+                <!-- <div class="articlePersonal2_Title">
+                        <h3>適用駕照</h3>
+                      </div>
+                      <div class="articlePersonal2_Content">
+                        <a href="">職業小型車</a>
+                        <a href="">職業大貨車</a>
+                        <a href="">職業大客車</a>
+                        <a href="">職業聯結車</a>
+                      </div> -->
+                <!-- </article> -->
+                <article class="articlePersonal4">
+                  <div class="articlePersonal4_Title">
+                    <h3>個案備註</h3>
+                  </div>
+                  <div class="articlePersonal4_Content">
+                    <p>
+                      {{ list[5].case_notes }}
+                    </p>
+                  </div>
+                </article>
+
+                <article class="articlePersonal5">
+                  <div class="articlePersonal5_Title">
+                    <h3>個案搭乘紀錄</h3>
+                  </div>
+                  <div class="articlePersonal5_Content">
+                    <template v-for="(case_record, i) in list[6].case_records">
+                      <div class="tr tr1">
+                        <div class="td1">{{ case_record.date }}</div>
+                        <div class="td2">訂單編號：{{ case_record.order_number }}</div>
+                        <div class="td3">{{ case_record.journey }}</div>
+                        <div class="td4">{{ case_record.fee }}</div>
+                        <div class="td5">{{ case_record.isfinish }}</div>
+                        <div class="td6">{{ case_record.driver_car_data }}</div>
+                      </div>
+                    </template>
+
+                    <!-- <div class="tr tr2">
+                          <div class="td1">2019-05-22</div>
+                          <div class="td2">訂單編號：asdfgh1234567890</div>
+                          <div class="td3">去回程</div>
+                          <div class="td4">公費＄30</div>
+                          <div class="td5">已完成</div>
+                          <div class="td6">司機：王成至 車輛：KRI-4856</div>
+                        </div>
+                        <div class="tr tr1">
+                          <div class="td1">2019-05-22</div>
+                          <div class="td2">訂單編號：asdfgh1234567890</div>
+                          <div class="td3">去程</div>
+                          <div class="td4">公費＄30</div>
+                          <div class="td5">已完成</div>
+                          <div class="td6">司機：王成至 車輛：KRI-4856</div>
+                        </div> -->
+                    <a href="" @click.prevent>更多訂單紀錄</a>
+                  </div>
+                </article>
+
+                <article class="articlePersonal6">
+                  <div class="Personal6IMG">
+                    <img :src="list[7].emergency_contact_img" alt="" />
+                  </div>
+                  <div class="Personal6Info">
+                    <h4>緊急聯絡人資訊</h4>
+                    <hr />
+                    <div class="Personal6InfoItem">
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>聯絡人姓名</div>
+                          <div>{{ list[7].emergency_contact_name }}</div>
+                        </div>
+                        <div class="w50">
+                          <div>聯絡人電子信箱</div>
+                          <div>{{ list[7].emergency_contact_email }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>聯絡人性別</div>
+                          <div>{{ list[7].emergency_contact_sex }}</div>
+                        </div>
+                        <div class="w50">
+                          <div>聯絡人市話</div>
+                          <div>{{ list[7].emergency_contact_tel }}</div>
+                        </div>
+                      </div>
+                      <div class="dflexSB">
+                        <div class="w50">
+                          <div>聯絡人手機</div>
+                          <div>{{ list[7].emergency_contact_phone }}</div>
+                        </div>
+                        <div class="w50">
+                          <div>聯絡人關係</div>
+                          <div>{{ list[7].emergency_contact_relationship }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </template>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="component/header.js"></script>
+    <script src="component/leftmenu.js"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script>
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+
+            list: [
+              {
+                name: "曹偉建",
+                sex: "男",
+                certificationID: "A847587643",
+                birth: "1394-03-12",
+                Identity: "65歲以上失能",
+                economic_status: "中低收入戶",
+                mobile: "0974-586-345",
+                pwd: "13940312",
+                tel: "055-7364-3748",
+                email: "gerardosweeneyESU@teleosaurs.xyz",
+                residential_address: "220 新北市板橋區大觀路一段59號",
+                communication_address: "220 新北市板橋區大觀路一段59號"
+              },
+              {
+                violation_points: "0",
+                suspension_due_date: "1934-01-11"
+              },
+              {
+                boarding_times: 20,
+                note_number: 8,
+                available_times: 12,
+                remaining_number_of_turns: 3,
+                empty_time: 2,
+                total_retained_times: 4,
+                retained_times: 7
+              },
+              {
+                selfPaying_amount_remarks: "第1公里内33元，1公里後，每230公尺1.7元"
+              },
+              {
+                approved_service: ["居家服務", "機構喘息服務", "交通接送服務", "機構服務"]
+              },
+              {
+                case_notes:
+                  "需看護陪同，語言失能，無法溝通，搭車顛簸容易嘔吐，需特別注意在行車中血壓異常上升社工通常於每月月初安排醫院健康檢查"
+              },
+              {
+                case_records: [
+                  {
+                    date: "2019-05-22",
+                    order_number: "asdfgh1234567890",
+                    journey: "去程",
+                    fee: "公費＄30",
+                    isfinish: "新訂單未審核",
+                    driver_car_data: ""
+                  },
+                  {
+                    date: "2019-05-22",
+                    order_number: "asdfgh1234567890",
+                    journey: "去回程",
+                    fee: "公費＄30",
+                    isfinish: "已完成",
+                    driver_car_data: "司機：王成至 車輛：KRI-4856"
+                  },
+                  {
+                    date: "2019-05-22",
+                    order_number: "asdfgh1234567890",
+                    journey: "去程",
+                    fee: "公費＄30",
+                    isfinish: "已完成",
+                    driver_car_data: "司機：王成至 車輛：KRI-4856"
+                  }
+                ]
+              },
+              {
+                emergency_contact_img: "img/woman.png",
+                emergency_contact_name: "曹明明",
+                emergency_contact_email: "TGHERTH@gmail.com",
+                emergency_contact_sex: "女",
+                emergency_contact_tel: "055-9474-5986",
+                emergency_contact_phone: "0984-384-485",
+                emergency_contact_relationship: "女兒"
+              }
+            ]
+          };
+        },
+        mounted: function() {},
+        methods: {
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,445 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-158769656-1');
+    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/ui_index.css" />
+  <link rel="stylesheet" href="css/resizelayout.css" />
+  <link rel="stylesheet" href="css/mobileMenu.css">
+  <style>
+     
+
+    .page-d {
+      padding: 10px 0;
+    }
+
+    .page-v-c {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 100%;
+      border: 1px #000 solid;
+      float: left;
+      margin: 0 10px 0 0;
+    }
+
+    .page-v-c-on {
+      color: #fd8115;
+      border: 1px #fd8115 solid;
+    }
+
+    .s0 {
+      background-color: #FFA488;
+      border: 0.05208vw solid #f00;
+    }
+    .ex-table {
+      width:300px;
+      background-color:#fff;
+      border-radius:10px;
+      position:fixed;
+      top:50%;
+      left:50%;
+      margin:-150px 0 0 -150px;
+      overflow: hidden;
+      z-index:999;
+    }
+    .ex-table-h {
+      height:50px;
+      line-height: 50px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      background-color:#fc9236;
+      color:#fff;
+
+    }
+    .ex-talbe-r-c {
+      padding:10px 20px;
+    }
+    .ex-talbe-r-c-in {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px #000 solid;
+      font-size:20px;
+      padding:5px;
+      margin: 0 0 10px 0;     
+    }
+    .ex-talbe-r-c-b {
+      height:50px;
+      background-color:#fc9236;
+      color:#fff;
+      line-height: 50px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      border-radius: 10px;
+    }
+    .ex-black {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      position:fixed;
+      top:0px;
+      left:0px;
+      z-index:998;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+      <div class="loading-black" v-if="loading">
+          <img src="img/spinner.gif">
+        </div>
+    <div class="ex-black" v-if="show_ex" @click="show_ex=!show_ex"></div>
+    <div class="ex-table" v-if="show_ex">
+      <div class="ex-table-h">匯出報表</div>
+      <div class="ex-talbe-r-c">
+        <div v-if="user.RoleId==34">
+        <el-date-picker v-model="ex_data1" type="date" placeholder="選擇開始日期"
+          value-format="yyyy-MM-dd">
+        </el-date-picker>
+        <el-date-picker v-model="ex_data2" type="date" placeholder="選擇結束日期"
+          value-format="yyyy-MM-dd">
+        </el-date-picker>
+        </div>
+        <div v-if="user.RoleId!=34">
+        <el-date-picker v-model="ex_data2" type="month" placeholder="查詢月份" value-format="yyyy-MM"></el-date-picker>
+        </div>
+        <div class="ex-talbe-r-c-b" @click="export_table2" v-if="user.RoleId==34">確定匯出</div>
+        <div class="ex-talbe-r-c-b" @click="export_table" v-else>確定匯出</div>
+      </div>
+    </div>
+
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <user-header-m :user="user" :menu="menu_id"></user-header-m>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=4 :cc="'4'+urlq.pMode" :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1  personalbox" :class="{'active' : isMainleft}">
+          <header>
+            <h1 v-if="urlq.pMode==1">全部個案資料一覽表</h1>
+            <h1 v-if="urlq.pMode==2">新申請未審核</h1>
+            <h1 v-if="urlq.pMode==3">自費個案</h1>
+            <h1 v-if="urlq.pMode==4">公費個案</h1>
+            <h1 v-if="urlq.pMode==5">結案</h1>
+            <div class="search">
+              <input class="input2" type="text" placeholder="關鍵字搜尋" v-model="urlq.key" @keyup.enter="input_search" />
+              <img src="img/icons8-search.png" alt="" />
+            </div>
+            <div class="times" @click="urlq.orderby='Id';to_search()">
+              <span>建立時間</span>
+              <img src="img/icons8-generic_sorting_2.svg" alt="" />
+            </div>
+            <div class="alpha_sorfting"
+              @click="urlq.orderby='CaseUserNo';to_search()">
+              <span>個案編號</span>
+              <img src="img/icons8-alphabetical_sorting.svg" alt="" />
+            </div>
+            <a class="addList" @click.prevent="goto_add">新增個案</a>
+            <a class="addList" @click="show_ex=!show_ex">衛福部核銷檔</a>
+          </header>
+          <div class="reservationOrder">
+            <div class="listReserve">
+              <!-- <ul>
+                  <li>預約訂單</li>
+                  <li>新訂單</li>
+                  <li>客戶取消</li>
+                  <li>服務單位取消</li>
+                  <li>未執行</li>
+                  <li>規劃中</li>
+                  <li>已排班</li>
+                  <li>已出發</li>
+                  <li>抵達搭車地點</li>
+                  <li>客上</li>
+                  <li>空趟</li>
+                  <li>已完成</li>
+                </ul> -->
+              <hr />
+            </div>
+            <div class="personal">
+              <ul class="personalTitle">
+                <li class="photo">照片</li>
+                <li @click="search.orderby='Name';to_search()">姓名</li>
+                <li @click="search.orderby='Id';to_search()">個案編號</li>
+                <li @click="search.orderby='UID';to_search()">身分證字號</li>
+                <li @click="search.orderby='Birthday';to_search()">生日</li>
+                <li @click="search.orderby='Sex';to_search()">性別</li>
+                <li @click="search.orderby='Phone';to_search()">手機</li>
+                <li @click="search.orderby='Tel';to_search()">市話</li>
+                <li @click="search.orderby='Staus';to_search()">狀態控制台</li>
+              </ul>
+              <div class="list-null" v-if="personals==null">查無資料</div>
+              <ul class="personalList" v-for="(item,index) in personals">
+                <li data-tittle="照片">
+                  <div class="sheepPhoto">
+                    <img :src="item.Pic" alt="" />
+                  </div>
+                </li>
+                <li data-tittle="姓名">{{ item.Name }}</li>
+                <li data-tittle="個案編號">{{ item.CaseUserNo }}</li>
+                <li data-tittle="身分證字號">{{ re_star(item.UID) }}</li>
+                <li data-tittle="生日">{{item.Birthday.split("T")[0]}}</li>
+                <li data-tittle="性別">{{ item.Sex }}</li>
+                <li data-tittle="手機">{{ item.Phone }}</li>
+                <li data-tittle="市話">{{ item.Tel }}</li>
+                <li data-tittle="狀態控制台">
+                  <div class="hoverAvai avai" v-if="item.Staus==1">可派發</div>
+                  <div class="hoverAvai avai no_avai" v-else>不可派發</div>
+                  <div class="color1 color" title="叫車"><img src="img/icons8-car_theft_filled.svg" alt="" @click.stop="to_re(item)" /></div>
+                  <div class="color2 color" title="編輯"><a :href="'personal2_edit.html#/edit/'+item.Id"><img src="img/icons8-create_new_filled.svg" alt="" /></a></div>
+                  <div class="color3 color" v-if="false" title="刪除" @click.stop="user_del(item.Id)" v-if="user.RoleId==30||user.RoleId==33"><img src="img/icons8-trash.svg" alt="" /></div>
+                  <div class="color4 color" title="更多" @click="user_link(item.Id)"><img src="img/icons8-more_filled.svg" alt="" /></div>
+                  <button  @click="unlock(item)" v-if="item.ContactUser.PasswordLib&&item.ContactUser.PasswordLib.plErrorCount>=10&&user.RoleId!=34">解鎖</button>
+                </li>
+              </ul>
+
+              <div class="pagination">
+                <page-v :pagen=page :countn=pageCount :urlex="'./personal.html?key='+urlq.key+'&isDescending='+urlq.isDescending+'&pMode='+urlq.pMode+'&orderby='+urlq.orderby+'&page='" v-if='page&&pageCount'></page-v>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/header1_m.js"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/url_q.js"></script>
+  <script src="js/xlsx.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          nav_status: 1,
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          loading:false,
+          isRotate: false,
+          isMainleft: true,
+          personals: [],
+          nav_status: 1,
+          page: 1,
+          pageCount: 1,
+          sort_num: 2,
+          user: "",
+          show_ex:false,
+          ex_data1:"",
+          ex_data2:"",
+          urlq: url_q(window.location.href),
+          search: {
+            key: "",
+            orderby: "Id",
+            isDescending: false
+          }
+        };
+      },
+      mounted: async function () {
+        this.urlq.key=decodeURI(this.urlq.key)
+        if(this.urlq.pMode==1) document.title="全部個案資料一覽表"
+        if(this.urlq.pMode==3) document.title="自費個案" 
+        if(this.urlq.pMode==4) document.title="公費個案" 
+        if(this.urlq.pMode==5) document.title="結案"
+        await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/CaseUser/Get?page=" + this.urlq.page + "&key=" + this.urlq.key + "&isDescending=" + this.urlq.isDescending + "&pMode=" + this.urlq.pMode+"&orderby="+this.urlq.orderby).then(res => {
+          this.personals = res.data.response.data;
+          console.log(res.data.response.data);
+          this.page = res.data.response.page;
+          this.pageCount = res.data.response.pageCount;
+          if(this.personals.length==0) {
+            this.personals=null
+	  }
+          for (let i in this.personals) {
+            if (this.personals[i].Sex == 1) {
+              this.personals[i].Sex = "男"
+            }
+            else if (this.personals[i].Sex == 2) {
+              this.personals[i].Sex = "女"
+            }
+            else if (this.personals[i].Sex == 3) {
+              this.personals[i].Sex = "未填寫"
+            }
+          }
+        });
+      },
+      methods: {
+        user_del: async function (x) {
+          var r = confirm("確定刪除?");
+          if (r == true) {
+            await axios.delete("https://api.donkeymove.com/api/CaseUser/Delete?id=" + x).then(res => {
+              window.location.reload();
+            });
+          }
+          else {
+            return 0;
+          }
+        },
+        user_link: function (x) {
+          location.href = "personal2.html#/get/" + x;
+        },
+        pageSelect: async function (c) {
+          await axios.get("https://api.donkeymove.com/api/CaseUser/Get?page=" + c).then(res => {
+            this.page = res.data.response.page;
+            this.pageCount = res.data.response.pageCount;
+            this.personals = res.data.response.data;
+          });
+        },
+        sort_by_x: function (x) {
+          if (x == 1) {
+            this.personals.sort(function (a, b) {
+              return a.Id - b.Id;
+            });
+          }
+          else if (x == 2) {
+            this.personals.sort(function (a, b) {
+              return b.Id - a.Id;
+            });
+          }
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+        to_search: async function () {
+          this.urlq.isDescending=="true" ? this.urlq.isDescending="false" : this.urlq.isDescending="true"
+          location.href="./personal.html?page="+this.urlq.page+"&key="+this.urlq.key+"&isDescending="+this.urlq.isDescending+"&pMode="+this.urlq.pMode+"&orderby="+this.urlq.orderby
+        },
+        input_search:function() {
+          location.href="./personal.html?page=1&key="+this.urlq.key+"&isDescending="+this.urlq.isDescending+"&pMode="+this.urlq.pMode+"&orderby="+this.urlq.orderby
+        },
+        to_re:async function (x) {
+          await axios.get("https://api.donkeymove.com/api/CaseUser/Get/"+x.Id)
+          .then(res => {
+            res.data.response.CompanyId=this.user.CompanyId
+            res.data.response.RoleId=this.user.RoleId
+            localStorage.removeItem("use_list");
+            localStorage.dk2_admain = JSON.stringify(res.data.response)
+            location.href = 'https://ntpc.donkeymove.com/NewTaipeiWeb1/reservation2.html?date='+moment().format("ss");
+          })
+        },
+        export_table:async function() {
+          this.loading=true
+          await axios.get("https://api.donkeymove.com/api/CaseUser/ExportExcelCaseUser?StartDate="+this.ex_data1+"&EndDate="+this.ex_data2).then(async (res) => {
+            if(res.data.msg=="無資料") {
+              alert("無資料")
+            }
+            else {
+              await convertAndExport(res.data.response) 
+            }
+          })
+          .catch(e=> {
+            alert("匯出失敗")
+          })
+          this.loading=false
+        },
+        export_table2:async function() {
+          this.loading=true
+          await axios.get("https://api.donkeymove.com/api/CaseUser/ExportExcel?StartDate="+this.ex_data1+"&EndDate="+this.ex_data2).then(async (res) => {
+            if(res.data.msg=="無資料") {
+              alert("無資料")
+            }
+            else {
+              await convertAndExport(res.data.response) 
+            }
+          })
+          .catch(e=> {
+            alert("匯出失敗")
+          })
+          this.loading=false
+        },
+        goto_add:function() {
+          if(this.user.RoleId==34) {
+            alert("您無權限進行此操作")
+            return 0
+          }
+          else {
+            location.href="./personal2_edit.html#/add"
+          }
+        },
+        unlock:function(x) {
+          var r = confirm("是否解鎖"+x.Name+"帳號?");
+          if(!r) {
+        return 0
+      }
+          axios.put("https://api.donkeymove.com/api/ContactUser/PutUnlock?cAccount="+x.ContactUser.ContactUID).then(res => {
+            alert(res.data.msg)
+            location.reload()
+          })
+        },
+        put_header: async function (x) {
+          await axios.interceptors.request.use(
+            config => {
+              if (localStorage.dk_token) {
+                config.headers.Authorization = "Bearer " + x;
+              }
+              return config;
+            });
+        },
+        re_star:function(x) {
+		var text=""
+		x=x.split("")
+        for(let i in x) {
+		  if(i>3) {
+            text+="*"
+		  }
+		  else {
+			text+=x[i]
+		  }
+		}
+		return text
+	  },
+        RefreshToken: async function () {
+          var obj = JSON.parse(localStorage.dk_token)
+          await axios.get("https://api.donkeymove.com/api/CompanyUser/RefreshToken/api/CompanyRefreshToken?token=" + obj.token).then(res => {
+            localStorage.dk_token = res.data.response.token;
+          })
+        },
+      }
+    });
+  </script>
+</body>
+
+</html>

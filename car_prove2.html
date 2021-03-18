@@ -1,0 +1,151 @@
+<html>
+
+<head>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-158769656-1');
+		</script>
+	<meta charset="UTF-8" />
+	<script src="js/url_q.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/axios.js"></script>
+	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+	<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+	<script src="./js/html2pdf.bundle.js"></script>
+	<!-- <script src="js/html2pdf.bundle.js"></script> -->
+	<!-- <script src="js/jsPdf.debug.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.1.135/jspdf.min.js"></script> -->
+	<style>
+		.main {
+			width: 800px;
+			margin: 0 auto;
+		}
+
+		.t1 {
+			width: 100%;
+			border-collapse: collapse;
+			page-break-after:always;
+		}
+
+		td {
+			padding: 10px;
+			line-height: 25px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="main">
+		<div ref="content">
+			<table class="t1" border=1 v-for="(item,index) in list">
+				<tr>
+					<td colspan=1><b>車輛使用證明單</b></td>
+					<td colspan=2>{{item.DespatchNo}}</td>
+				</tr>
+				<tr>
+					<td><b>個案編號</b><br>{{item.CaseNo}}</td>
+					<td><b>乘客</b><br>{{item.CaseName}}</td>
+					<td><b>聯絡電話/手機</b><br>{{item.ContactPhone}}</td>
+				</tr>
+				<tr>
+					<td><b>起點</b><br>{{item.StartLocation}}</td>
+					<td>{{dateFormat(item.ReservationDate)}}<br>{{item.StartAddr}}</td>
+					<td>{{item.CaseUpTime ? dateFormat(item.CaseUpTime) : ""}}</td>
+				</tr>
+				<tr>
+					<td><b>終點</b><br>{{item.EndLocation}}</td>
+					<td>地址<br>{{item.EndAddr}}</td>
+					<td>{{item.CasePayTime ? dateFormat(item.CasePayTime) : ""}}</td>
+				</tr>
+				<tr>
+					<td colspan=1><b>司機</b><br>{{item.DriverName}}</td>
+					<td colspan=2><b>車輛</b><br>{{item.CarNo}}</td>
+				</tr>
+				<tr>
+					<td><b>應收金額</b><br>{{item.TotalAmt}}</td>
+					<td><b>實收金額</b><br>{{item.ReceiveAmt}}</td>
+					<td><b>待收金額</b><br>{{item.WaitReceive}}</td>
+				</tr>
+				<tr>
+					<td colspan=3><b>乘客或家屬簽名</b>
+						<div style="height:200px;"></div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+<script>
+	let v = new Vue({
+		el: '.main',
+		data: {
+			url_get: url_q(window.location.href),
+			list: [
+				// { "DespatchNo": "TS158292223408313", "CaseNo": "A00010", "CaseName": "測試用01", "ContactPhone": "0987654321", "StartLocation": "", "ReservationDate": "2020-02-29T09:00:00", "StartAddr": "231台灣新北市新店區五峰路48巷1號", "CaseUpTime": null, "EndLocation": "", "EndAddr": "231台灣新北市新店區建國路289號", "CasePayTime": null, "WheelchairType": "普通輪椅", "FamilyWith": 0, "ForeignWith": 0, "DriverName": "小美女", "CarNo": "TDA-321", "SignPic": null, "TotalAmt": 157.0, "ReceiveAmt": null, "WaitReceive": null }
+			]
+		},
+		mounted: async function () {
+            await this.put_header(JSON.parse(localStorage.dk3_token).token)
+			await axios
+				.get("https://api.donkeymove.com/api/Cars/GetCarsUse?orderNo=" + this.url_get.orderNo + "&startDate=" + this.url_get.startDate + "&endDate=" + this.url_get.endDate)
+				.then(res => {
+					this.list = res.data.response
+					console.log(res.data.response)
+			})
+			.catch(e=>{
+			  location.reload()
+			})
+		},
+		methods: {
+			dateFormat: function (time) {
+				var date = new Date(time);
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+				var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+				var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+				var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+				var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+			},
+			delay: function (x) {
+				return new Promise(function (resolve) {
+					setTimeout(() => {
+						resolve();
+					}, x);
+				});
+			},
+			put_header: async function (x) {
+				await axios.interceptors.request.use(
+					config => {
+						if (localStorage.dk_token) {
+							config.headers.Authorization = "Bearer " + x;
+						}
+						return config;
+					});
+			},
+			// pdf_export: function () {
+			// 	var doc = new jsPDF();
+			// 	html2canvas(document.querySelectorAll(".t1")[0], {
+			// 		onrendered: function (canvas) {
+			// 			var image = canvas.toDataURL("image/png");
+			// 			doc.addImage(image, 'png', 0, 0, canvas.width, canvas.height);
+			// 			doc.save('test.pdf');
+			// 		}
+			// 	});
+			// },
+			pdf_export() {
+			 const element = document.querySelectorAll(".t1")[0]
+             html2pdf()
+             .from(element)
+             .save();
+			}
+		}
+	})
+</script>
+
+</html>

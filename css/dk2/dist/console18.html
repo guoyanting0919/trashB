@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <style>
+      canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+      #chartjs-tooltip {
+        opacity: 1;
+        position: absolute;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border-radius: 3px;
+        -webkit-transition: all 0.1s ease;
+        transition: all 0.1s ease;
+        pointer-events: none;
+        -webkit-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+      }
+      .chartjs-tooltip-key {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <div class="loading-black" v-if="loading">
+        <img src="img/spinner.gif">
+      </div>
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content consolecont">
+        <div>
+          <left-menu :mc=1 :cc=78 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header>
+              <h1>車輛使用率</h1>
+              請輸入年月 (YYYY-MM)&nbsp;&nbsp;<input type="text" class="" placeholder="YYYY-MM" v-model="data1" @keyup.enter="to_search">
+              <button class="console-sel-b" @click="to_search">搜尋</button>
+            </header>  
+            <div class="article1  console12" v-if="list">
+              <div class="tablelist"  v-for="(item,index) in list">
+                <h2>{{item.Name}}</h2>
+                <table border=1>
+                  <thead>
+                  <tr>
+                    <th>日期</th>
+                    <th>趟次</th>
+                    <th>總趟次</th>
+                    <th>使用比率</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="(item2,index2) in item.DateUseRate">
+                    <td>{{item2.UseDate}}</td>
+                    <td>{{item2.DespatchCount}}</td>
+                    <td>{{item2.AllDespatchCount}}</td>
+                    <td>{{item2.UseRate}}</td>
+                  </tr>
+                 </tbody>
+                </table>
+              </div class="tablelist">
+            </div><!--article1-->
+            <div v-else>無資料</div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+	<script src="js/header1.js?v=124"></script>
+	<script src="js/yyyymmdd.js"></script>
+	<script src="js/chartb.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      var ctxt;
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            menu_id:"",
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            nav_status: 1,
+			user:"",
+			c_time:"",
+			list:"",
+      loading:false,
+      data1:moment().format("YYYY-MM"),
+            pickerOptions: {
+              disabledDate(time) {
+                return time.getTime() > Date.now() ;
+              }
+            }
+          };
+        },
+        mounted:async function() {
+          this.loading=true
+          await this.check_login()
+          await this.to_search()
+		    },
+        methods: {
+          selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+		  get_city:function(x) {
+		    var arr=this.city_no.map(x=>x.CountyCode)
+			return arr.indexOf(x);
+		  },
+		  get_comp:function(x) {
+		    var arr=this.comp.map(x=>x.Id)
+			return arr.indexOf(x);		  
+		  },
+		  check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day;
+},
+          to_search:async function() {
+            this.loading=true
+            await axios.get("http://wheat-tainan.1966.org.tw:20021/api/Report/GetCarUseRateWheat/"+this.data1).then(res => {
+              this.list=res.data.response
+              if(this.list.length==0) {
+                this.list=""
+              }
+              this.loading=false
+            })
+            .catch(e=>{
+              this.list=""
+              alert(e)
+              this.loading=false
+            })
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

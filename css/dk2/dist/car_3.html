@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="js/iscroll-lite.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <style>
+	  .header {
+	    box-shadow:0 0 5px #222;
+	  }
+	  .main-d {
+	    padding:20px;
+	  }
+	  .main-d-top {
+	    height:50px;
+	    border-style: solid;
+        border-width: 0 0 1px 0;
+		border-color:#666;
+		padding:0 0 10px 0;
+		margin:0 0 10px 0;
+		display:flex;
+		justify-content:space-between;
+	  }
+	  .main-d-top-l {
+	    height:50px;
+	    float:left;	 
+		display: flex;
+        align-items: center;		
+	  }
+	  .main-d-top-l-d {
+	    margin:0 10px 0 0;
+		padding:0 10px 0 0;
+	    border-style: solid;
+        border-width: 0 1px 0 0;
+		border-color:#666;
+	    float:left;
+	  }
+	  .big {
+	    font-size:30px;
+        border-width: 0;
+	  }
+	  .main-d-top-r {
+	    height:50px;
+	    float:right;
+		display: flex;
+        align-items: center;	
+	  }
+	  .b {
+		padding:10px;
+		margin:0 10px 0 0;
+		border-radius:30px;
+		background-color:#666;
+		color:#fff;
+		float:left;
+	  }
+	  .list {  
+        overflow: hidden;
+		position:relative;
+	  }
+	  .list-l {
+	    float:left;
+		padding:10px;
+	    height:500px;
+		overflow-y:scroll;
+		margin:0 10px 0 0;
+	  }
+	  .list-l-d {
+	    width:300px;
+		height:80px;
+		margin:0 0 10px 0;
+	    border-radius:10px;
+		overflow:hidden;
+		box-shadow:0 0 5px #222;
+	  }
+	  .list-l-d-l {
+	    width:200px;
+		height:80px;
+		background-color:#fff;
+		float:left;
+		box-sizing: border-box;
+		padding:10px;
+	  }
+	  .list-l-d-r {
+	    width:100px;
+		height:80px;
+		background-color:#F18024;
+		color:#fff;
+		float:left;
+		box-sizing: border-box;
+		padding:10px;
+	  }
+	  .list-r {
+	    padding:10px;
+	    height:500px;
+		overflow-y:scroll;
+	  }
+	  .list-r-d {
+	    width:300px;
+	    padding:10px;
+		margin:0 10px 10px 0;
+		overflow:hidden;
+		border-radius:10px;
+		box-shadow:0 0 5px #222;
+		float:left;
+		box-sizing: content-box;
+	  }
+	  .list-r-d-d1 {
+	    margin:0 0 10px 0;
+		overflow:hidden;
+	  }
+	  .list-r-d-d1-name{
+		float:left;
+	  }
+	  .list-r-d-d1-id{
+		float:right;
+	  }
+	  .list-r-d-img {
+	    width:300px;
+		height:200px;
+		margin:0 0 10px 0;
+	  }
+	  .list-r-d-driver {
+	    background-color:#888;
+		height:80px;
+		border-radius:10px;
+	  }
+	  .d-b {
+	    background-color:#666;
+	  }
+	</style>
+  </head>
+  <body>
+    <div class="console_main">
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=3 :cc=33></left-menu>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+		    <div class="main-d">
+			  <div class="main-d-top">
+			    <div class="main-d-top-l">
+				  <div class="main-d-top-l-d big">車籍配對管理</div>
+				</div>
+			    <div class="main-d-top-r">
+				  <div class="b">未配對</div>
+				</div>
+			  </div>
+			  <div class="list">
+                <div class="list-l">
+				  <template v-for="(item,index) in driver">
+				    <div class="list-l-d" draggable="true" @dragstart="dragStart($event,index)" v-if="item.c==false">
+				      <div class="list-l-d-l">
+					    <div class="list-l-d-l-name"><b>{{item.name}}</b></div>
+					    <div class="list-l-d-l-phone">手機:{{item.phone}}</div>
+					  </div>
+					  <div class="list-l-d-r">
+					    <div class="list-l-d-r-li">
+					    駕照編號:<br>{{item.license}}
+					    </div>
+					  </div>
+				    </div>
+				  </template>
+				</div>
+				<div class="list-r">
+				  <template v-for="(item,index) in car">
+				  <div class="list-r-d">
+				    <div class="list-r-d-d1">
+					  <div class="list-r-d-d1-name">{{item.name}}</div>
+					  <div class="list-r-d-d1-id">車牌號碼:{{item.id}}</div>
+					</div>
+					<img class="list-r-d-img" :src="item.img">
+					<div class="list-r-d-driver" @dragover="bu($event)" @dragleave="bf($event)" @drop="cdrop($event,index)">
+
+				      <div class="list-l-d" @click="del(index)" v-if="item.driver_id!='-1'">
+				        <div class="list-l-d-l">
+					      <div class="list-l-d-l-name"><b>{{driver[item.driver_id].name}}</b></div>
+					      <div class="list-l-d-l-phone">手機:{{driver[item.driver_id].phone}}</div>
+					    </div>
+					    <div class="list-l-d-r">
+					      <div class="list-l-d-r-li">
+					      駕照編號:<br>{{driver[item.driver_id].license}}
+					      </div>
+					    </div>
+				      </div>
+
+					</div>
+				  </div>
+				  </template>
+				</div>
+			  </div>
+			</div>
+		  </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu1.js"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script>
+  
+    </script>
+  </body>
+  <script>
+  let console_main=new Vue({
+    el: '.console_main',
+    data: {
+			nav_status: 1,
+	  isLeft: true,
+      isMainleft: true,
+	  user:"",
+      driver:[
+	    {id:0,name:"王1",phone:0987654321,license:123456789,c:true},
+		{id:1,name:"王2",phone:0987654321,license:123456789,c:true},
+		{id:2,name:"王3",phone:0987654321,license:123456789,c:false},
+		{id:3,name:"王4",phone:0987654321,license:123456789,c:false},
+		{id:4,name:"王5",phone:0987654321,license:123456789,c:false},
+		{id:5,name:"王6",phone:0987654321,license:123456789,c:false},
+		{id:6,name:"王7",phone:0987654321,license:123456789,c:false},
+		{id:7,name:"王8",phone:0987654321,license:123456789,c:false},
+		{id:8,name:"王9",phone:0987654321,license:123456789,c:false},
+		{id:9,name:"王10",phone:0987654321,license:123456789,c:false},
+		{id:10,name:"王11",phone:0987654321,license:123456789,c:false},
+		{id:11,name:"王12",phone:0987654321,license:123456789,c:false},
+	  ],
+	  car:[
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:0},
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:1},	   
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:-1},	 
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:-1},	 
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:-1},	 
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:-1},	 
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:-1},	 
+		{id:"EZR-1234",img:"http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg",name:"BMW M140i",license:123456789,driver_id:-1},	 		
+	  ]
+	},
+	mounted:function(){
+	  this.check_login()
+	},
+	methods:{
+		selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+      openNav: function() {
+        this.isLeft = !this.isLeft;
+        this.isMainleft = !this.isMainleft;
+      },
+	  cdrop:function(e,index){
+        e.preventDefault();
+        e.currentTarget.classList.remove('d-b')
+		if(this.car[index].driver_id!=-1) {
+		  return 0
+		}
+        let data=e.dataTransfer.getData("Text")
+        this.car[index].driver_id=data
+		this.driver[data].c=true
+	  },
+	  del:function(index) {
+        let dn=this.car[index].driver_id
+		this.driver[dn].c=false
+		this.car[index].driver_id=-1
+	  },
+	  dragStart:function(e,id) {
+	    e.dataTransfer.setData("Text",id);
+	  },
+	  bu:function (e) {
+        e.currentTarget.classList.add('d-b')
+        event.preventDefault();
+      },
+      bf:function (e) {
+        e.currentTarget.classList.remove('d-b')
+      },
+      check_login:function() {
+		if(localStorage.dk2_user) {
+		  this.user=JSON.parse(localStorage.dk2_user)
+		}
+		else {
+		  location.href = 'login1.html';
+		}
+      }
+	}
+  })
+
+/*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+  alert(213)
+})*/
+  </script>
+</html>

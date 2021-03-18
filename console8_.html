@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/ui_index.css">
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" /> 
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=1 :cc=18 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1" :class="{'active' : isMainleft}">
+          <header>
+            <h1>營運系統控制台</h1>
+
+            <el-date-picker :picker-options="pickerOptions" v-model="data1" type="date" placeholder="選擇日期區間(起)"
+              value-format="yyyy-MM-dd" @change="to_search"></el-date-picker>
+            <el-date-picker :picker-options="pickerOptions" v-model="data2" type="date" placeholder="選擇日期區間(訖)"
+              value-format="yyyy-MM-dd" @change="to_search"></el-date-picker>
+            <div class="select_container">
+              <select name="YourLocation" class="selectStyle" v-model="c_city" @change="to_search">
+                <option value=0>請選擇區域</option>
+                <option v-for="(item,index) in city_no" :value="item.Id">{{item.District}}</option>
+              </select>
+            </div>
+            <div class="select_container">
+              <select name="YourLocation" class="selectStyle" v-model="c_comp" @change="to_search">
+                <option value=0>請選擇公司</option>
+                <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+              </select>
+            </div>
+          </header>
+          <div class="console8">
+            <div class="stitle">返回區域比率</div>
+            單位(%)
+            <div class="cav1">
+              <div class="cav1-d">
+                <canvas id="heyChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/yyyymmdd.js"></script>
+  <script src="js/chartb.js"></script>
+  <script src="js/r_color.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    var c1t;
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          isRotate: false,
+          isMainleft: true,
+          nav_status: 1,
+          user: "",
+          data1: "",
+          data2: "",
+          city_no: "",
+          c_city: 0,
+          comp: "",
+          c_comp: 0,
+          list: "",
+          pickerOptions: {
+            disabledDate(time) {
+              return time.getTime() > Date.now();
+            }
+          }
+        };
+      },
+      mounted: async function () {
+        await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/TaiwanCountry/Get/189").then(res => {
+          this.city_no = res.data.response;
+          console.log(this.city_no);
+        });
+        await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+          this.comp = res.data.response;
+          this.c_comp=res.data.response[0].Id
+          if(this.user.RoleId!=34) {
+              this.c_comp=0
+            }
+          console.log(this.comp);
+        });
+        await this.to_search()
+      },
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        get_city: function (x) {
+          var arr = this.city_no.map(x => x.CountyCode)
+          return arr.indexOf(x);
+        },
+        get_comp: function (x) {
+          var arr = this.comp.map(x => x.Id)
+          return arr.indexOf(x);
+        },
+        to_search: async function () {
+          await axios.get("https://api.donkeymove.com/api/Report/GetBackrea?_datestart=" + this.data1 + "&_dateend=" + this.data2 + "&_countyid=" + this.c_city + "&_companid=" + this.c_comp).then(res => {
+            this.list = res.data.response
+            console.log(res.data.response)
+            var arr_name = this.list.map(x => x.AreaName)
+            var arr1 = this.list.map(x => x.RateOne)
+            var arr2 = this.list.map(x => x.RateTwo)
+            var arr_color = []
+            for (let i in this.list) {
+              arr_color.push(r_color())
+            }
+            this.$nextTick(function () {
+              var obj = [
+                {
+                  backgroundColor: arr_color,
+                  data: arr1
+                }
+              ]
+              var ctx = document.querySelectorAll("#heyChart")[0]
+              if(c1t) {
+                c1t.destroy()
+              }
+              c1t=drew_chart_remove_lab(ctx, 'bar', arr_name, obj)
+            })
+          });
+        },
+        check_login: async function (x) {
+          if (localStorage.dk2_user) {
+            this.user = JSON.parse(localStorage.dk2_user)
+            await get_left_menu(this.user.Id, async (re) => {
+              this.menu_id = re
+              this.$forceUpdate()
+            })
+          }
+          else {
+            location.href = 'login1.html';
+          }
+        },
+      }
+    });
+  </script>
+</body>
+
+</html>

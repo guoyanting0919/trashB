@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158769656-1");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/resizelayout.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css" />
+    <style>
+      .qd img {
+        width: 50%;
+      }
+      .reservationOrder {
+        padding: 20px;
+        background-color: #fff;
+      }
+      h3 {
+        font-size: 25px;
+        margin: 0 0 10px 0;
+      }
+      .qd {
+        padding: 20px 0;
+        font-size: 20px;
+        border-style: solid;
+        border-width: 0 0 1px 0;
+        border-color: #444;
+      }
+      li {
+        padding: 10px 0 10px 30px;
+      }
+      .imgw100 {
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="console_main" v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc="7" :cc="55" :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1 personalbox" :class="{'active' : isMainleft}">
+            <header>
+              <h1>常見問題</h1>
+            </header>
+            <div class="reservationOrder" v-if="user.RoleId==34">
+              <div class="qd">
+                <h3>Q1.新進司機如何進行線上教育訓練?</h3>
+                <div>
+                  A1.<br />
+                  一、操作流程:&nbsp;
+                  開啟中華開放教育平台系統網址(https://www.openedu.tw/)，司機先完成註冊（建議用臉書），回報教育訓練名單以便本局統計受訓完成駕駛(會於本市交通平台系統顯示受訓徽章)，進行線上影片教學課程觀看並完成測驗即可(測驗到80分以上及格)。<br />
+                  二、教育訓練課程：<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;1.新型冠狀肺炎防疫宣導系列<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;2.無障礙接送幸福快樂城市認識可能服務到的弱勢族群。認識輔具的使用方式與相關的急救常識。<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;3.銀髮交通接送服務認識可能服務到的銀髮族群。具備載乘客時所需要的急救常識，及協助就醫之流程。<br />
+                  三、教學簡報檔案：https://reurl.cc/bz9KVE<br />
+                  四、完成後司機填寫表單：https://reurl.cc/jqDKGp<br />
+                  五、有關課程的問題，可撥電至04-24517250#6866 蔡先生。<br />
+                  六、交通平台廠商將於每日下午4點更新司機通過名單https://docs.google.com/spreadsheets/d/1W52YnR6R0GZbaIVNnrKuo0TLDeYZeqo11lh5-3pNGuc/edit?usp=sharing，交通單位可於司機完成線上課程後2天查看通過狀況，名單若有問題可撥電至02-89532910
+                  呂小姐。<br />
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q2.查無個案資料無法下訂單，怎麼辦?</h3>
+                <div>
+                  A2.交通平台系統目前無法與衛福部CMS系統介接，以人工半自動方式將個案清冊下載後匯入交通平台系統，故有1~1.5天的時間差。若查無個案資料，可聯絡個管師於交通平台手動新增個案資料。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>
+                  Q3.訂單無顯示價錢，或預約後顯示去程、或回程地址錯誤，怎麼辦?
+                </h3>
+                <div>
+                  A3.請先檢查預約訂車之起迄點是否為完整地址google
+                  map可以定位到的地址(可將地址轉換到google
+                  map，確認是否定位的出該地址)，若google
+                  map搜尋不到個案居住地址導致無法定位，可將座標輸入於個案資料編輯內緯經度的欄位。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q4.輸入醫院名稱，為什麼出現很多選項?</h3>
+                <div>
+                  A4.以台大醫院為例，有常德街舊址、中山南路新址、兒童醫院，因此需與個案或家屬確認正確上下車位置。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q5.共乘定義?共乘價格如何計算?</h3>
+                <div>
+                  A5.實際有二組長照個案在車上，若有一組個案臨時取消預約服務，另一組個案無共乘折扣，依據原本報價收費。臨時取消服務者記違規1點做懲處。
+                  雙方共乘車資總價都*66%，再與個案個別收取自負額，陪同者另行計價。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q6.司機打卡後，還能推播新訂單嗎?哪裡可以看明天的任務?</h3>
+                <div>
+                  A6.可以。「今日任務」：當天所有接送任務、「任務歷程」：可依日期查看所有接送任務。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q7.系統裡建置的司機和車輛資料，只可新增但無法刪除？</h3>
+                <div>
+                  A7.請建置衛生局核備合格的司機和車輛資料，以利衛生局行政人員稽核。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>
+                  Q8.因勞基法規定工時，故可能有多位司機開一部車情況，如何將訂單改換司機?
+                </h3>
+                <div>
+                  A8.單筆訂單欲更換司機：於調度控制台中找到該筆訂單，點擊右鍵即可更換駕駛（不換車）。<br />當天所有訂單欲更換司機：可於司機車輛設定-車輛資料中，直接更換該車駕駛
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q9.司機如何下載及安裝司機端APP?</h3>
+                <div>
+                  A9.
+                  <ol>
+                    <li>
+                      Android手機安裝步驟：
+                      <ol>
+                        <li>
+                          1. Android手機請直接點選營運端上方google
+                          play圖示，即可下載apk檔進行安裝。
+                        </li>
+                      </ol>
+                    </li>
+                    <li>
+                      ios手機安裝步驟：
+                      <ol>
+                        <li>1. 將手機連接至電腦後開啟iTunes應用程式</li>
+                        <li>
+                          <div>2. 點選手機icon</div>
+                          <img src="./img/QA1.png" />
+                        </li>
+                        <li>
+                          <div>3. 在「序號」的欄位點一下</div>
+                          <img src="./img/QA2.png" />
+                        </li>
+                        <li>
+                          <div>
+                            4. 在「UDID」的欄位點擊右鍵拷貝，即可複製UDID
+                          </div>
+                          <img src="./img/QA3.png" />
+                        </li>
+                        <li>5. 填寫表單申請後，相關負責人員將提供ipa檔</li>
+                        <li>
+                          <div>6. 電腦下載itools3，即可安裝ipa檔</div>
+                          <img src="./img/QA4.png" /><img src="./img/QA5.png" />
+                        </li>
+                      </ol>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q10.司機變更手機號碼，司機端APP的帳號卻沒有跟著改變?</h3>
+                <div>
+                  A10.首次登錄之手機號碼及為司機端APP帳號，帳號產生後便不會改變，若有特殊原因須更改帳號，請向衛生局申請變更帳號需求單，並註明變更原因。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q11.如何進行每月車資核銷?</h3>
+                <div>
+                  A11.從個案資料裡的全部個案資料，右上角有匯出Excel鍵，可批次上傳至衛福部CMS系統核銷(QD-107新制服務區->110-服務紀錄匯入->上傳交通平台系統所匯出的報表)。
+                </div>
+              </div>
+              <div class="qd">
+                <h3>Q12.司機直接送任務時沒網路訊號，不能操作APP怎麼辦?</h3>
+                <div>
+                  A12.每日出勤前可先列印車輛使用證明單或任務明細檔供司機備用，等網路有訊號後再將接送任務按完，營運端可於預約訂單之行車歷程中補登時間
+                </div>
+                <img src="./img/QA6.png" />
+              </div>
+            </div>
+
+            <div class="reservationOrder" v-if="user.RoleId!=34">
+              <iframe
+                class="imgw100"
+                height="720"
+                src="https://www.youtube.com/embed/wuFeYyGLEzs"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe
+              ><br />
+              <a
+                href="./download/A單位教學手冊0421.pptx"
+                style="color: #f00; cursor: pointer"
+                >A單位教學手冊下載</a
+              >
+              <img src="./img/QA_A1.png" class="imgw100" />
+              <img src="./img/QA_A2.png" class="imgw100" />
+              <img src="./img/QA_A5.png" class="imgw100" />
+              <img src="./img/QA_A4.png" class="imgw100" />
+              <img src="./img/QA_A3.png" class="imgw100" />
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/xlsx.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function () {
+          return {
+            nav_status: 1,
+            name: "韓寒寒",
+            img:
+              "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            personals: [],
+            nav_status: 1,
+            user: "",
+            show_ex: false,
+            menu_id: "",
+          };
+        },
+        mounted: async function () {
+          await this.check_login();
+        },
+        methods: {
+          check_login: async function (x) {
+            if (localStorage.dk2_user) {
+              this.user = JSON.parse(localStorage.dk2_user);
+              await get_left_menu(this.user.Id, async (re) => {
+                this.menu_id = re;
+                this.$forceUpdate();
+              });
+            } else {
+              location.href = "login1.html";
+            }
+          },
+          put_header: async function (x) {
+            await axios.interceptors.request.use((config) => {
+              if (localStorage.dk_token) {
+                config.headers.Authorization = "Bearer " + x;
+              }
+              return config;
+            });
+          },
+          RefreshToken: async function () {
+            var obj = JSON.parse(localStorage.dk_token);
+            await axios
+              .get(
+                "https://api.donkeymove.com/api/CompanyUser/RefreshToken/api/CompanyRefreshToken?token=" +
+                  obj.token
+              )
+              .then((res) => {
+                localStorage.dk_token = res.data.response.token;
+              });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,518 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+ 
+  <link rel="stylesheet" href="css/DKdriver.css" />
+  <link rel="stylesheet" href="css/ui_index.css">
+   <link rel="stylesheet" href="css/style1.css" />
+   <link rel="stylesheet" href="css/style2.css" />
+  <style>
+    .li-onc {
+	  border-color:#fd8115;
+      border-style: solid;
+      border-width: 0 0 3px 0;
+	}
+	.page-d {
+	  padding:10px 0;
+	}
+	.page-v-c {
+	  width:30px;
+	  height:30px;
+	  line-height:30px;
+	  text-align:center;
+	  border-radius:100%;
+	  border:1px #000 solid;
+	  float:left;
+	  margin:0 10px 0 0;
+	}
+	.page-v-c-on {
+	  color: #fd8115;
+	  border:1px #fd8115 solid;
+	}
+	.isdel {
+	  background-color:#ccc;
+	}
+  .list-del {
+    background-color: #FFCCCC;
+  }
+  .list-table {
+	width: 100%;
+	border-collapse:collapse;
+	font-size: 13px;
+  }
+  .list-table tr {
+	padding: 10px 0;
+	height:30px;
+	line-height: 30px;
+  }
+  .list-table tr:nth-child(1) {
+	padding: 10px;
+	height:30px;
+	line-height: 30px;
+	background-color:#fd8115;
+	color:#fff;
+  }
+  .list-table tr:nth-child(1):hover {
+	background-color:#fd8115;
+  }
+  .list-table tr {
+	  background-color: #fff;
+  }
+  .list-table tr:hover {
+	  background-color: #eee;
+  }
+  .list-table th {
+	  padding:10px;
+  }
+  .list-table td {
+	  padding:10px;
+  }
+  .list-table .driver_list_d {
+	  width:150px;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+      <div class="loading-black" v-if="loading">
+          <img src="img/spinner.gif">
+        </div>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=3 :cc=40 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1" :class="{'active' : isMainleft}">
+        <div class="main-d">
+          <header>
+            <h1>調度控制台 - 表格式</h1>
+	        <el-date-picker v-model="c_time" type="date" placeholder="選擇日期" value-format="yyyy-MM-dd" @change="get_order"></el-date-picker>
+			    <div class="search" v-if="false">
+            <input type="text" v-model="key" @keyup.enter="to_search" placeholder="請輸入關鍵字">
+            <img src="img/icons8-search.png" alt="">
+          </div>
+            <div class="times" @click="isd=!isd;sort_list('ReservationDate')">
+              <!-- <div>
+                <el-date-picker class="birth" type="date" placeholder="" value-format="yyyy-MM-dd"
+                  @change="new_day();$forceUpdate()"></el-date-picker>
+              </div> -->
+              <span>排序: 預約時間</span>
+              <img src="img/icons8-generic_sorting_2.svg" alt="" />
+            </div>
+            <div class="alpha_sorfting" @click="isd=!isd;sort_list('CaseUserName')">
+              <span>個案姓名</span>
+              <img src="img/icons8-alphabetical_sorting.svg" alt="" />
+            </div>
+            <button @click="putdata">確定推播</button>
+            <!-- <div>
+                  <el-date-picker
+                  class="birth"
+                    v-model="get_list.Birthday"
+                    type="date"
+                    placeholder=""
+                    value-format="yyyy-MM-dd"
+                    @change="new_day();$forceUpdate()"
+                  ></el-date-picker>
+                </div> -->
+
+          </header>
+          <div class="reservationOrder">
+            <div>
+			  <div class="list-null" v-if="order.length==0">查無資料</div>
+			  <table class="list-table" v-else>
+				<tr>
+				  <th>No</th>
+				  <th>個案姓名</th>
+				  <th>預約搭乘時間</th>
+				  <th>里程數</th>
+				  <th>預估時間(分鐘)</th>
+				  <th>起點</th>
+				  <th>迄點</th>
+				  <th>共乘</th>
+				  <th>陪同</th>
+          <th>個案負擔</th>
+          <th>政府補助</th>
+				  <th>車種</th>
+				  <th>操作</th>
+				</tr>  
+                <tr v-for="(item,index) in order">
+				  <td>{{index+1}}</td>
+				  <td>{{item.CaseUserName}}</td>
+				  <td>{{dateFormat(item.ReservationDate)}}</td>
+				  <td>{{item.TotalMileage/1000}}公里</td>
+				  <td>{{item.ExpectedMinute}}</td>
+				  <td>{{item.FromAddr}}</td>
+				  <td>{{item.ToAddr}}</td>
+				  <td>{{item.CanShared ? "是" : "否"}}</td>
+				  <td>{{item.FamilyWith+item.ForeignFamilyWith}}</td>
+          <td>{{item.SelfPayAmt}}</td>
+          <td>{{item.SubsidyAmt}}</td>
+				  <td>{{item.CarCategoryId==236 ? "一般車" : "福祉車"}}</td>
+				  <td>
+				    <div class="driver_list_d">
+					  <input type="text" class="driver_list_d_input" placeholder="請輸入司機名稱" v-model="driver_name[index]" @input="c_input_driver(driver_name[index],index)" :disabled="driver_dis[index]===2">
+					  <div class="driver_list_d_x" @click="driver_name[index]='';driver_dis[index]=0;$forceUpdate();item.d1='';item.d2=''">X</div>
+					    <div class="driver_list_d_d" v-if="driver_dis[index]===1">
+						  <div class="driver_list_d_d_d" v-for="(item2,index2) in true_list[index]" @click="in_order(item,item2,index,$event.target)">{{item2.DriverInfo.DriverName+" ("+item2.CarType.CarTypeName+") "}}</div>
+					    </div>
+					  </div>
+					<button @click="save_order(item)">排班</button>
+          <button @click="t_order(item.Id)" v-if="false">轉單</button>
+          <button @click="show_c_time[index]=!show_c_time[index];$forceUpdate();">變更時間</button>
+          <div v-if="show_c_time[index]">
+            <select v-model="show_c_time_time[index]">
+              <option v-for="(item2,index2) in time_list" :value="item2" v-if="show_time_list(item,item2)">{{item2}}</option>
+            </select>
+            <button @click="to_change_time(item,index)">確定</button>
+          </div>
+				  </td>
+			    </tr>
+			</table>
+            </div>
+          </div>
+          <!-- pagi -->
+          </div>
+        </main>
+      </div>
+    </div> 
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+  <script src="js/yyyymmdd.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/url_q.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script src="js/moment.js"></script>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          time_list:["08:00","08:15", "08:30","08:45", "09:00","09:15", "09:30","09:45", "10:00","10:15", "10:30","10:45", "11:00","11:15", "11:30","11:45", "12:00","12:15","12:30","12:45", "13:00","13:15", "13:30","13:45", "14:00","14:15", "14:30","14:45", "15:00","15:15", "15:30","15:45", "16:00","16:15", "16:30","16:45", "17:00","17:15", "17:30","17:45", "18:00","18:15", "18:30","18:45", "19:00","19:15", "19:30","19:45", "20:00","20:15", "20:30","20:45", "21:00","21:15", "21:30","21:45", "22:00"],
+          status_arr: ["新訂單", "已排班", "已出發", "已抵達", "客上", "客下", "已完成","未執行","個案取消","服務單位取消","空趟","無派車","變更時間"],
+          show_c_time:[],
+          show_c_time_time:[],
+          nav_status: 1,
+          loading:false,
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          order:"",
+          isMainleft: true,
+          isOpen: false,
+          list: [],
+          c_id: 0,
+          true_list:[],
+          driver_list:[],
+          driver_name:[],
+          driver_dis:[],
+		  urlq:url_q(window.location.href),
+          user:"",
+          page: false,
+          pageCount: false,
+		  pmod:1,
+		  search:{
+		    isDispatch:false,
+			status:""
+		  },
+		  c_point:"",
+		  c_re:"",
+		  isd:false,
+		  list2:"",
+      c_data:"",
+      c_time:"",
+		  key:""
+        };
+      },
+
+      mounted: async function () {
+        this.loading=true
+        var arr = new Date().yyyymmdd()
+				this.c_time=arr[0] + "-" + arr[1] + "-" + arr[2]
+	    await this.check_login()
+		var urlq=url_q(window.location.href)
+		await this.get_driver()
+		await this.get_dp()
+		await this.get_order()
+          this.loading=false
+      },
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+
+        },
+        closeModal: function () {
+          this.isOpen = false;
+        },
+        openModal: function () {
+          this.isOpen = true;
+        },
+        get_driver:async function() {
+          await axios.get("http://wheat-tainan.1966.org.tw:20021/api/DriverInfo/GetDriversWithCar")
+          .then(res=>{
+            this.driver_list=res.data.response
+            console.log(this.driver_list)
+          })
+		},
+		get_dp:async function(){
+		  await axios.get("http://wheat-tainan.1966.org.tw:20021/api/Despatch/GetAllGroup?key="+this.c_time)
+          .then(res=>{
+            this.list=res.data.response
+            console.log(this.list)
+          })
+		},
+		get_order:async function() {
+	      await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/GeOrderDetailtForDespatch/"+this.c_time)
+          .then(res=>{
+            this.order=res.data.response
+            console.log(this.order)
+          })         
+		},
+        go_to: function (x) {
+          document.location.href = x
+        },
+        get_more:async function(x) {
+          await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/GetOrderDetailMappingView/"+x).then(res => {
+            this.list2=res.data.response
+          });
+		},
+
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		to_search:async function(x) {
+          await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/GeOrderDetailtView?key="+this.key+"&page="+this.urlq.page+"&pMode="+this.urlq.pmod+"&date="+this.c_data).then(res => {
+            if(res.data.msg=="獲取成功") {
+			  this.page = res.data.response.page;
+              this.pageCount = res.data.response.pageCount;
+			  this.order = res.data.response.data;
+			  console.log(this.order)
+			  if(res.data.response.data.length==0) {
+			    this.order=null
+			  }
+            }
+			else {
+			  alert(res.data.msg)
+			}
+		  });
+		},
+		sort_list:function(x) {
+		  if(this.isd) {
+		    if(x=="CaseUserName") {
+		      this.order.sort(function(a, b) {
+		        return a[x].localeCompare(b[x]);
+		      })
+			}
+			else {
+		      this.order.sort(function(a, b) {
+		        return new Date(b[x]).getTime() - new Date(a[x]).getTime()
+		      })			
+			}
+		  }
+		  else {
+		    if(x=="CaseUserName") {
+		      this.order=this.order.sort(function(a, b) {
+		        return b[x].localeCompare(a[x]);
+		      })
+            }
+            else {
+		      this.order.sort(function(a, b) {
+		        return new Date(a[x]).getTime() - new Date(b[x]).getTime()
+		      })	
+            }			
+		  }
+		},
+		to_del:async function(x) {
+		  if(this.c_point==""||this.c_re=="") {
+		    alert("扣點點數或扣點理由未選擇")
+			return 0
+		  }
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+		  let obj={
+            "CaseUserId":x.CaseUserId,
+            "OrderDetailId": x.Id,
+            "Point": this.c_point,
+            "GrandCount": 0,
+            "Remark": this.c_re,
+		  }
+          await axios.post("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PostOrderViolation",obj).then(async res => {
+		    if(res.data.msg=="添加成功") {
+              await axios.put("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PutDetailStatus?OrderDetailId="+x.Id+"&StatusInt=9").then(res2 => {
+                if(res2.data.msg=="更新成功") {
+				  alert("取消成功")
+				  window.location.reload()
+				}
+				else {
+				  alert(res2.data.msg)
+				}
+              });
+            }
+            else {
+              alert(res.data.msg)
+            }			
+          });
+		  }
+		  else {
+		    return 0;
+		  }
+		},
+    t_order:async function(x) {
+      var r = confirm("確定轉單?");
+          if (r == true) {
+          }
+          else {
+            return 0;
+      }
+      await axios.put("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PutDetailTransfer?OrderDetailId="+x).then(async res => {
+		    if(res.data.msg=="轉單成功") {
+          alert("轉單成功")
+          window.location.reload()
+				}
+        else{
+          alert(res.data.msg)
+        }
+      });
+    },
+    c_input_driver:function(x,y) {
+      if(x=="") {
+        this.driver_dis[y]=0
+        return 0
+      }
+      this.driver_dis[y]=1
+      this.true_list[y]=[]
+      for(let i in this.driver_list) {
+        if(this.driver_list[i].DriverInfo.DriverName.indexOf(x)!=-1&&this.order[y].CarCategoryId==214&&this.driver_list[i].CarType.Id==214) {
+          this.true_list[y].push(this.driver_list[i])
+        }
+        else if(this.driver_list[i].DriverInfo.DriverName.indexOf(x)!=-1&&this.order[y].CarCategoryId==236){
+          this.true_list[y].push(this.driver_list[i])
+        }
+		  }
+    },
+    in_order:async function(x,y,z) {
+      x.d1=y.Id
+      x.d2=y.DriverInfo.Id
+      this.driver_name[z]=y.DriverInfo.DriverName+" ("+y.CarType.CarTypeName+") "
+      this.driver_dis[z]=2
+      this.$forceUpdate()
+    },
+    save_order:async function(x) {
+      if(!x.d1||!x.d2) {
+        alert("請輸入司機名稱")
+        return 0
+      }
+      this.loading=true
+      await axios.post("http://wheat-tainan.1966.org.tw:20021/api/Despatch/Post/"+x.Id+","+x.d1+","+x.d2).then(async res => {
+        alert(res.data.msg)
+        this.$forceUpdate()
+        location.reload()
+      })
+      .catch(function(e) {
+        alert(e)
+        this.$forceUpdate()
+        location.reload()
+      })
+    },
+    putdata: async function () {  //推播調度單
+        this.loading=true
+				var obj = {
+					starDateTime: this.c_time
+				}
+				await axios.put("http://wheat-tainan.1966.org.tw:20021/api/Despatch/PutDate?starDateTime=" + this.c_time)
+					.then(res => {
+            alert(res.data.msg)
+            if(res.data.msg=="更新成功") {
+              window.location.reload()
+						}
+            else {
+              this.loading=false
+            }
+					})
+          .catch(e=>{
+            alert("推播失敗，請確認有訂單被排班")
+            this.loading=false
+          })
+      },
+      to_change_time:async function(x,y) {
+        this.loading=true
+        var time=x.ReservationDate.split("T")[0]+"T"+this.show_c_time_time[y]
+        if(!this.show_c_time_time[y]) {
+          alert("請選擇變更時間")
+          this.loading=false
+          return 0
+        }
+        await axios.post("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PutDetailTime?ordersDetailId="+x.Id+"&newReservationDate="+time)
+					.then(res => {
+            if(res.data.msg=="添加成功") {
+              alert("修改成功")
+              window.location.reload()
+            }
+            else {
+              alert(res.data.msg)
+              this.loading=false
+            }
+					})
+          .catch(e=>{
+            alert("時間變更失敗")
+            this.loading=false
+          })  
+      },
+      show_time_list:function(x,y) {
+        var time=x.ReservationDate.split("T")[0]+"T"+y
+        return moment().isBefore(time);
+      },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day+" "+hours+":"+minutes;
+}
+      }
+    });
+  </script>
+</body>
+
+</html>

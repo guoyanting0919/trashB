@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-158769656-1');
+    </script>
+  <script src="js/iscroll-lite.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" /> 
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+    <input type="file" style="display:none;" class="img_up" ref="upimg" accept="image/png, image/jpeg"
+      @change="img_upf($event)">
+    <input type="file" style="display:none;" class="img_up" ref="upuserimg" accept="image/png, image/jpeg"
+      @change="img_userupf($event)">
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content s_3beforecont">
+      <div>
+        <left-menu :mc=6 :cc=64 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main" :class="{'active' : isMainleft}">
+          <div class="main-d" v-if="show_div==1">
+            <div class="main-d-top">
+              <div class="main-d-top-l">
+                <div class="main-d-top-l-d big">全部營運單位</div>
+              </div>
+              <div class="main-d-top-r">
+                <a class="addList" @click="show_div=3" style="margin:0 20px 0 0;">新增公司</a>
+                <!--<div class="seach-d">
+                    <img src="img/icons8-search.png" class="seach-d-img" />
+                    <input type="text" class="seach-d-in" />
+                  </div>-->
+              </div>
+            </div>
+            <div class="list" @click="close_black">
+              <div class="list-d" v-for="(item,index) in list"  >
+                <!--@contextmenu="open_black($event)"-->
+                <!--<div class="list-d-black" style="display:none;">
+                  <div class="list-d-black-s1">選擇您要進行的操作</div>
+                  <div class="list-d-black-d">
+                    <div class="list-d-black-d-b" @click="del(item.Id)">刪除</div>
+                    <div class="list-d-black-d-b" @click="show_div=2;c_id=index;get_user(item)">編輯</div>
+                  </div>
+                </div>-->
+                <div class="list-d-d1">
+                  <div class="list-d-d1-d">
+                    <img class="list-d-d1-img" :src="item.Logo" v-if="item.Logo" />
+                    <img class="list-d-d1-img" src="https://api.donkeymove.com/UploadFolder/images/default.png"
+                      v-else />
+                    <div class="list-d-d1-r"> 
+                      <div class="list-d-d1-r-s">{{ item.CompanyName }}</div>
+                      <div class="list-d-d1-r-s2">
+                        <div class="list-d-d1-r-s2-l">
+                          {{ item.CompanyCounty }} {{ item.CompanyDistrict }} {{ item.CompanyAddr }}
+                        </div>
+                        <!-- <div class="list-d-d1-r-s2-r">代碼:{{item.Id}}</div> -->
+                      </div>
+                    </div>
+                  </div> 
+                </div><!---->
+                <div class="list-d-d2">
+                  <div class="list-d-d2-d">
+                    <div class="list-d-d2-d-l">
+                      <div class="list-d-d2-d-l-d"> 
+                        <span class="list-d-d2-d-l-d-s2">{{ item.ChargeName }}</span>
+                      </div>
+                    </div>
+                    <div class="list-d-d2-d-r">
+                      <div class="list-d-d2-d-r-s">EMAIL : {{ item.ChargeEmail }}</div>
+                      <div class="list-d-d2-d-r-s">手機 : {{ item.ChargePhone }}</div>
+                      <div class="list-d-d2-d-r-s">市話 : {{ item.ChargeTel }}</div>
+                    </div>
+                  </div> 
+                </div><!---->
+                <div class="list-d-black-d">
+                  <div class="list-d-black-d-b delbtn" @click="del(item.Id)" v-if="user.RoleId==30">刪除</div>
+                  <div class="list-d-black-d-b editbtn" @click="show_div=2;c_id=index;get_user(item)">編輯</div>
+                </div>
+
+
+
+              </div>
+            </div>
+          </div>
+
+          <div class="main-d" v-if="show_div==2&&e_data!=''">
+            <div class="main-d-top">
+              <div class="main-d-top-l">
+                <div class="main-d-top-l-d big">營運單位資料</div>
+              </div>
+              <div class="main-d-top-r">
+                <a class="addList" @click="show_div=1" style="margin:0 20px 0 0;">回上一頁</a>
+              </div>
+            </div>
+            <div class="list" @click="close_black">
+              <div class="list2-d">
+                <div class="list2-h">
+                  <div class="list2-h-b" @click="company_edit">儲存</div>
+                  <div class="list2-dd-r-s">基本資料編輯</div>
+                  <div class="clear"></div>
+                </div>
+                <div class="list2-dd">
+                  
+                  <div class="list2-dd-l"> 
+                    <!-- <img :src="vehicle_info.CarPic" alt="" @click="c_img()" />
+                      <input
+                        type="file"
+                        style="display:none;"
+                        class="img_up"
+                        accept="image/png, image/jpeg"
+                        @change="img_upf($event)"
+                      /> -->
+                    <img class="list2-dd-l-img" @click="$refs.upimg.click()" :src="list[c_id].Logo"
+                      v-if="list[c_id].Logo" />
+                    <img class="list2-dd-l-img" @click="$refs.upimg.click()"
+                      src="https://api.donkeymove.com/UploadFolder/images/default.png" v-else />
+                  </div>
+                  <div class="list2-dd-r">
+                    
+                    <div class="list2-dd-r-d">
+                      <div class="list2-dd-r-d-row">
+                        <span class="list2-dd-r-d-row-name">公司名稱</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].CompanyName" />
+                        
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                      <!-- <span class="list2-dd-r-d-row-name">公司代碼</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].Id" />--> 
+                        <span class="list2-dd-r-d-row-name">負責人</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].ChargeName" />
+                        <span class="list2-dd-r-d-row-name">統一編號</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].EINNO" />
+                        
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        <span class="list2-dd-r-d-row-name">聯絡手機</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].ChargePhone" />
+                        <span class="list2-dd-r-d-row-name">連絡市話</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].ChargeTel" />
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        
+                        <span class="list2-dd-r-d-row-name">電子信箱</span>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="list[c_id].ChargeEmail" />
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        <span class="list2-dd-r-d-row-name">地址</span>
+                        <select class="list2-dd-r-d-row-sel" v-model="list[c_id].CompanyCounty">
+                          <option v-for="(item,index) in city_sel.city_no">{{ item }}</option>
+                        </select>
+                        <select class="list2-dd-r-d-row-sel" v-model="list[c_id].CompanyDistrict">
+                          <option v-for="(item,index) in city_sel[list[c_id].CompanyCounty]">{{
+                              item
+                            }}</option>
+                        </select>
+                        <input type="text" class="list2-dd-r-d-row-in2" v-model="list[c_id].CompanyAddr" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="main-d" v-if="show_div==3">
+            <div class="main-d-top">
+              <div class="main-d-top-l">
+                <div class="main-d-top-l-d big">營運單位資料</div>
+              </div>
+              <div class="main-d-top-r">
+                <a class="addList" @click="show_div=1" style="margin:0 20px 0 0;">回上一頁</a>
+              </div>
+            </div>
+            <div class="list" @click="close_black">
+              <div class="list2-d">
+                <div class="list2-h">
+                  <div class="list2-h-d">營運單位資料新增</div>
+                  <div class="list2-h-b" @click="company_add">儲存</div>
+                </div>
+                <div class="list2-dd">
+                  <div class="list2-dd-l">
+                    <div class="list2-dd-l-s">公司圖標</div>
+                    <img class="list2-dd-l-img" :src="add_data.Logo" @click="$refs.upimg.click()"
+                      v-if="add_data.Logo" />
+                    <img class="list2-dd-l-img" @click="$refs.upimg.click()"
+                      src="https://api.donkeymove.com/UploadFolder/images/default.png" v-else />
+                  </div>
+                  <div class="list2-dd-r">
+                    <div class="list2-dd-r-s">基本資料編輯</div>
+                    <div class="list2-dd-r-d">
+                      <div class="list2-dd-r-d-row">
+                        <div class="list2-dd-r-d-row-name">公司名稱</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.CompanyName" />
+                        <div class="list2-dd-r-d-row-name">電子信箱</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.ChargeEmail" />
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        <div class="list2-dd-r-d-row-name">公司代碼</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.Id" />
+                        <div class="list2-dd-r-d-row-name">負責人</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.ChargeName" />
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        <div class="list2-dd-r-d-row-name">聯絡手機</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.ChargePhone" />
+                        <div class="list2-dd-r-d-row-name">統一編號</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.EINNO" />
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        <div class="list2-dd-r-d-row-name">連絡市話</div>
+                        <input type="text" class="list2-dd-r-d-row-in" v-model="add_data.ChargeTel" />
+                      </div>
+                      <div class="list2-dd-r-d-row">
+                        <div class="list2-dd-r-d-row-name">地址</div>
+                        <select class="list2-dd-r-d-row-sel" v-model="add_data.CompanyCounty">
+                          <option v-for="(item,index) in city_sel.city_no">{{ item }}</option>
+                        </select>
+                        <select class="list2-dd-r-d-row-sel" v-model="add_data.CompanyDistrict">
+                          <option v-for="(item,index) in city_sel[add_data.CompanyCounty]">{{ item }}</option>
+                        </select>
+                        <input type="text" class="list2-dd-r-d-row-in2" v-model="add_data.CompanyAddr" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+  </div>
+  <script src="js/jquery-1.8.0.js"></script>
+  <script type="text/javascript" src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+  <script src="js/city_sel.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/vue-router.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script></script>
+</body>
+<script>
+  const routes = [{ path: "/edit/:id" }, { path: "/add" }];
+  const router = new VueRouter({
+    routes
+  });
+  let console_main = new Vue({
+    el: ".console_main",
+    router,
+    data: {
+      isLeft: true,
+      isMainleft: true,
+      show_div: 1,
+      city_sel: city_sel,
+      city1: "",
+      city1_a: "",
+      city2: "",
+      city2_a: "",
+      c_id: 0,
+      city2_a: "",
+      nav_status: 1,
+      user: "",
+      page: "",
+      pageCount: "",
+      e_data: "",
+      list: [],
+      allCompanyData: [],
+      add_data: {
+        "Id": 0,
+        "ParentId": "",
+        "Account": "",
+        "Pwd": "",
+        "CompanyName": "",
+        "Logo": "",
+        "EINNO": "",
+        "ChargeName": "",
+        "ChargeEmail": "",
+        "ChargeTel": "",
+        "ChargePhone": "",
+        "CompanyCounty": "",
+        "CompanyDistrict": "",
+        "CompanyAddr": "",
+        "IsDeleted": false,
+        "Enabled": true,
+
+      }
+    },
+    mounted: async function () {
+      await this.check_login()
+      await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+        this.page = res.data.response.page
+        this.pageCount = res.data.response.pageCount
+        this.list = res.data.response
+        console.log(res.data.response);
+        this.allCompanyData = res.data.response
+
+        // Account: "vic2";
+        // ChargeEmail: "ergerg354532@gmail.com";
+        // ChargeName: "小明";
+        // ChargePhone: "0987654321";
+        // ChargeTel: "0287654321";
+        // CompanyAddr: "板新路999號8樓";
+        // CompanyCounty: "新北市";
+        // CompanyDistrict: "板橋區";
+        // CompanyName: "中邦資訊有限公司";
+        // CreateBy: "string";
+        // CreateId: 0;
+        // CreateTime: "2019-10-28T10:29:01.493";
+        // EINNO: "string";
+        // Enabled: true;
+        // Id: 3;
+        // IsDeleted: false;
+        // Logo: "string";
+        // ModifyBy: "string";
+        // ModifyId: 0;
+        // ModifyTime: "2019-10-28T02:26:52.513";
+        // ParentId: 0;
+        // Pwd: "1qaz2wsx";
+      });
+    },
+    methods: {
+      selectNav: function (number) {
+        this.nav_status = number;
+      },
+      openNav2: function () {
+        this.isLeft = false;
+        this.isMainleft = false;
+      },
+
+      openNav: function () {
+        this.isLeft = !this.isLeft;
+        this.isMainleft = !this.isMainleft;
+      },
+      open_black: function (e) {
+        e.preventDefault();
+        this.close_black();
+        e.currentTarget.querySelectorAll(".list-d-black")[0].style.display = "block";
+      },
+      close_black: function () {
+        let b = document.querySelectorAll(".list-d-black");
+        for (let i = 0; i < b.length; i++) {
+          b[i].style.display = "none";
+        }
+      },
+      check_login: async function (x) {
+        if (localStorage.dk2_user) {
+          this.user = JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id, async (re) => {
+            this.menu_id = re
+            this.$forceUpdate()
+          })
+        }
+        else {
+          location.href = 'login1.html';
+        }
+      },
+      img_upf: function (e) {
+        let file = e.target.files[0];
+        let formData = new FormData();
+        formData.append("img", file);
+        axios.post("https://api.donkeymove.com/api/Img/Pic", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+          .then(res => {
+            if (res.data.msg == "上傳成功") {
+              console.log("圖片上傳成功!");
+              if (this.show_div == 2) {
+                this.list[this.c_id].Logo = "https://api.donkeymove.com/UploadFolder/" + res.data.response;
+              }
+              else if (this.show_div == 3) {
+                this.add_data.Logo = "https://api.donkeymove.com/UploadFolder/" + res.data.response;
+              }
+            }
+          });
+      },
+      img_userupf: function (e) {
+        let file = e.target.files[0];
+        let formData = new FormData();
+        formData.append("img", file);
+        axios.post("https://api.donkeymove.com/api/Img/Pic", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+          .then(res => {
+            if (res.data.msg == "上傳成功") {
+              console.log("圖片上傳成功!");
+              this.e_data.Pic = "https://api.donkeymove.com/UploadFolder/" + res.data.response;
+            }
+          });
+      },
+      company_add: async function () {
+        await axios.post("https://api.donkeymove.com/api/CarCompanys/Post", this.add_data).then(res => {
+          if (res.data.msg == "添加成功") {
+            alert("新增成功");
+            window.location.reload()
+          }
+          else {
+            alert(res.data.msg)
+          }
+        });
+      },
+      company_edit: async function () {
+        await axios.put("https://api.donkeymove.com/api/CarCompanys/Put", this.list[this.c_id]).then(res => {
+          console.log(res);
+          if(res.data.msg=="更新成功") {
+            alert(res.data.msg);
+            window.location.reload()
+          }
+          else {
+            alert("更新失敗")
+          }
+        });
+      },
+      del: async function (x) {
+        var r = confirm("確定刪除?");
+        if (r == true) {
+          await axios.delete("https://api.donkeymove.com/api/CarCompanys/Delete?id=" + x).then(res => {
+            console.log(res);
+            alert("刪除成功");
+            window.location.reload()
+          });
+        }
+        else {
+          return 0;
+        }
+      },
+      get_user: async function (x) {
+        this.e_data = x
+      }
+    }
+  });
+
+  /*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+alert(213)
+})*/
+</script>
+
+</html>

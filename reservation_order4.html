@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-158769656-1');
+    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/mobileMenu.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .li_on {
+      border-style: solid;
+      border-width: 0 0 3px 0;
+      border-color: #f3981a;
+    }
+
+    .remark {
+      background-color: #343434;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-if="list!=''" v-cloak>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=2 :cc=21 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1" :class="{'active' : isMainleft}">
+          <div class="main-d reservation_order">
+            <header>
+              <h1>個案可用補助</h1>
+            </header>
+            <div class="reservationOrder">
+              <div class="listReserve">
+                <ul>
+                  <li><a @click="go_to('reservation_order2.html#/get/'+$route.params.id)">訂單明細</a></li>
+                  <li><a @click="go_to('reservation_order5.html#/get/'+$route.params.id)">行車歷程</a></li>
+                  <li><a @click="go_to('reservation_order3.html#/get/'+$route.params.id)">個案基本資料</a></li>
+                  <li class="li-onc"><a @click="go_to('reservation_order4.html#/get/'+$route.params.id)">個案可用補助</a></li>
+                </ul>
+              </div>
+              <div class="order4">
+                <div class="top">
+                  <div class="left">
+                    <span>個案編號：{{list.CaseUser.CaseUserNo}}</span>
+                  </div>
+                  <div class="right">
+                    <span></span>
+                    <span v-if="list.CaseUser.Staus==1">可派送</span>
+                    <span v-if="list.CaseUser.Staus==0">不可派送</span>
+                    <span>違規點數：{{list.TotalViolationCount}} </span>
+                  </div>
+                </div>
+                <div class="bottom">
+                  <div class="left">
+                    <div class="person">
+                      <h2>
+                        {{list.CaseUser.Name}}
+                        <span v-if="list.CaseUser.Sex==1">男</span>
+                        <span v-else-if="list.CaseUser.Sex==2">女</span>
+                        <span v-else>{{list.CaseUser.Sex}}</span>
+                      </h2>
+                      <p>身分證字號：{{list.CaseUser.UID}}</p>
+                      <div class="personpicbox"><img :src="list.CaseUser.Pic" alt="" /></div>
+                    </div>
+                    <div class="calender">
+                      <p v-if="false">身份：{{list.CaseUser.IdentityStatusChinese}}</p>
+                      <p>審核日期：{{list.CaseUser.ReviewDate ? dateFormat(list.CaseUser.ReviewDate) : "無"}}</p>
+                      <p>失效日期：{{dateFormat(list.CaseUser.InvalidDate)}}</p>
+                    </div>
+                  </div>
+                  <div class="bottom-right">
+                  <div class="center" v-if="list.CaseUser.CaseUserCoupon.GrantMode==1">
+                    <div class="timesFRE">
+                      <span>總額度</span>
+                      <span>${{list.CaseUser.CaseUserCoupon.TotalCouponAmt}}</span>
+                      <span>使用額度：${{Math.abs(list.CaseUser.CaseUserCoupon.UseCouponAmt)}}</span>
+                      <span>剩餘額度：${{list.CaseUser.CaseUserCoupon.LastCouponAmt}}</span>
+                    </div>
+                    <div class="remark">
+                      <p>自費金額備註：</p>
+                      <p>全部加總後乘以倍數再乘上自負額比例 (起跳金額+(總公尺數-起跳公尺數)/續跳公尺數*續跳金額+國道通行費+夜間加成+服務費)*長照收費倍率*自負額比例</p>
+                    </div>
+                  </div>
+                  <div class="center" v-if="list.CaseUser.CaseUserCoupon.GrantMode==0">
+                    <div class="timesFRE">
+                      <span>總趟次</span>
+                      <span>{{list.CaseUser.CaseUserCoupon.TotalCouponCount}}</span>
+                      <span>使用趟次：{{list.CaseUser.CaseUserCoupon.UseCouponCount}}趟</span>
+                      <span>剩餘趟次：{{list.CaseUser.CaseUserCoupon.LastCouponCount}}趟</span>
+                    </div>
+                    <div class="remark">
+                      <p>自費金額備註：</p>
+                      <p>全部加總後乘以倍數再乘上自負額比例 (起跳金額+(總公尺數-起跳公尺數)/續跳公尺數*續跳金額+國道通行費+夜間加成+服務費)*長照收費倍率*自負額比例</p>
+                    </div>
+                  </div><!--center end-->
+                  <div class="right" v-if="list2!=''">
+                    <div class="timesList">
+                      <div>
+                        <div class=" timeslisttextinfo">
+                          <span>總趟次</span>
+                          <span>{{list2.TotalDetailCount}} </span>
+                        </div>
+                        <div class=" timeslisttextinfo">
+                          <span>每月預設補助</span>
+                          <span>{{list2.DefaultCoupon}} </span>
+                        </div>
+                        <div class=" timeslisttextinfo" v-if="false">
+                          <span>剩餘補助</span>
+                          <span>{{list2.LastCouponCount}} </span>
+                        </div>
+                        <div class=" timeslisttextinfo">
+                          <span>本月空趟次數</span>
+                          <span>{{list2.MissBoardingMonth}} </span>
+                        </div>
+                        <div class=" timeslisttextinfo">
+                          <span>總共空趟次數</span>
+                          <span>{{list2.MissBoarding}} </span>
+                        </div>
+                        <div class=" timeslisttextinfo">
+                          <span>本月自付額</span>
+                          <span>{{list2.SelfPayMonth}} </span>
+                        </div>
+                        <div class="stitle"> 修改紀錄</div>
+                        <div class=" timeslisttextinfo" v-for="(item,index) in list2.CouponHistoryViewModel">
+                          <span>{{item.SetBy}} </span>
+                          <span>${{item.SetCount}} </span>
+                          <span>日期:{{dateFormat(item.SetDate)}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div><!--right end-->
+                </div><!--bottom-right end-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--main-d-->
+        </main>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/vue-router.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    const routes = [
+      { path: '/get/:id' }
+    ]
+    const router = new VueRouter({
+      routes
+    })
+    let console_main = new Vue({
+      el: ".console_main",
+      router,
+      data: function () {
+        return {
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          isRotate: false,
+          isMainleft: true,
+          nav_status: 1,
+          list: "",
+          user: "",
+          list2: ""
+        };
+      },
+      mounted: async function () {
+        await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/OrderDetails/GetOrderDetailMappingView/" + this.$route.params.id)
+          .then(res => {
+            this.list = res.data.response
+            console.log(this.list)
+          })
+        await axios.get("https://api.donkeymove.com/api/OrderDetails/GetOrderSubsidy?caseUserId=" + this.list.CaseUser.Id)
+          .then(res => {
+            this.list2 = res.data.response
+            console.log(this.list2)
+          })
+      },
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        go_to: function (x) {
+          document.location.href = x
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+        dateFormat: function (time) {
+          return moment(time).format("YYYY-MM-DD")
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="js/iscroll-lite.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/pagev.css" />
+    <style>
+      .main {
+        height: auto;
+        overflow: hidden;
+        position: relative;
+      }
+      .header {
+        box-shadow: 0 0 5px #222;
+      }
+      .main-d {
+      }
+      .main-d-top {
+        height: 50px;
+        padding: 0 0 20px 0;
+        margin: 0 0 20px 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      .main-d-top-l {
+        height: 50px;
+        float: left;
+        display: flex;
+        align-items: center;
+      }
+      .main-d-top-l-d {
+        margin: 0 10px 0 0;
+        padding: 0 10px 0 0;
+        border-style: solid;
+        border-width: 0 1px 0 0;
+        border-color: #666;
+        float: left;
+      }
+      .big {
+        font-size: 30px;
+        border-width: 0;
+      }
+      .main-d-top-r {
+        height: 50px;
+        float: right;
+        display: flex;
+        align-items: center;
+      }
+      .b {
+        padding: 10px;
+        margin: 0 10px 0 0;
+        border-radius: 30px;
+        background-color: #666;
+        color: #fff;
+        float: left;
+      }
+      .main-d1 {
+        border-style: solid;
+        border-width: 0 0 1px 0;
+        border-color: #666;
+        margin: 0 0 20px 0;
+        overflow: hidden;
+      }
+      .main-d1-d {
+        float: left;
+        width: 80px;
+        text-align: center;
+        padding: 0 0 10px 0;
+        margin: 0 20px 0 0;
+        border-style: solid;
+        border-width: 0 0 3px 0;
+        border-color: #f5f5f5;
+      }
+      .main-d1-d-on {
+        border-color: #f29700;
+      }
+      .list {
+        margin: 0 0 20px 0;
+      }
+      .list-d {
+        padding: 10px 20px;
+        margin: 0 0 20px 0;
+        height: 100px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 5px #222;
+      }
+      .list-d-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 100%;
+        margin: 0 20px 0 0;
+        float: left;
+      }
+      .list-d-d {
+        height: 80px;
+        line-height: 80px;
+        float: left;
+        margin: 0 20px 0 0;
+      }
+      .list-rd {
+        float: right;
+      }
+      .list-rd-d {
+        width: 50px;
+        height: 50px;
+        margin: 15px 20px 0 0;
+        border-radius: 100%;
+        background-color: #000;
+        float: left;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .hover-dis {
+        opacity: 0;
+      }
+      .list-d:hover {
+        background-color: #434343;
+        color: #fff;
+      }
+      .list-d:hover .hover-dis {
+        opacity: 1;
+      }
+      .bc-b {
+        background-color: #3e79ff;
+      }
+      .bc-r {
+        background-color: #ff3e3e;
+      }
+      .bc-y {
+        background-color: #fc9236;
+      }
+      .seach-d {
+        border-style: solid;
+        border-width: 1px;
+        border-color: #888;
+        border-radius: 30px;
+        width: 200px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        overflow: hidden;
+      }
+      .seach-d-img {
+        width: 30px;
+        height: 30px;
+        margin: 0 0 0 10px;
+        float: left;
+      }
+      .seach-d-in {
+        float: left;
+        width: calc(100% - 30px);
+        height: 100%;
+        padding: 0 10px 0 10px;
+        font-size: 20px;
+      }
+		.black {
+	  width:100%;
+	  height:100%;
+	  background-color:rgba(0,0,0,0.8);
+	  position:fixed;
+	  top:0px;
+	  left:0px;
+	  z-index:9999;
+	}
+	.adde {
+	  width:500px;
+	  overflow:hidden;
+	  position:fixed;
+	  top:50%;
+	  left:50%;
+	  margin:-300px 0 0 -250px;
+	  border-radius:10px;
+	  z-index:10000;
+	  background-color:#fff;
+	}
+	.adde-h {
+	  height:50px;
+	  line-height:50px;
+	  color:#fff;
+	  font-size:20px;
+	  font-weight:bold;
+	  text-align:center;
+	  background-color: #f29700;
+	}
+	.adde-c {
+	  padding:20px;
+	}
+	.adde-c-d {
+	  margin:0 0 10px 0;
+	  overflow:hidden;
+	}
+	.adde-c-d-s {
+	  width:30%;
+	  float:left;
+	  font-size:20px;
+	  margin:10px 0 0 0;
+	}
+	.adde-c-d-se {
+	  width:20%;
+	  float:left;
+	  border-radius:10px;
+	  font-weight:"微軟正黑體";
+	  font-size:18px;
+	  padding:5px;
+	}
+	.adde-c-d-in {
+	  width:70%;
+	  float:left;
+	  border-radius:10px;
+	  font-weight:"微軟正黑體";
+	  font-size:20px;
+	  border:1px #888 solid;
+	  padding:5px;
+	}
+	.adde-c-b {
+	  height:40px;
+	  line-height:40px;
+	  text-align:center;
+	  border-radius:10px;	
+	  background-color: #f29700;
+      color:#fff;
+      font-size:20px;
+      font-weight:bold;	  
+	}
+    </style>
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <div class="black" @click="show_ae=!show_ae" v-if="show_ae"></div>
+	  <div class="adde" v-if="show_ae">
+	    <div class="adde-h" v-if="sub_type">A單位新增</div>
+	    <div class="adde-h" v-else>A單位編輯</div>
+	    <div class="adde-c">
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位名稱</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.UnitName">
+		  </div>
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位統一編號</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.EINNO">
+		  </div>
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位聯絡人</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.ContactName">
+		  </div>
+	      <div class="adde-c-d">
+		    <div class="adde-c-d-s">A單位手機</div>
+		    <input type="text" class="adde-c-d-in" v-model="ae_data.Phone">
+		  </div>
+	      <div class="adde-c-b" @click="sub">確定</div>
+	    </div>
+	  </div>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=6 :cc=67 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+            <div class="main-d">
+              <div class="main-d-top">
+                <div class="main-d-top-l">
+                  <div class="main-d-top-l-d big">A單位一覽</div>
+                </div>
+                <div class="main-d-top-r">
+				  <a class="addList" @click="clear_ae();sub_type=true;show_ae=!show_ae" style="margin:0 20px 0 0;">新增</a>
+                  <div class="seach-d">
+                    <img src="img/icons8-search.png" class="seach-d-img" />
+                    <input type="text" class="seach-d-in" v-model="urlq.key" @keyup.enter="input_search" />
+                  </div>
+                </div>
+              </div>
+              <div class="list">
+                <div class="list-d" v-for="(item,index) in list">
+                  <div class="list-ld">
+                    <div class="list-d-d">{{ item.UnitName }}</div>
+                    <div class="list-d-d">{{ item.Phone }}</div>
+                    <div class="list-d-d">{{ item.EINNO }}</div>
+                    <div class="list-d-d">{{ item.ContactName }}</div>
+                    <div class="list-d-d"></div>
+                  </div>
+                  <div class="list-rd">
+                    <div class="list-rd-d bc-b hover-dis" @click="show_ae=!show_ae;sub_type=false;get_c_list(item)"><img src="img/icons8-create_new_filled.png" /></div>
+                    <div class="list-rd-d bc-r hover-dis" @click="del(item.Id)"><img src="img/icons8-trash.png" /></div>
+                    <div class="list-rd-d bc-y"><img src="img/icons8-more_filled.png" /></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pagination">
+              <page-v :pagen=page :countn=pageCount :urlex="'./A_comp.html?key='+urlq.key+'&page='" v-if='page&&pageCount'></page-v>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/city_sel.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/check.js"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script></script>
+  </body>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: {
+        isLeft: true,
+        isMainleft: true,
+        nav_status: 1,
+        urlq: url_q(window.location.href),
+		user:"",
+        list:"",
+        page: 1,
+        pageCount: 1,
+        key:"",
+		show_ae:false,
+		sub_type:false,
+		ae_data:{
+          "UnitName": "",
+          "Phone": "",
+          "EINNO": "",
+          "ContactName": "",
+        }
+      },
+      mounted:async function() {
+        this.urlq.key=decodeURI(this.urlq.key)
+	    await this.check_login()
+      await this.to_search()
+      },
+      methods: {
+        selectNav: function(number) {
+          this.nav_status = number;
+        },
+        openNav2: function() {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+
+        openNav: function() {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        open_black: function(e) {
+          e.preventDefault();
+          this.close_black();
+          e.currentTarget.querySelectorAll(".list-d-black")[0].style.display = "block";
+        },
+        //接口未接好
+        pageSelect: async function(c) {
+            await axios.get("http://wheat-tainan.1966.org.tw:20021/api/CaseUser/Get?page=" + c).then(res => {
+              this.page = res.data.response.page;
+              this.pageCount = res.data.response.pageCount;
+              this.personals = res.data.response.data;
+            });
+          },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		del:async function(x) {
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+            await axios.delete("http://wheat-tainan.1966.org.tw:20021/api/MainUnitA/Delete?id="+x).then(res => {
+              if(res.data.msg=="刪除成功") {
+			    alert("刪除成功")
+			    window.location.reload()
+			  }
+            });
+		  }
+		  else {
+		    return 0;
+		  }
+		},
+		get_c_list:async function(x) {
+		  this.ae_data=x
+		},
+		check_input:function() {
+		  let flag=true
+		  if(this.ae_data.UnitName=="") {
+		    alert("編號未填")
+			flag=false
+		  }
+		  else if(this.ae_data.Phone==""||!check_phone(this.ae_data.Phone)) {
+		    alert("手機未填或格式不符")
+			flag=false
+		  }
+		  else if(this.ae_data.EINNO=="") {
+		    alert("統一編號未填")
+			flag=false
+		  }
+		  else if(this.ae_data.ContactName=="") {
+		    alert("聯絡人名稱未填")
+			flag=false
+		  }
+		  return flag
+		},
+		clear_ae:function() {
+		  this.ae_data={
+            "UnitName": "",
+            "Phone": "",
+            "EINNO": "",
+            "ContactName": "",
+          }
+		},
+    to_search:async function() {
+      await axios.get("http://wheat-tainan.1966.org.tw:20021/api/MainUnitA/Get?page="+this.urlq.page+"&key="+this.urlq.key).then(res => {
+          this.page = res.data.response.page;
+          this.pageCount = res.data.response.pageCount;
+		  this.list=res.data.response.data
+        });      
+    },
+    input_search:function(){
+      location.href="./A_comp.html?key="+this.urlq.key+"&page=1"
+    },
+		sub:async function() {
+		  if(!this.check_input()) {
+		    return 0
+		  }
+		  if(this.sub_type) {
+            await axios.post("http://wheat-tainan.1966.org.tw:20021/api/MainUnitA/Post",this.ae_data).then(res => {
+              if(res.data.msg=="添加成功") {
+			    alert("新增成功")
+			    window.location.reload()
+			  }
+			  else {
+			    alert(res.data.msg)
+			  }
+            });
+		  }
+		  else {
+            await axios.put("http://wheat-tainan.1966.org.tw:20021/api/MainUnitA/Put",this.ae_data).then(res => {
+              if(res.data.msg=="更新成功") {
+			    alert("修改成功")
+			    window.location.reload()
+			  }
+			  else {
+			    alert(res.data.msg)
+			  }
+            });		  
+		  }
+		}
+      }
+    });
+
+    /*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+  alert(213)
+})*/
+  </script>
+</html>

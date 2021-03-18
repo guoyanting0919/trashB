@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158769656-1");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <style>
+      .li_on {
+        border-style: solid;
+        border-width: 0 0 3px 0;
+        border-color: #f3981a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="console_main" v-if="list!=''" v-cloak>
+      <!-- header -->
+      <div
+        class="ex-black"
+        v-if="show_edit_amt"
+        @click="show_edit_amt=!show_edit_amt"
+      ></div>
+      <div class="ex-table" v-if="show_edit_amt">
+        <div class="ex-table-h">修改實收金額</div>
+        <div class="ex-talbe-r-c">
+          <input
+            type="text"
+            v-model="edit_amt_input.ModifyReason"
+            placeholder="請輸入修改原因"
+          />
+          <input
+            type="text"
+            v-model="edit_amt_input.NewAmt"
+            placeholder="請輸入實收金額"
+          />
+          <div
+            class="ex-talbe-r-c-b"
+            style="margin: 10px 0 0 0"
+            @click="edit_amt"
+          >
+            確定修改
+          </div>
+        </div>
+      </div>
+
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc="2" :cc="21" :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <div class="main-d reservation_order">
+              <header>
+                <h1>訂單總覽</h1>
+              </header>
+              <div class="reservationOrder">
+                <div class="listReserve">
+                  <ul>
+                    <li class="li-onc">
+                      <a
+                        @click="go_to('reservation_order2.html#/get/'+$route.params.id)"
+                        >訂單明細</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click="go_to('reservation_order5.html#/get/'+$route.params.id)"
+                        >行車歷程</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click="go_to('reservation_order3.html#/get/'+$route.params.id)"
+                        >個案基本資料</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click="go_to('reservation_order4.html#/get/'+$route.params.id)"
+                        >個案可用補助</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <div class="listReservePersonData_2">
+                    <div class="listReservePersonData_2_1">
+                      <div class="listReservePersonData_2_11">
+                        <div class="listReservePersonData_2_111">
+                          <h3>
+                            <span>訂單編號</span>
+                            <span>{{list.OrderDetails.SOrderNo}}</span>
+                          </h3>
+                          <h5>
+                            狀態：{{status_arr[list.OrderDetails.Status]}}
+                          </h5>
+                          <h5>
+                            行程：{{(list.OrderDetails.IsBack) ? "回程" :
+                            "去程"}}
+                          </h5>
+                          <h5>
+                            訂單建立時間：{{dateFormat(list.OrderDetails.CreateTime)}}
+                          </h5>
+                          <h5>
+                            預約搭乘時間：{{dateFormat(list.OrderDetails.ReservationDate)}}
+                          </h5>
+                          <h5>
+                            接收簡訊號碼：{{list.OrderDetails.NoticePhone}}
+                          </h5>
+                        </div>
+                      </div>
+                      <div class="listReservePersonData_2_12">
+                        <div
+                          style="color: #fff; line-height: 25px"
+                          v-if="list.CaseUser.CaseUserCoupon.GrantMode==1&&list.CaseUser.UserMode==1"
+                        >
+                          <h5>
+                            剩餘額度：$
+                            {{list.CaseUser.CaseUserCoupon.LastCouponAmt}}
+                          </h5>
+                          <h5>
+                            使用額度：$
+                            {{Math.abs(list.CaseUser.CaseUserCoupon.UseCouponAmt)}}
+                          </h5>
+                          <h5>
+                            總金額：$
+                            {{list.CaseUser.CaseUserCoupon.TotalCouponAmt}}
+                          </h5>
+                        </div>
+                        <div
+                          style="color: #fff; line-height: 20px"
+                          v-if="list.CaseUser.CaseUserCoupon.GrantMode==0&&list.CaseUser.UserMode==1"
+                        >
+                          <h5>
+                            剩餘趟次：{{list.CaseUser.CaseUserCoupon.LastCouponCount}}次
+                          </h5>
+                          <h5>
+                            使用趟次：{{list.CaseUser.CaseUserCoupon.UseCouponCount}}次
+                          </h5>
+                          <h5>
+                            總趟次：{{list.CaseUser.CaseUserCoupon.TotalCouponCount}}次
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="listReservePersonData_2_2">
+                      <div class="listReservePersonData_2_21">
+                        <div class="shareable">
+                          <img src="img/icons8-plasmid_filled.svg" alt="" />
+                          <span v-if="list.OrderDetails.CanShared">可共乘</span>
+                          <span v-else>不可共乘</span>
+                        </div>
+                        <div>
+                          <img
+                            src="img/icons8-plasmid_filledcopy.svg"
+                            alt=""
+                            v-if="list.OrderDetails.WheelchairId"
+                          />
+                          <span v-if="list.OrderDetails.WheelchairId"
+                            >輪椅類型：</span
+                          >
+                          <span v-if="list.OrderDetails.WheelchairId"
+                            >{{list.OrderDetails.WheelchairId}}</span
+                          >
+                          <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                          <span>陪同人員：</span>
+                          <span
+                            ><!--家屬-->
+                            {{list.OrderDetails.FamilyWith}} 人<!-- / 外籍 {{list.OrderDetails.ForeignFamilyWith}} 人--></span
+                          >
+                        </div>
+                        <div></div>
+                      </div>
+                      <!-- <div class="listReservePersonData_2_22"> -->
+                      <!-- google map -->
+                      <!-- <div
+                          class="fakeMap"
+                          style="width: 100%; height: 100%; background: #afafaf"
+                          v-if="true"
+                        ></div> -->
+                      <!-- <img src="img/fakeMap.png" alt="" /> -->
+                      <!-- </div> -->
+                      <div class="listReservePersonData_2_23">
+                        <div class="listReservePersonData_2_231">
+                          <div class="listReservePersonData_2_2311">
+                            <h3>{{list.CaseUser.Name}}</h3>
+                            <h5>個 案 編 號：{{list.CaseUser.CaseUserNo}}</h5>
+                          </div>
+                          <div class="listReservePersonData_2_2312">
+                            <h5>聯絡人</h5>
+                            <p>聯絡人姓名：{{list.CaseUser.UrgentName}}</p>
+                            <p>關係：{{list.CaseUser.UrgentRelationship}}</p>
+                            <p>市話：{{list.CaseUser.UrgentTel}}</p>
+                            <p>手機：{{list.CaseUser.UrgentPhone}}</p>
+                            <p>
+                              社會福利身分：{{list.CaseUser.UserTypeChinese}}
+                            </p>
+                          </div>
+                        </div>
+                        <div class="listReservePersonData_2_232">
+                          <div class="listReservePersonData_2_2321">
+                            <span>預估行車時間 : </span>
+                            <span
+                              >{{list.OrderDetails.ExpectedMinute}} 分鐘</span
+                            >
+                            <span>預估里程數 : </span>
+                            <span
+                              >{{list.OrderDetails.TotalMileage/1000}}
+                              公里</span
+                            >
+                          </div>
+                          <!-- 3*4 -->
+                          <!-- 2*3 -->
+                          <!-- 1*2 -->
+                          <div class="listReservePersonData_2_2322" v-if="1">
+                            <div class="listReservePersonData_2_23221">
+                              <div class="timeDotAddress">
+                                <div class="circleDots">
+                                  <!-- <div class="dot"></div>
+                                  <div class="circleDot active"></div> -->
+                                  <div class="dot"></div>
+                                  <div class="circleDot active">
+                                    <img src="img/icons8-car.svg" alt="" />
+                                  </div>
+                                  <div class="dot"></div>
+                                  <!-- <div class="circleDot "></div>
+                                  <div class="dot"></div> -->
+                                </div>
+                              </div>
+                            </div>
+                            <div class="listReservePersonData_2_23222">
+                              <div>
+                                <p class="changeColor">
+                                  {{list.OrderDetails.FromAddr}}<span
+                                    v-if="list.OrderDetails.FromAddrRemark"
+                                    >({{list.OrderDetails.FromAddrRemark}})</span
+                                  >
+                                </p>
+                                <p>
+                                  <span
+                                    style="
+                                      font-size: 14px;
+                                      color: #888;
+                                      display: inline-block;
+                                      margin-right: 0.5rem;
+                                      font-weight: 700;
+                                    "
+                                    >緯度{{list.OrderDetails.FromLat}}</span
+                                  >
+                                  <span
+                                    style="
+                                      font-size: 14px;
+                                      color: #888;
+                                      display: inline-block;
+                                      margin-right: 0.5rem;
+                                      font-weight: 700;
+                                    "
+                                    >經度{{list.OrderDetails.FromLon}}</span
+                                  >
+                                </p>
+                              </div>
+                              <img
+                                src="img/icons8-long_arrow_down_filled.svg"
+                                alt=""
+                              />
+                              <div>
+                                <p></p>
+                                <p>
+                                  {{list.OrderDetails.ToAddr}}<span
+                                    v-if="list.OrderDetails.ToAddrRemark"
+                                    >({{list.OrderDetails.ToAddrRemark}})</span
+                                  >
+                                </p>
+                                <p>
+                                  <span
+                                    style="
+                                      font-size: 14px;
+                                      color: #888;
+                                      display: inline-block;
+                                      margin-right: 0.5rem;
+                                      font-weight: 700;
+                                    "
+                                    >緯度{{list.OrderDetails.ToLat}}</span
+                                  >
+                                  <span
+                                    style="
+                                      font-size: 14px;
+                                      color: #888;
+                                      display: inline-block;
+                                      margin-right: 0.5rem;
+                                      font-weight: 700;
+                                    "
+                                    >經度{{list.OrderDetails.ToLon}}</span
+                                  >
+                                </p>
+                              </div>
+                              <!-- <img src="img/icons8-long_arrow_down_filled.svg" alt="" />
+                              <div>
+                                <p class="changeColor">台北市中山區中山北路三段100號</p>
+                              </div> -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="listReservePersonData_2_3">
+                      <div class="listReservePersonData_2_31">
+                        <h3>車資總額</h3>
+                        <h3>
+                          ${{list.OrderDetails.Status==6 ?
+                          list.OrderDetails.RealSelfAmt+list.OrderDetails.RealSubsidyAmt
+                          :
+                          list.OrderDetails.TotalAmt-list.OrderDetails.OtherAmt}}
+                        </h3>
+                        <h3>政府補助</h3>
+                        <h3>
+                          ${{list.OrderDetails.Status==6 ?
+                          list.OrderDetails.RealSubsidyAmt :
+                          list.OrderDetails.TotalAmt-list.OrderDetails.SelfPayAmt-list.OrderDetails.OtherAmt}}
+                        </h3>
+                        <h3>陪同金額</h3>
+                        <h3>
+                          ${{list.OrderDetails.Status==6 ?
+                          list.OrderDetails.RealTotalAmt -
+                          list.OrderDetails.RealSelfAmt :
+                          list.OrderDetails.OtherAmt}}
+                        </h3>
+                        <h3>實際應收</h3>
+                        <h3>${{list.OrderDetails.RealTotalAmt}}</h3>
+                        <h3>實際實收</h3>
+                        <h3>${{list.OrderDetails.ReceivedAmt}}</h3>
+                        <button
+                          @click="show_edit_amt=!show_edit_amt"
+                          v-if="!edit_amt_b_show(list)&&list.OrderDetails.Status==6&&user.RoleId==34"
+                          class="btnog"
+                        >
+                          修改實收
+                        </button>
+                      </div>
+                      <div class="listReservePersonData_2_32">
+                        <div class="listReservePersonData_2_321">
+                          <div>司機</div>
+                          <img :src="list.DriverPic" alt="" />
+                          <div>{{list.DriverName}}</div>
+                        </div>
+                        <div class="listReservePersonData_2_321">
+                          <div>車輛</div>
+                          <img :src="list.CarPic" alt="" />
+                          <div>{{list.CarNo}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--main-d-->
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1h_cyazZLo1DExB0h0B2JBuOfv-yFtsM"
+    ></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/vue-router.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      const routes = [{ path: "/get/:id" }];
+      const router = new VueRouter({
+        routes,
+      });
+      let console_main = new Vue({
+        el: ".console_main",
+        router,
+        data: function () {
+          return {
+            status_arr: [
+              "新訂單",
+              "已排班",
+              "已出發",
+              "已抵達",
+              "客上",
+              "客下",
+              "已完成",
+              "未執行",
+              "個案取消",
+              "服務單位取消",
+              "空趟",
+              "無派車",
+              "變更時間",
+            ],
+            nav_status: 1,
+            show_edit_amt: false,
+            name: "韓寒寒",
+            img:
+              "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            list: "",
+            user: {},
+            Despatch_list: "",
+            edit_amt_input: {
+              OrderDetailId: this.$route.params.id,
+              ModifyReason: "",
+              NewAmt: "",
+            },
+          };
+        },
+        mounted: async function () {
+          await this.check_login();
+          await axios
+            .get(
+              "https://api.donkeymove.com/api/OrderDetails/GetOrderDetailMappingView/" +
+                this.$route.params.id
+            )
+            .then((res) => {
+              this.list = res.data.response;
+              console.log(res.data.response);
+            });
+          await this.delay(500);
+          // this.initMap();
+        },
+        methods: {
+          selectNav: function (number) {
+            this.nav_status = number;
+          },
+          openNav2: function () {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function () {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          sonc: function (e) {
+            this.goback = !this.goback;
+            if (this.goback == false) {
+              e.currentTarget.classList.remove("sonc");
+              e.currentTarget.childNodes[0].classList.remove("sonc-d");
+              document.querySelectorAll(".b1")[0].classList.remove("w100");
+              this.stroke.splice(this.stroke.length - 1, 1);
+            } else {
+              e.currentTarget.classList.add("sonc");
+              e.currentTarget.childNodes[0].classList.add("sonc-d");
+              document.querySelectorAll(".b1")[1].classList.add("w100");
+              this.stroke.push(this.stroke[0]);
+            }
+          },
+          initMap: function () {
+            var inp = document.querySelectorAll(".inp");
+            var autocomplete;
+            for (let i = 0; i < inp.length; i++) {
+              autocomplete = new google.maps.places.Autocomplete(inp[i]);
+            }
+            var geocoder = new google.maps.Geocoder();
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
+            var map = new google.maps.Map(
+              document.querySelectorAll(".fakeMap")[0],
+              {
+                zoom: 7,
+                center: { lat: 41.85, lng: -87.65 },
+              }
+            );
+            directionsRenderer.setMap(map);
+
+            this.calculateAndDisplayRoute(
+              directionsService,
+              directionsRenderer
+            );
+          },
+          calculateAndDisplayRoute: function (
+            directionsService,
+            directionsRenderer
+          ) {
+            var from =
+              this.list.OrderDetails.FromLat +
+              "," +
+              this.list.OrderDetails.FromLon;
+            var to =
+              this.list.OrderDetails.ToLat + "," + this.list.OrderDetails.ToLon;
+            console.log(from + "/" + to);
+            directionsService.route(
+              {
+                origin: { query: from },
+                destination: { query: to },
+                provideRouteAlternatives: true,
+                avoidTolls: true,
+                travelMode: "DRIVING",
+              },
+              (response, status) => {
+                if (status === "OK") {
+                  response.routes.sort(function (a, b) {
+                    return a.legs[0].distance.value - b.legs[0].distance.value;
+                  });
+                  response.routes = [response.routes[0]];
+                  directionsRenderer.setDirections(response);
+                } else {
+                  window.alert("Directions request failed due to " + status);
+                }
+              }
+            );
+          },
+          delay: function (x) {
+            return new Promise(function (resolve) {
+              setTimeout(() => {
+                resolve();
+              }, x);
+            });
+          },
+          edit_amt: async function () {
+            if (!this.edit_amt_input.ModifyReason) {
+              alert("請填寫修改原因");
+              return 0;
+            }
+            if (!this.edit_amt_input.NewAmt) {
+              alert("請填寫實收金額");
+              return 0;
+            }
+            await axios
+              .post(
+                "https://api.donkeymove.com/api/OrderDetails/PostDetailReceiveAfter",
+                this.edit_amt_input
+              )
+              .then((res) => {
+                alert(res.data.msg);
+                location.reload();
+              });
+          },
+          go_to: function (x) {
+            document.location.href = x;
+          },
+          get_Despatch: async function (x) {
+            await axios
+              .get("https://api.donkeymove.com/api/Despatch/Get/" + x)
+              .then((res) => {
+                this.Despatch_list = res.data.response;
+              });
+          },
+          check_login: async function (x) {
+            if (localStorage.dk2_user) {
+              this.user = JSON.parse(localStorage.dk2_user);
+              await get_left_menu(this.user.Id, async (re) => {
+                this.menu_id = re;
+                this.$forceUpdate();
+              });
+            } else {
+              location.href = "login1.html";
+            }
+          },
+          edit_amt_b_show: function (x) {
+            return moment().isAfter(
+              moment(x.OrderDetails.ReservationDate).add(7, "days")
+            );
+          },
+          dateFormat: function (time) {
+            return moment(time).format("YYYY-MM-DD HH:mm");
+          },
+        },
+        watch: {
+          stroke: {
+            handler(newName, oldName) {
+              this.initMap();
+            },
+            deep: true,
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

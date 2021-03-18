@@ -1,0 +1,959 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <!-- <link rel="stylesheet" href="css/normalize.css"> -->
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/jquery-ui.css" /> 
+    <style>
+      .driverVehicle2_edit > .section2 > .section22 .service > .floatKinds .floatKinds-d {
+        background: #f3971a;
+        color: #ffffff;
+      }
+	  .sub-b {
+	    
+	  }
+    .rad-span {
+      color:#f00;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="console_main" v-cloak>
+        <div class="loading-black" v-if="loading">
+            <img src="img/spinner.gif">
+          </div>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=5 :cc=51 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1 edit" :class="{'active' : isMainleft}">
+            <header class="headerVehicle">
+              <h1 v-if="$route.path=='/add'">車輛基本資料新增</h1>
+              <h1 v-else>車輛基本資料編輯</h1>
+              <a style="display: none;" href="" @click.prevent>列印</a>
+              <a href="./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&orderby=" v-if="$route.path=='/add'">回上一頁</a>
+			  <a :href="'./driverVehicle2.html#/get/'+vehicle_info.Id" v-else>回上一頁</a>
+              <!-- <a :href="'driverVehicle2.html#/get/'+$route.params.id">回上一頁</a> -->
+            </header>
+            <div class="driverVehicle2_edit">
+              <div class="section1">
+                <select name="" id="" v-model="vehicle_info.Status">
+                  <option value="1">可派發</option>
+                  <option value="0">不可派發</option>
+                </select>
+				<div class="sub-b btnsave" @click="sub">儲存</div>
+                <!-- <a @click.prevent="save_add" href="./driverVehicle2.html">儲存</a> -->
+              </div>
+              <div class="section2">
+                <div class="section21">
+                  <span class="rad-span">(必傳)</span>
+                  <img :src="vehicle_info.CarPic" alt="" @click="c_img()" v-if="vehicle_info.CarPic" />
+				  <img src="img/矩形.png" alt="" @click="c_img()" v-else />
+                  <input
+                    type="file"
+                    style="display:none;"
+                    class="img_up"
+                    accept="image/png, image/jpeg"
+                    @change="img_upf($event)"
+                  />
+                  <div class="section212">
+                    <span>出廠年月<span class="rad-span">(必填)</span></span>
+                    <!-- 組件問題 -->
+                    <input type="text" style="border: 1px solid #000;" v-model="vehicle_info.MakeDate" placeholder="YYYY-MM">
+                    <!-- <el-date-picker
+                      v-model="MakeDate"
+                      type="date"
+                      placeholder=""
+                      value-format="yyyy-MM-dd"
+                      @change="new_day();$forceUpdate()"
+                    ></el-date-picker> -->
+                  </div>
+                  <div class="section212">
+                    <span>最後驗車</span>
+                            <el-date-picker
+							:picker-options="pickerOptions"
+                              v-model="vehicle_info.LastCheckDate"
+                              type="date"
+                              placeholder=""
+                              value-format="yyyy-MM-dd"
+                              @change="$forceUpdate()"
+                            ></el-date-picker>
+                    <!-- <el-date-picker
+                      v-model="LastCheckDate"
+                      type="date"
+                      placeholder=""
+                      value-format="yyyy-MM-dd"
+                      @change="new_day2();$forceUpdate()"
+                    ></el-date-picker> -->
+                    <div v-if="user.RoleId==31">
+                      <input type="checkbox" id="vehicle1" name="vehicle1" v-model="vehicle_info.IsReview">
+                      <label for="vehicle1">車輛審核</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="section22">
+                  <div class="basicData">
+                    <h1>基本資料編輯</h1>
+                    <hr />
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>車身顏色<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.CarColor"/>
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>類別<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <select v-model="value1[0]">
+                            <option value="">請選擇車輛類別</option>
+                            <option v-for="item in category" :value="item.Id">{{item.CarTypeName}}</option>>
+                          </select>
+                          <!--<el-select v-model="value1" multiple placeholder="請選擇車輛類別" style="width:100%">
+                            <el-option
+                              v-for="item in category"
+                              :key="item.Id"
+                              :label="item.CarTypeName"
+                              :value="item.Id"
+                            >
+                            </el-option>
+                          </el-select>-->
+                          <!-- <select name="" id="">
+                            <option v-for="(item,index) in category" :value="item.Id"> {{ item.CarTypeName }}</option>
+                          </select> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>車牌號碼<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.CarNo" />
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>廠牌型號<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.FactoryType" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>車輛來源<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <select name="" id="" v-model="vehicle_info.CarFrom" @change="clear_d">
+                            <option v-for="(item,index) in from" :value="item.Id">{{item.CarTypeName}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>捐贈&獎助單位<span class="rad-span" v-if="vehicle_info.CarFrom!=3">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.DonationUnit" :disabled="vehicle_info.CarFrom==3" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50" v-if="false">
+                        <div>綁定手機</div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.CarPhone" />
+                        </div>
+                      </div>
+                      <div class="w50" v-if="false">
+                        <div>變速系統</div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.VariableSpeed" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex" v-if="false">
+                      <div class="w50">
+                        <div>引擎型式</div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.EngineType" />
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>最大馬力</div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.MaxPower" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex" v-if="false">
+                      <div class="w50">
+                        <div>傳動方式</div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.ModeMethod" />
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>排氣量<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <input type="text" v-model="vehicle_info.CarCC" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>輪椅數量</div>
+                        <div>
+                          <div class="numberAdd2">
+                            <div
+                              @click="vehicle_info.WheelchairNum--;if(vehicle_info.WheelchairNum==-1){vehicle_info.WheelchairNum=0}"
+                              style="cursor: pointer;"
+                            >
+                              -
+                            </div>
+                            <div>{{ vehicle_info.WheelchairNum }}</div>
+                            <div @click="vehicle_info.WheelchairNum++" style="cursor: pointer;">+</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="w50" v-if="false">
+                        <div>用油燃料</div>
+                        <div>
+                          <select name="" id="" v-model="vehicle_info.CarFuel">
+                            <option :value="item.Id" v-for="(item,index) in Fuel_oil_load">
+                              {{ item.CarTypeName }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>座椅數量<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <div class="numberAdd2">
+                            <div
+                              @click="vehicle_info.SeatNum--;if(vehicle_info.SeatNum==-1){vehicle_info.SeatNum=0}"
+                              style="cursor: pointer;"
+                            >
+                              -
+                            </div>
+                            <div>{{ vehicle_info.SeatNum }}</div>
+                            <div @click="vehicle_info.SeatNum++" style="cursor: pointer;">+</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="w50">
+                        <div>車頂高度<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <select name="" v-model.number="vehicle_info.CarTop">
+                            <option v-for="(item,index) in car_top" :value="item.Id">{{ item.CarTypeName }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d_flex">
+                      <div class="w50">
+                        <div>司機<span class="rad-span">(必填)</span></div>
+                        <div>
+                          <select name="" v-model="vehicle_info.DriverId">
+                              <option value="">
+                                  請選擇
+                                </option>
+                            <option v-for="(item,index) in allDrivers" :value="item.Id">
+                              {{ item.DriverName }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="w50"></div>
+                    </div>
+                  </div>
+
+                  <div class="service">
+                    <div class="serviceTitle">車輛保險</div>
+                    <hr />
+                    <div class="floatKinds">
+                      <div v-for="(item, index) in Insurance_load" style="float:left;">
+                        <div
+                          :class="{'floatKinds-d': item.changeColorDivMuch}"
+                          @click="item.changeColorDivMuch=!item.changeColorDivMuch;$forceUpdate();"
+                          class="floatKind"
+                        >
+                          {{ item.CarTypeName }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="service">
+                    <div class="serviceTitle">車輛設備</div>
+                    <hr />
+                    <div class="floatKinds">
+                      <div v-for="(item, index) in device_load">
+                        <div
+                          class="floatKind"
+                          :class="{'floatKinds-d': item.changeColorDivMuch}"
+                          @click="item.changeColorDivMuch=!item.changeColorDivMuch;$forceUpdate();"
+                          class="floatKind"
+                        >
+                          {{ item.CarTypeName }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="service">
+                    <div class="serviceTitle">適用駕照類型</div>
+                    <hr />
+                    <div class="floatKinds">
+                      <div v-for="(item, index) in dr_license_load">
+                        <div
+                          :class="{'floatKinds-d': item.changeColorDivMuch}"
+                          @click="item.changeColorDivMuch=!item.changeColorDivMuch;$forceUpdate();"
+                          class="floatKind"
+                        >
+                          {{ item.CarTypeName }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="service">
+                    <div class="serviceTitle">車輛備註</div>
+                    <hr />
+                    <textarea name="" id="" cols="30" rows="10" v-model="vehicle_info.Remark"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="section3">
+				  <div>
+                    <img src="img/icons8-left.svg" alt="" />
+                    <a href="./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&compId=&orderby="><span>回列表</span></a>
+                  </div>
+
+                <a @click.prevent="sub" href="./driverVehicle2.html">儲存</a>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/city_sel.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script src="js/vue-router.js"></script>
+
+    <!-- <script src="js/selector.js"></script> -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function() {
+        $("#datac")
+          .datepicker({ dateFormat: "yy-mm-dd" })
+          .val();
+        $("#datac")
+          .datepicker()
+          .on("change", function(e) {
+            console_main.vehicle_info.MakeDate = $(this).val();
+          });
+        $("#datac2")
+          .datepicker({ dateFormat: "yy-mm-dd" })
+          .val();
+        $("#datac2")
+          .datepicker()
+          .on("change", function(e) {
+            console_main.vehicle_info.LastCheckDate = $(this).val();
+          });
+      });
+      const routes = [{ path: "/edit/:id" }, { path: "/add" }];
+      const router = new VueRouter({
+        routes
+      });
+
+      let console_main = new Vue({
+        el: ".console_main",
+        router,
+        data: function() {
+          return {
+            loading:false,
+            nav_status: 1,
+            c_data: "",
+            c_data2: "",
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            isChangeColor: false,
+            MakeDate: "",
+            LastCheckDate: "",
+			user:"",
+            c1: 0,
+            c2: 0,
+			from:"",
+            city_sel: city_sel,
+            city1: "",
+            city1_a: "",
+            city2: "",
+            city2_a: "",
+            list: [
+              {
+                title: "車輛保險",
+                list: [
+                  ["強制險", true],
+                  ["駕駛傷害險", false],
+                  ["泡水補償險", false],
+                  ["其他汽車險", false],
+                  ["任意第三人責任險", false],
+                  ["車體險", false],
+                  ["超額責任險", false],
+                  ["竊盜險", false]
+                ]
+              },
+              {
+                title: "車輛設備",
+                list: [["衛星GPS", false], ["車機", false], ["攝影機", false], ["滅火器", false], ["升降機", false]]
+              },
+              {
+                title: "適用駕照類型",
+                list: [
+                  ["小型車職業駕駛執照", false],
+                  ["大貨車職業駕駛執照", false],
+                  ["大客車職業駕駛執照", false],
+                  ["聯結車職業駕駛執照", false]
+                ]
+              }
+            ],
+
+            Cars_Get: [],
+            Cars_Post: [],
+            roof_height: [],
+            fuel_oils: [],
+            vehicle_sources: [],
+            categories: [],
+
+            vehicle_info: {
+              Id: 0,
+              Status: 0, //可否派發
+              CarPic: "", //車輛圖片
+              MakeDate: "", //製造日期
+              LastCheckDate: "", //最後驗車日
+              CompanyId: 0, //車行
+              CarTypes: [], //類別
+              CarNo: "", //車牌號碼
+              FactoryType: "", //廠牌型號
+              CarFrom: 0, //車輛來源
+              DonationUnit: "", //捐贈單位
+              CarPhone: "", //綁定手機
+              VariableSpeed: "", //變速系統
+              EngineType: "", //引擎行事
+              MaxPower: "", //最大馬力
+              ModeMethod: "", //傳動方式
+              CarCC: "", //排氣量
+              WheelchairNum: 0, //輪椅數量
+              CarFuel: "", //用油燃料
+              SeatNum: 0, //座椅數量
+              Remark: "", //備註
+              CarTop: "",
+              //類別  核定服務  車輛服務   適用駕照類型
+              CarTypes: [
+                {
+                  Id: 0
+                }
+              ]
+            },
+
+            Insurance: [],
+            Device: [],
+            DRlicense: [],
+            Applicable_driver_type: "",
+
+            allLoad: [], //所有load
+
+            Professional_license_load: [], ///專業證照
+            Roof_height_load: [], //車頂高度
+            dr_license_load: [], //駕照
+            Vehicle_category_load: [], //車輛類別
+            device_load: [], //設備
+            Insurance_load: [], //保險
+            Fuel_oil_load: [], //用油燃料
+            Vehicle_source_load: [], //車輛來源
+
+            changeColorDivMuch: false,
+            menu_changeColorDivMuch: [],
+
+            category: [],
+            carCompanyss: [],
+
+            allDrivers: [],
+            car_top: [],
+            list1: [],
+            list2: [],
+            list3: [],
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now() - 8.64e7;   //禁用以前的日期，今天不禁用
+            // return date.getTime() <= Date.now();    //禁用今天以及以前的日期
+          }
+        },
+
+            //  多選下拉式
+            options: [
+              {
+                value: "选项1",
+                label: "黄金糕"
+              },
+              {
+                value: "选项2",
+                label: "双皮奶"
+              },
+              {
+                value: "选项3",
+                label: "蚵仔煎"
+              },
+              {
+                value: "选项4",
+                label: "龙须面"
+              },
+              {
+                value: "选项5",
+                label: "北京烤鸭"
+              }
+            ],
+            value1: []
+          };
+        },
+        computed: {
+          allDriversName: function() {
+            var mapValue = allDrivers.map(function(item, index, array) {
+              return item.DriverName;
+            });
+            console.log("");
+
+            return mapValue;
+          },
+          allDriversId: function() {
+            var mapValue = allDrivers.map(function(item, index, array) {
+              return item.Id;
+            });
+            return mapValue;
+          }
+        },
+        mounted: async function() {
+          this.loading=true
+		  await this.check_login()
+          await axios.get("https://api.donkeymove.com/api/CarsType/Get?parentID=10").then(res => {
+            this.car_top = res.data.response.data;
+            console.log(this.car_top);
+          });
+          await axios.get("https://api.donkeymove.com/api/DriverInfo/GetNoPage?isDescending=false").then(res => {
+            this.allDrivers = res.data.response;
+          });
+          // wayn 下面方塊get會消失   +1預設器 和 input 預設值 會消失
+          if (this.$route.path != "/add") {
+            await axios.get("https://api.donkeymove.com/api/Cars/Get/" + this.$route.params.id).then(res => {
+              this.vehicle_info = res.data.response;
+              this.value1=this.vehicle_info.CarCategory.map(x=>x.Id)
+              this.vehicle_info.MakeDate=moment(this.vehicle_info.MakeDate).format("YYYY-MM");
+              console.log(res.data.response);
+            });
+          } else {
+            this.vehicle_info = {
+              Id: 0,
+              CompanyId: 0,
+              CarColor:"",
+              CarNo: "",
+              DonationUnit: "",
+              CarPic: "",
+              CarTop: 0,
+              FactoryType: "",
+              CarFrom: 0,
+              CarCC: "",
+              CarFuel: 0,
+              CarPhone: "",
+              EngineType: "",
+              VariableSpeed: "",
+              ModeMethod: "",
+              MaxPower: "",
+              WheelchairNum: 0,
+              SeatNum: 0,
+              MakeDate: "",
+              LastCheckDate: "",
+              Status: 0,
+              Remark: "",
+              IsDeleted: true,
+              Enabled: true,
+              CreateId: 0,
+              CreateBy: "",
+              CreateTime: "",
+              ModifyId: 0,
+              ModifyBy: "",
+              ModifyTime: "",
+              CarCategory:"",
+              CarTypes: [
+                {
+                  Id: 0,
+                  ParentID: 0,
+                  CarTypeName: "",
+                  Sort: 0
+                }
+              ],
+              CarTypeMapper: [
+                {
+                  Id: 0,
+                  ParentID: 0,
+                  CarTypeName: "",
+                  Sort: 0
+                }
+              ]
+            };
+          }
+
+          // wayn end
+          await axios
+            .get("https://api.donkeymove.com/api/CarsType/Get?parentID=1") //取得車輛來源
+            .then(res => {
+              console.log(res.data.response.data);
+              this.from = res.data.response.data;
+            });
+
+          await axios
+            .get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=8") //取得類別 8
+            .then(res => {
+              console.log(res.data.response.data);
+              this.category = res.data.response.data;
+            });
+
+          await axios
+            .get("https://api.donkeymove.com/api/CarCompanys/GetCarCompanys") //取得車行
+            .then(res => {
+              console.log("s你好");
+
+              console.log(res.data.response.data);
+              this.carCompanyss = res.data.response.data;
+            });
+
+          await axios.get("https://api.donkeymove.com/api/CarsType/GetChilds").then(res => {
+            console.log(res.data.response);
+            this.allLoad = res.data.response;
+            // this.Professional_license_load = this.allLoad.filter(function(item, index, array) {
+            //   return item.ParentID === 162; // ParentID==162  專業證照
+            // });
+
+            // this.Roof_height_load = this.allLoad.filter(function(item, index, array) {
+            //   return item.ParentID === 10; // ParentID==10  車頂高度
+            // });
+
+            this.dr_license_load = this.allLoad.filter(function(item, index, array) {
+              return item.ParentID === 9; //ParentID==9  駕照
+            });
+
+            for (let i in this.dr_license_load) {
+              for (let j in this.vehicle_info.CarLicense) {
+                if (this.dr_license_load[i].Id == this.vehicle_info.CarLicense[j].Id) {
+                  console.log("aa");
+
+                  this.dr_license_load[i].changeColorDivMuch = true;
+
+                  console.log("aa2");
+                }
+              }
+            }
+
+            this.Vehicle_category_load = this.allLoad.filter(function(item, index, array) {
+              return item.ParentID === 8; // ParentID==8 車輛類別
+            });
+
+            this.device_load = this.allLoad.filter(function(item, index, array) {
+              return item.ParentID === 7; // ParentID==7 設備
+            });
+            for (let i in this.device_load) {
+              for (let j in this.vehicle_info.CarDevice) {
+                if (this.device_load[i].Id == this.vehicle_info.CarDevice[j].Id) {
+                  this.device_load[i].changeColorDivMuch = true;
+                }
+              }
+            }
+
+            this.Insurance_load = this.allLoad.filter(function(item, index, array) {
+              return item.ParentID === 6; // ParentID==6  保險
+            });
+            console.log("你好AAAA");
+
+            console.log(this.Insurance_load);
+
+            for (let i in this.Insurance_load) {
+              this.Insurance_load[i].ExpiredDate=""
+              for (let j in this.vehicle_info.CarSecure) {
+                if (this.Insurance_load[i].Id == this.vehicle_info.CarSecure[j].Id) {
+                  this.Insurance_load[i].changeColorDivMuch = true;
+                }
+              }
+            }
+
+            this.Fuel_oil_load = this.allLoad.filter(function(item, index, array) {
+              return item.ParentID === 4; // ParentID==4 用油燃料
+            });
+
+            this.Vehicle_source_load = this.allLoad.filter(function(item, index, array) {
+              return item.ParentID === 1; // ParentID==1  車輛來源
+            });
+          });
+          this.vehicle_info.DriverId==null ? this.vehicle_info.DriverId="" : this.vehicle_info.DriverId=this.vehicle_info.DriverId
+          this.loading=false
+          // await axios.get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=10").then(res => {
+          //   this.roof_height = res.data.response.data;
+          // });
+          // await axios.get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=4").then(res => {
+          //   this.fuel_oils = res.data.response.data;
+          // });
+
+          // await axios.get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=8").then(res => {
+          //   this.vehicle_sources = res.data.response.data;
+          // });
+
+          // await axios.get("https://api.donkeymove.com/api/Cars/Get?page=1").then(res => {
+          //   this.Cars_Get = res.data.response.data;
+          // });
+          // await axios.get("https://api.donkeymove.com/api/CarsType/Get?page=1&parentID=6").then(res => {
+          //   console.log(res.data.response.data);
+          // });
+          // await axios.get("https://api.donkeymove.com/api/Cars/GetCarsWithCarType?page=1").then(res => {
+          //   this.categories = res.data.response;
+          // });
+        },
+
+        methods: {
+          selectNav: function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+
+          c_img: function() {
+            document.querySelectorAll(".img_up")[0].click();
+          },
+          img_upf: function(e) {
+            let file = e.target.files[0];
+            let formData = new FormData();
+            formData.append("img", file);
+            axios
+              .post("https://api.donkeymove.com/api/Img/Pic", formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data"
+                }
+              })
+              .then(res => {
+                if (res.data.msg == "上傳成功") {
+                  console.log("圖片上傳成功!");
+                  this.vehicle_info.CarPic = "https://api.donkeymove.com/UploadFolder/" + res.data.response;
+                }
+              });
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          changeColor: function(e) {
+            // this.isChangeColor = !this.isChangeColor;
+            e.currentTarget;
+          },
+          //日期1
+          new_day: function() {
+            let pos = this.data_time.map(function(e) {
+              return e.time;
+            });
+            let c_obj = JSON.parse(JSON.stringify(this.car));
+            if (pos.indexOf(this.MakeDate) == -1) {
+              this.data_time.push({ time: this.MakeDate, car: c_obj });
+              this.c_index = this.data_time.length - 1;
+            } else {
+              this.c_index = pos.indexOf(this.MakeDate);
+            }
+          },
+          //日期2
+          new_day2: function() {
+            let pos = this.data_time.map(function(e) {
+              return e.time;
+            });
+            let c_obj = JSON.parse(JSON.stringify(this.car));
+            if (pos.indexOf(this.LastCheckDate) == -1) {
+              this.data_time.push({ time: this.LastCheckDate, car: c_obj });
+              this.c_index = this.data_time.length - 1;
+            } else {
+              this.c_index = pos.indexOf(this.MakeDate0);
+            }
+          },
+
+          sub:async function() {
+            var type_obj=[]
+			var c_in = this.check_inp();
+            if (!c_in) {
+              return 0;
+            }
+			for(let i in this.value1) {
+			  type_obj.push({Id:this.value1[i]})
+			}
+			this.vehicle_info.CarCategory=type_obj
+            //保險
+            for (let i in this.Insurance_load) {
+              if (this.Insurance_load[i].changeColorDivMuch) {
+                this.list1.push({
+                  Id: this.Insurance_load[i].Id
+                });
+              }
+            }
+            //設備
+            for (let i in this.device_load) {
+              if (this.device_load[i].changeColorDivMuch) {
+                this.list2.push({ Id: this.device_load[i].Id });
+              }
+            }
+            //駕駛
+            for (let i in this.dr_license_load) {
+              if (this.dr_license_load[i].changeColorDivMuch) {
+                this.list3.push({ Id: this.dr_license_load[i].Id });
+              }
+            }
+            //判斷是add 還是 編輯
+            //this.vehicle_info.CarTypes = this.menu_changeColorDivMuch;
+            this.vehicle_info.CarSecure = this.list1;
+            this.vehicle_info.CarDevice = this.list2;
+            this.vehicle_info.CarLicense = this.list3;
+            console.log(this.vehicle_info.CarTypes);
+            if (this.$route.path == "/add") {
+              await this.save_add();
+            } else {
+              await this.save_edit();
+            }
+          },
+
+          save_add: async function() {
+            this.loading=true
+            // console.log("新增成功0");
+            console.log(this.vehicle_info);
+
+            await axios.post("https://api.donkeymove.com/api/Cars/PostViewModel", this.vehicle_info).then(res => {
+              if(res.data.msg=="添加成功") {
+			    console.log(res);
+                console.log("新增成功");
+                alert("新增成功");
+                window.location.href = "./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&orderby=&compId=";
+              }
+              else {
+                alert(res.data.msg)
+              }			  
+        });
+        this.loading=false
+          },
+
+          save_edit: async function() {
+            this.loading=true
+            // console.log("修改成功0");
+            console.log(this.vehicle_info);
+            await axios.put("https://api.donkeymove.com/api/Cars/PutViewModel", this.vehicle_info).then(res => {
+              if(res.data.msg=="更新成功") {
+			    console.log(res);
+                console.log("修改成功");
+                alert("修改成功");
+                window.location.href = "./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&orderby=&compId=";
+              }
+			  else {
+			    alert(res.data.msg)
+			  }
+      });
+      this.loading=false
+          },
+          check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		clear_d:function() {
+		  if(this.vehicle_info.CarFrom!=2) {
+		    this.vehicle_info.DonationUnit=""
+		  }
+		},
+          check_inp: function() {
+            var flag = true;
+            var arr = [
+              { name: "車身顏色", value: this.vehicle_info.CarColor},
+              { name: "車子類別", value: this.value1[0]},
+              { name: "車牌號碼", value: this.vehicle_info.CarNo },
+              { name: "廠牌型號", value: this.vehicle_info.FactoryType },
+              { name: "車輛來源", value: this.vehicle_info.CarFrom },
+              { name: "座椅數量", value: this.vehicle_info.SeatNum },
+              { name: "車頂高度", value: this.vehicle_info.CarTop },
+              { name: "司機", value: this.vehicle_info.DriverId }
+            ];
+			if((this.vehicle_info.CarFrom==2&&this.vehicle_info.DonationUnit=="")||(this.vehicle_info.CarFrom==244&&this.vehicle_info.DonationUnit=="")) {
+			  alert("捐贈&獎助單位未填入")
+        flag = false;
+      }
+      let bl=/^[0-9]{4}-[0-9]{2}$/.test(this.vehicle_info.MakeDate)
+      if(!bl) {
+        alert("出廠年月不符合格式")
+        flag=false
+      }
+            for (let i in arr) {
+              if (!arr[i].value) {
+                alert(arr[i].name + "未填入");
+                flag = false;
+                break;
+              }
+            }
+            if (this.vehicle_info.CarPic == "") {
+              alert("圖片未上傳");
+              flag = false;
+            }
+            return flag;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

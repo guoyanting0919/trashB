@@ -1,0 +1,1186 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158769656-1");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/DKdriver.css" />
+    <link rel="stylesheet" href="css/ui_index.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/reservation_order.css" />
+    <link rel="stylesheet" href="css/resizelayout.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <style></style>
+  </head>
+
+  <body>
+    <div class="console_main" v-cloak>
+      <div class="loading-black" v-if="loading">
+        <img src="img/spinner.gif" />
+      </div>
+      <div id="reservation">
+        <!-- header -->
+        <div class="ex-black" v-if="show_ex" @click="show_ex=!show_ex"></div>
+        <div class="ex-table" v-if="show_ex">
+          <div class="ex-table-h">匯出報表</div>
+          <div class="ex-talbe-r-c">
+            <el-date-picker
+              v-model="show_ex_data.data1"
+              type="date"
+              placeholder="選擇日期區間(起)"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+            <el-date-picker
+              v-model="show_ex_data.data2"
+              type="date"
+              placeholder="選擇日期區間(訖)"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+            <div v-if="ex_type==2">
+              <select v-model="show_ex_data.comp_v" placeholder="公司">
+                <option value="">請選擇公司</option>
+                <option
+                  v-for="(item,index) in show_ex_data.comp"
+                  :value="item.Id"
+                  v-if="item.CompanyName"
+                >
+                  {{item.CompanyName}}
+                </option>
+              </select>
+              <select v-model="show_ex_data.sex_v" placeholder="性別">
+                <option value="">請選擇性別</option>
+                <option
+                  v-for="(item,index) in show_ex_data.sex"
+                  :value="item.Id"
+                >
+                  {{item.value}}
+                </option>
+              </select>
+              <select v-model="show_ex_data.utype_v" placeholder="社會福利身分">
+                <option value="">請選擇社會福利身分</option>
+                <option
+                  v-for="(item,index) in show_ex_data.utype"
+                  :value="item.Id"
+                >
+                  {{item.TypeName}}
+                </option>
+              </select>
+              <select v-model="show_ex_data.dis_v" placeholder="失能等級">
+                <option value="">請選擇失能等級</option>
+                <option
+                  v-for="(item,index) in show_ex_data.dis"
+                  :value="item.Id"
+                >
+                  {{item.TypeName}}
+                </option>
+              </select>
+            </div>
+            <div
+              class="ex-talbe-r-c-b"
+              style="margin: 10px 0 0 0"
+              @click="export_table"
+            >
+              確定匯出
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="ex-black"
+          v-if="show_review"
+          @click="show_review=!show_review"
+        ></div>
+        <div class="ex-table review-box" v-if="show_review">
+          <div class="ex-table-h">修改狀態</div>
+          <div class="ex-talbe-r-c">
+            <div class="ex-talbe-r-c-d">
+              <h3>操作介面</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <select
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.OperationInterface"
+                >
+                  <option value="">請選擇</option>
+                  <option value="營運端（車行）">營運端（車行）</option>
+                  <option value="APP（司機）">APP（司機）</option>
+                </select>
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>問題類型</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <select
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.QuestionType"
+                >
+                  <option value="">請選擇</option>
+                  <option value="金額有誤（ex補助額度、車資）">
+                    金額有誤（ex補助額度、車資）
+                  </option>
+                  <option value="行控人員失誤 ( ex地址下錯、未推播 )">
+                    行控人員失誤 ( ex地址下錯、未推播 )
+                  </option>
+                  <option value="司機誤觸APP按鈕（ex 客上、空趟 按錯）">
+                    司機誤觸APP按鈕（ex 客上、空趟 按錯）
+                  </option>
+                  <option value="司機APP按鈕沒有執行完畢">
+                    司機APP按鈕沒有執行完畢
+                  </option>
+                  <option value="其他">其他</option>
+                </select>
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>狀態改為</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <select
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.TargetStatus"
+                >
+                  <option value="">請選擇</option>
+                  <option value="1">已排班</option>
+                  <option value="6">已完成</option>
+                  <option value="10">空趟</option>
+                </select>
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>是否影響民眾額度</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <select
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.IsEffectCoupon"
+                >
+                  <option value="">請選擇</option>
+                  <option value="true">是</option>
+                  <option value="false">否</option>
+                </select>
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>問題敘述</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <input
+                  type="text"
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.QuestionDescription"
+                />
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>說明失誤原因及改進方法</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <input
+                  type="text"
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.MissReason"
+                />
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>填單人姓名</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <input
+                  type="text"
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.FillName"
+                />
+              </div>
+            </div>
+            <div class="ex-talbe-r-c-d">
+              <h3>聯絡電話</h3>
+              <div class="ex-talbe-r-c-d-d">
+                <input
+                  type="text"
+                  class="ex-talbe-r-c-d-d-input"
+                  v-model="review_data.ContactPhone"
+                />
+              </div>
+            </div>
+            <div
+              class="ex-talbe-r-c-b"
+              style="margin: 10px 0 0 0"
+              @click="PostWrongStatus"
+            >
+              確定送出
+            </div>
+          </div>
+        </div>
+
+        <user-header :user="user"></user-header>
+        <user-header-m :user="user" :menu="menu_id"></user-header-m>
+        <!-- 側拉選單 -->
+        <div class="content">
+          <div>
+            <left-menu :mc="2" :cc="'2'+pmod" :menu="menu_id"></left-menu>
+            <!-- main -->
+            <main class="main main1" :class="{'active' : isMainleft}">
+              <div class="main-d">
+                <div class="modalOrder" v-if="isOpen&&list2">
+                  <div class="modalCenter">
+                    <div
+                      class="modalX"
+                      @click="closeModal"
+                      style="cursor: pointer"
+                    >
+                      <img src="img/icons8-delete_sign.png" alt="" />
+                      <span>關閉</span>
+                    </div>
+                    <div class="modalBody">
+                      <div class="top">
+                        <div class="left">
+                          <div class="number">
+                            <div>訂單編號</div>
+                            <div>{{list[c_id].SOrderNo}}</div>
+                          </div>
+                          <div class="context">
+                            <p>
+                              預約時間：{{
+                              dateFormat(list[c_id].ReservationDate) }}
+                            </p>
+                            <p>狀態：{{status_arr[list[c_id].Status]}}</p>
+                            <p v-if="list[c_id].IsBack">行程：回程</p>
+                            <p v-else>行程：去程</p>
+                            <p>
+                              訂單建立時間：{{ dateFormat(list[c_id].CreateTime)
+                              }}
+                            </p>
+                          </div>
+                        </div>
+                        <div class="center">
+                          <div class="personal_information1">
+                            <p>
+                              <img
+                                src="img/icons8-plasmid_filledcopy.svg"
+                                alt=""
+                              />
+                              <span
+                                class="otherColor"
+                                v-if="list[c_id].CanShared"
+                                >可共乘</span
+                              >
+                              <span class="otherColor" v-else>不可共乘</span>
+                            </p>
+                            <p>
+                              <img
+                                src="img/icons8-plasmid_filledcopy.svg"
+                                alt=""
+                              />
+                              <span>輪椅類型：</span>
+                              <span>{{list[c_id].WheelchairId}}</span>
+                              <img
+                                src="img/icons8-plasmid_filledcopy.svg"
+                                alt=""
+                              />
+                              <span>陪同人員：</span>
+                              <span>{{list[c_id].FamilyWith}} 人</span>
+                            </p>
+                          </div>
+                          <div class="personal_information2">
+                            <div class="userData">
+                              <div class="d_flex">
+                                <div class="userPhoto">
+                                  <img :src="list[c_id].CaseUserPic" alt="" />
+                                </div>
+                                <div class="userInfo">
+                                  <h3>{{list[c_id].CaseUserName}}</h3>
+                                  <div>
+                                    <p>
+                                      個 案 編 號：{{list[c_id].CaseUserId}}
+                                    </p>
+                                    <p>
+                                      身分證字號：{{list[c_id].CaseUserUID}}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="userAddress">
+                              <div class="d_flex">
+                                <div class="arrowB">
+                                  <img
+                                    src="img/icons8-long_arrow_down_filled.svg"
+                                    alt=""
+                                  />
+                                </div>
+                                <div class="context">
+                                  <p>{{list[c_id].FromAddr}}</p>
+                                  <p></p>
+                                  <p>{{list[c_id].ToAddr}}</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div></div>
+                          </div>
+                        </div>
+                        <div class="right">
+                          <div class="driver">
+                            <p>
+                              <img src="img/icons8-arrow.svg" alt="" />
+                              <span>{{status_arr[list[c_id].Status]}}</span>
+                            </p>
+                          </div>
+                          <div class="fee">
+                            <p>
+                              <span>自費</span>
+                              <span>${{list[c_id].SelfPayAmt}}</span>
+                            </p>
+                            <p>
+                              <span>公費</span>
+                              <span>${{list[c_id].SubsidyAmt}}</span>
+                            </p>
+                            <a
+                              :href="'./reservation_order5.html#/get/'+list[c_id].Id"
+                              >訂單歷程</a
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="bottom">
+                        <div class="left">
+                          <select style="width: 100%" v-model="c_point">
+                            <option value="">請選擇扣點點數</option>
+                            <option value="0">0點</option>
+                            <option value="1">1點</option>
+                            <option value="2">2點</option>
+                            <option value="3">3點</option>
+                            <option value="4">4點</option>
+                            <option value="5">5點</option>
+                          </select>
+                          <textarea
+                            cols="50"
+                            rows="5"
+                            style="width: 100%"
+                            placeholder="扣點理由"
+                            v-model="c_re"
+                            v-if="case_show"
+                          >
+                          </textarea>
+                          <textarea
+                            cols="50"
+                            rows="5"
+                            style="width: 100%"
+                            placeholder="空趟理由"
+                            v-model="c_re"
+                            v-else
+                          >
+                          </textarea>
+                        </div>
+                        <div class="right">
+                          <div>
+                            <p>
+                              目前累計違規點數 {{list2.TotalViolationCount}}點
+                            </p>
+                            <p>
+                              一、
+                              乘客預約時間十分鐘後，仍未抵達約定乘車地點，並視同放棄當次服務，駕駛員回報中心並離開去服務下位乘客，記違規1點。
+                            </p>
+                            <p>
+                              二、
+                              乘車日前(48小時)未申請更改或取消服務者，記違規1點。
+                            </p>
+                            <p>
+                              三、
+                              累積違規3點後，停止服務2週，懲處完畢後歸0，重新累積記點規範。
+                            </p>
+                            <div
+                              class="orderdel"
+                              @click="to_del(list[c_id])"
+                              v-if="list[c_id].Status<2&&case_show"
+                            >
+                              確定取消此訂單
+                            </div>
+                            <div
+                              class="orderdel"
+                              @click="to_del(list[c_id])"
+                              v-if="!case_show"
+                            >
+                              確定空趟
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <header>
+                  <h1>營運系統訂單資料</h1>
+                  <el-date-picker
+                    v-model="urlq.date"
+                    type="date"
+                    placeholder="選擇日期"
+                    value-format="yyyy-MM-dd"
+                    @change="to_search"
+                  ></el-date-picker>
+                  <div class="search">
+                    <input
+                      type="text"
+                      v-model="urlq.key"
+                      @keyup.enter="to_search"
+                      placeholder="請輸入關鍵字"
+                    />
+                    <img src="img/icons8-search.png" alt="" />
+                  </div>
+                  <div class="times" @click="isd=!isd;sort_list(3)">
+                    <!-- <div>
+                  <el-date-picker class="birth" type="date" placeholder="" value-format="yyyy-MM-dd"
+                    @change="new_day();$forceUpdate()"></el-date-picker>
+                </div> -->
+                    <span>排序: 建立時間</span>
+                    <img src="img/icons8-generic_sorting_2.svg" alt="" />
+                  </div>
+                  <div class="alpha_sorfting" @click="isd=!isd;sort_list(2)">
+                    <span>個案編號</span>
+                    <img src="img/icons8-alphabetical_sorting.svg" alt="" />
+                  </div>
+                  <a class="addList" @click.prevent="show_ex=!show_ex;ex_type=2"
+                    >服務紀錄</a
+                  >
+                  <a class="addList" @click.prevent="show_ex=!show_ex;ex_type=1"
+                    >任務明細檔</a
+                  >
+                  <!-- <div>
+                    <el-date-picker
+                    class="birth"
+                      v-model="get_list.Birthday"
+                      type="date"
+                      placeholder=""
+                      value-format="yyyy-MM-dd"
+                      @change="new_day();$forceUpdate()"
+                    ></el-date-picker>
+                  </div> -->
+                </header>
+                <div class="reservationOrder">
+                  <div class="listReserve">
+                    <ul>
+                      <li :class="{'li-onc':urlq.status==-1}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >全部訂單</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==0}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=0&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >新訂單</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==1}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=1&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >已排班</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==2}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=2&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >已出發</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==3}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=3&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >抵達搭車地點</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==4}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=4&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >客上</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==7}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=7&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >未執行</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==8}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=8&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >客戶取消</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==9}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=9&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >服務單位取消</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==10}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=10&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >空趟</a
+                        >
+                      </li>
+                      <li :class="{'li-onc':urlq.status==6}">
+                        <a
+                          :href="'./reservation_order.html?page=1&pmod='+urlq.pmod+'&status=6&key='+'&isDescending='+urlq.isDescending+'&date=&orderby=3'"
+                          >已完成</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="list-null" v-if="list==null">查無資料</div>
+                    <div
+                      class="listReservePersonData"
+                      v-for="(item,index) in list"
+                    >
+                      <div
+                        class="listReservePersonData1"
+                        :class="{'isdel':item.Status>6}"
+                      >
+                        <div class="listReservePersonData11">
+                          <span>訂單編號</span>
+                          <span>{{item.SOrderNo}}</span>
+                        </div>
+                        <div class="listReservePersonData12">
+                          <ul>
+                            <li
+                              v-if="get_comp_data(item.CompanyId)&&get_comp_data(item.CompanyId).CompanyName"
+                            >
+                              單位：{{ get_comp_data(item.CompanyId).CompanyName
+                              }}
+                            </li>
+                            <li>
+                              預約時間：{{ dateFormat(item.ReservationDate) }}
+                            </li>
+                            <li>狀態：{{status_arr[item.Status]}}</li>
+                            <li v-if="item.IsBack">行程：回程</li>
+                            <li v-else>行程：去程</li>
+                            <li>建立時間：{{ dateFormat(item.CreateTime) }}</li>
+                            <li>訂車人身分：{{item.OrderIdentity}}</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="listReservePersonData2">
+                        <div class="listReservePersonData21">
+                          <div class="shareable">
+                            <template v-if="item.CanShared">
+                              <img src="img/icons8-plasmid_filled.svg" alt="" />
+                              <span class="can">可共乘</span>
+                            </template>
+                            <template v-else>
+                              <img src="img/cantDoubleCircle.svg" alt="" />
+                              <span class="cant">不可共乘</span>
+                            </template>
+                          </div>
+                          <div class="typeChair">
+                            <img
+                              src="img/icons8-plasmid_filledcopy.svg"
+                              alt=""
+                              v-if="item.WheelchairId"
+                            />
+                            <span v-if="item.WheelchairId">輪椅類型：</span>
+                            <span v-if="item.WheelchairId"
+                              >{{item.WheelchairId}}</span
+                            >
+                            <img
+                              src="img/icons8-plasmid_filledcopy.svg"
+                              alt=""
+                            />
+                            <span>陪同人員：</span>
+                            <span>
+                              {{item.FamilyWith}} 人
+                              <!--/ 外籍 {{item.ForeignFamilyWith}} 人--></span
+                            >
+                          </div>
+                        </div>
+                        <div class="listReservePersonData22">
+                          <div class="listReservePersonData221">
+                            <div class="memberpicbox">
+                              <img
+                                :src="item.CaseUserPic"
+                                v-if="item.CaseUserPic"
+                                alt=""
+                              />
+                            </div>
+                            <div class="person-content">
+                              <div class="noPhoto" v-else>
+                                <img
+                                  src="img/icons8-sheep2_filled.svg"
+                                  alt=""
+                                />
+                                <span>未上傳相片</span>
+                              </div>
+                              <h5>{{item.CaseUserName}}</h5>
+                              <div>個案編號：{{item.CaseUserNo}}</div>
+                              <div>身分證字號：{{item.CaseUserUID}}</div>
+                              <div>接收簡訊號碼：{{item.NoticePhone}}</div>
+                            </div>
+                          </div>
+                          <div class="listReservePersonData222">
+                            <div>
+                              <div class="address">
+                                <h3>
+                                  {{item.FromAddr}}<span
+                                    v-if="item.FromAddrRemark"
+                                    >({{item.FromAddrRemark}})</span
+                                  >
+                                </h3>
+                                <h3></h3>
+                                <img
+                                  src="img/icons8-long_arrow_down_filled.svg"
+                                  alt=""
+                                />
+                                <div class="clear"></div>
+                                <h5>
+                                  {{item.ToAddr}}<span v-if="item.ToAddrRemark"
+                                    >({{item.ToAddrRemark}})</span
+                                  >
+                                </h5>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="listReservePersonData3">
+                        <div class="new-order">
+                          <img src="img/icons8-arrow.svg" alt="" />
+                          <span
+                            >{{status_arr[item.Status]}}<button
+                              class="btntrn"
+                              @click="t_order(item.Id)"
+                              v-if="item.Status<2"
+                            >
+                              轉單
+                            </button></span
+                          >
+                        </div>
+                        <div class="order-info">
+                          <div class="cost">
+                            個案負擔 ${{item.Status==6 ? item.ReceivedAmt :
+                            item.SelfPayAmt+item.OtherAmt}}
+                          </div>
+                          <div class="total">(車資 + 陪同金額)</div>
+                        </div>
+                        <div class="order-button">
+                          <button
+                            class="btnbox orderpaper"
+                            @click="show_review=!show_review;review_data.OrderDetailId=item.Id"
+                            v-if="item.CompanyId==97&&item.Status>=1&&show_change_status(item)"
+                          >
+                            修改狀態
+                          </button>
+                          <button
+                            class="btnbox orderpaper"
+                            @click="go_to('reservation_order2.html#/get/'+item.Id)"
+                          >
+                            查看訂單
+                          </button>
+                          <button
+                            class="btnbox orderdel"
+                            @click.stop="case_show=false;c_id=index;get_more(item.Id);openModal()"
+                            v-if="item.Status==10&&!item.OrderViolation"
+                          >
+                            空趟記點
+                          </button>
+                          <button
+                            class="btnbox orderdel"
+                            @click.stop="case_show=true;c_id=index;get_more(item.Id);openModal()"
+                            v-if="show_del(item)"
+                          >
+                            取消訂單
+                          </button>
+                          <a
+                            :href="'./reservation_order5.html#/get/'+item.Id"
+                            v-else
+                            ><button class="btnbox">訂單歷程</button></a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- pagi -->
+                <div class="pagination">
+                  <page-v
+                    :pagen="page"
+                    :countn="pageCount"
+                    :urlex="'./reservation_order.html?pmod='+urlq.pmod+'&isDescending='+urlq.isDescending+'&status='+urlq.status+'&orderby='+urlq.orderby+'&key='+this.urlq.key+'&date='+urlq.date+'&page='"
+                    v-if="page&&pageCount"
+                  ></page-v>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/element-ui.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/element-ui.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/header1_m.js"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/xlsx.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function () {
+          return {
+            review_data: {
+              OrderDetailId: "",
+              TargetStatus: "",
+              OperationInterface: "",
+              QuestionType: "",
+              IsEffectCoupon: "",
+              QuestionDescription: "",
+              MissReason: "",
+              FillName: "",
+              ContactPhone: "",
+            },
+            status_arr: [
+              "新訂單",
+              "已排班",
+              "已出發",
+              "已抵達",
+              "客上",
+              "客下",
+              "已完成",
+              "未執行",
+              "個案取消",
+              "服務單位取消",
+              "空趟",
+              "無派車",
+              "變更時間",
+            ],
+            nav_status: 1,
+            name: "韓寒寒",
+            loading: false,
+            img:
+              "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            case_show: true,
+            isMainleft: true,
+            isOpen: false,
+            list: [],
+            c_id: 0,
+            ex_type: 1,
+            show_review: false,
+            show_ex: false,
+            show_ex_data: {
+              data1: "",
+              data2: "",
+              comp: "",
+              comp_v: "",
+              sex: [
+                { Id: 1, value: "男" },
+                { Id: 2, value: "女" },
+              ],
+              sex_v: "",
+              utype: "",
+              utype_v: "",
+              dis: "",
+              dis_v: "",
+            },
+            urlq: url_q(window.location.href),
+            user: "",
+            page: false,
+            pageCount: false,
+            pmod: 1,
+            search: {
+              isDispatch: false,
+              status: "",
+            },
+            c_point: "",
+            c_re: "",
+            isd: false,
+            list2: "",
+            c_data: "",
+            key: "",
+          };
+        },
+
+        mounted: async function () {
+          this.urlq.key = decodeURI(this.urlq.key);
+          await this.check_login();
+          var urlq = url_q(window.location.href);
+          this.page = Number(urlq.page);
+          this.pmod = urlq.pmod;
+          if (this.urlq.status == -1) {
+            this.urlq.status = "";
+          }
+          await axios
+            .get(
+              "https://api.donkeymove.com/api/OrderDetails/GeOrderDetailtView?page=" +
+                this.urlq.page +
+                "&status=" +
+                this.urlq.status +
+                "&pMode=" +
+                this.urlq.pmod +
+                "&key=" +
+                this.urlq.key +
+                "&orderby=" +
+                this.urlq.orderby +
+                "&isDescending=" +
+                this.urlq.isDescending +
+                "&date=" +
+                this.urlq.date
+            )
+            .then((res) => {
+              this.list = res.data.response.data;
+              this.pageCount = res.data.response.pageCount;
+              console.log(this.list);
+              console.log(this.pageCount);
+              if (this.urlq.status === "") {
+                this.urlq.status = -1;
+              }
+              if (res.data.response.data.length == 0) {
+                this.list = null;
+              }
+              this.$nextTick(function () {
+                this.$forceUpdate();
+              });
+            });
+          await this.get_all_list();
+          console.log(this.list);
+        },
+        methods: {
+          selectNav: function (number) {
+            this.nav_status = number;
+          },
+          openNav2: function () {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function () {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          closeModal: function () {
+            this.isOpen = false;
+          },
+          openModal: function () {
+            this.isOpen = true;
+          },
+          go_to: function (x) {
+            document.location.href = x;
+          },
+          new_day: function () {
+            let pos = this.data_time.map(function (e) {
+              return e.time;
+            });
+            let c_obj = JSON.parse(JSON.stringify(this.car));
+            if (pos.indexOf(this.c_time) == -1) {
+              this.data_time.push({ time: this.c_time, car: c_obj });
+              this.c_index = this.data_time.length - 1;
+              console.log(this.data_time);
+            } else {
+              this.c_index = pos.indexOf(this.c_time);
+            }
+          },
+          get_more: async function (x) {
+            await axios
+              .get(
+                "https://api.donkeymove.com/api/OrderDetails/GetOrderDetailMappingView/" +
+                  x
+              )
+              .then((res) => {
+                this.list2 = res.data.response;
+              });
+          },
+          pageSelect: async function (c) {
+            await axios
+              .get("https://api.donkeymove.com/api/OrderDetails/Get?page=" + c)
+              .then((res) => {
+                this.page = res.data.response.page;
+                this.pageCount = res.data.response.pageCount;
+                this.personals = res.data.response.data;
+              });
+          },
+          check_login: async function (x) {
+            if (localStorage.dk2_user) {
+              this.user = JSON.parse(localStorage.dk2_user);
+              await get_left_menu(this.user.Id, async (re) => {
+                this.menu_id = re;
+                this.$forceUpdate();
+              });
+            } else {
+              location.href = "login1.html";
+            }
+          },
+          to_search: async function (x) {
+            if (this.urlq.date === null) this.urlq.date = "";
+            location.href =
+              "./reservation_order.html?page=" +
+              this.urlq.page +
+              "&pmod=" +
+              this.urlq.pmod +
+              "&status=" +
+              this.urlq.status +
+              "&key=" +
+              this.urlq.key +
+              "&date=" +
+              this.urlq.date +
+              "&isDescending=" +
+              this.urlq.isDescending +
+              "&orderby=3";
+          },
+          sort_list: function (x) {
+            this.urlq.isDescending == "true"
+              ? (this.urlq.isDescending = "false")
+              : (this.urlq.isDescending = "true");
+            location.href =
+              "./reservation_order.html?pmod=" +
+              this.urlq.pmod +
+              "&isDescending=" +
+              this.urlq.isDescending +
+              "&status=" +
+              this.urlq.status +
+              "&key=" +
+              this.urlq.key +
+              "&date=" +
+              this.urlq.date +
+              "&orderby=" +
+              x +
+              "&page=" +
+              this.urlq.page;
+          },
+          to_del: async function (x) {
+            if (this.c_point == "" || this.c_re == "") {
+              alert("扣點點數或扣點理由未選擇");
+              return 0;
+            }
+            var r = this.case_show
+              ? confirm("確定刪除?")
+              : confirm("確定空趟?");
+            if (r == true) {
+              let obj = {
+                CaseUserId: x.CaseUserId,
+                OrderDetailId: x.Id,
+                Point: this.c_point,
+                GrandCount: 0,
+                Remark: this.c_re,
+              };
+              await axios
+                .post(
+                  "https://api.donkeymove.com/api/OrderDetails/PostOrderViolation",
+                  obj
+                )
+                .then(async (res) => {
+                  if (res.data.msg == "添加成功") {
+                    if (this.case_show) {
+                      await axios
+                        .put(
+                          "https://api.donkeymove.com/api/OrderDetails/PutDetailStatus?OrderDetailId=" +
+                            x.Id +
+                            "&StatusInt=9"
+                        )
+                        .then((res2) => {
+                          if (res2.data.msg == "更新成功") {
+                            alert("取消成功");
+                            window.location.reload();
+                          } else {
+                            alert(res2.data.msg);
+                          }
+                        });
+                    } else {
+                      alert(res.data.msg);
+                      window.location.reload();
+                    }
+                  } else {
+                    alert(res.data.msg);
+                  }
+                });
+            } else {
+              return 0;
+            }
+          },
+          t_order: async function (x) {
+            var r = confirm("確定轉單?");
+            if (r == true) {
+            } else {
+              return 0;
+            }
+            await axios
+              .put(
+                "https://api.donkeymove.com/api/OrderDetails/PutDetailTransfer?OrderDetailId=" +
+                  x
+              )
+              .then(async (res) => {
+                if (res.data.msg == "轉單成功") {
+                  alert("轉單成功");
+                  window.location.reload();
+                } else {
+                  alert(res.data.msg);
+                }
+              });
+          },
+          GetServiceRecord: async function () {
+            this.loading = true;
+            await axios
+              .get(
+                "https://api.donkeymove.com/api/Despatch/GetServiceRecord?startDate=" +
+                  this.show_ex_data.data1 +
+                  "&endDate=" +
+                  this.show_ex_data.data2 +
+                  "&UserType=" +
+                  this.show_ex_data.utype_v +
+                  "&DisabilityId=" +
+                  this.show_ex_data.dis_v +
+                  "&Sex=" +
+                  this.show_ex_data.sex_v +
+                  "&companyId=" +
+                  this.show_ex_data.comp_v
+              )
+              .then(async (res) => {
+                if (res.data.msg == "無資料") {
+                  alert("無資料");
+                } else {
+                  await convertAndExport(res.data.response);
+                }
+              })
+              .catch((e) => {
+                alert("匯出失敗");
+              });
+            this.loading = false;
+          },
+          get_all_list: async function () {
+            await axios
+              .get("https://api.donkeymove.com/api/CaseType/Get?parentID=3")
+              .then((res) => {
+                this.show_ex_data.dis = res.data.response.data;
+              });
+            await axios
+              .get("https://api.donkeymove.com/api/CaseType/Get?parentID=1")
+              .then((res) => {
+                this.show_ex_data.utype = res.data.response.data;
+              });
+            await axios
+              .get("https://api.donkeymove.com/api/CarCompanys/Get")
+              .then((res) => {
+                this.show_ex_data.comp = res.data.response;
+              });
+          },
+          PostWrongStatus: async function () {
+            if (
+              !this.review_data.OrderDetailId ||
+              !this.review_data.TargetStatus ||
+              !this.review_data.OperationInterface ||
+              !this.review_data.QuestionType ||
+              !this.review_data.IsEffectCoupon ||
+              !this.review_data.QuestionDescription ||
+              !this.review_data.MissReason ||
+              !this.review_data.FillName ||
+              !this.review_data.ContactPhone
+            ) {
+              alert("資料請填完整");
+              return 0;
+            }
+            await axios
+              .post(
+                "https://api.donkeymove.com/api/OrderDetails/PostWrongStatus",
+                this.review_data
+              )
+              .then((res) => {
+                alert(res.data.msg);
+                this.show_review = false;
+                if (res.data.success) {
+                  location.reload();
+                }
+              });
+          },
+          export_table: async function () {
+            var url = "";
+            if (this.ex_type === 1) {
+              url =
+                "https://api.donkeymove.com/api/Despatch/GetPickMission?startDate=" +
+                this.show_ex_data.data1 +
+                "&endDate=" +
+                this.show_ex_data.data2;
+            } else {
+              url =
+                "https://api.donkeymove.com/api/Despatch/GetServiceRecord?startDate=" +
+                this.show_ex_data.data1 +
+                "&endDate=" +
+                this.show_ex_data.data2 +
+                "&UserType=" +
+                this.show_ex_data.utype_v +
+                "&DisabilityId=" +
+                this.show_ex_data.dis_v +
+                "&Sex=" +
+                this.show_ex_data.sex_v +
+                "&companyId=" +
+                this.show_ex_data.comp_v;
+            }
+            this.loading = true;
+            await axios
+              .get(url)
+              .then(async (res) => {
+                if (res.data.msg == "無資料") {
+                  alert("無資料");
+                } else {
+                  await convertAndExport(res.data.response);
+                }
+              })
+              .catch((e) => {
+                alert("匯出失敗");
+              });
+            this.loading = false;
+          },
+          is_after: function (x) {
+            return moment(x.ReservationDate).isAfter(moment());
+          },
+          get_comp_data: function (x) {
+            return this.show_ex_data.comp.filter((re) => re.Id == x)[0];
+          },
+          show_del: function (x) {
+            var flag = false;
+            if (this.user.RoleId == 34 && x.Status < 2) {
+              flag = true;
+            }
+            if (
+              this.user.RoleId != 34 &&
+              x.Status < 2 &&
+              moment().isBefore(moment(x.ReservationDate).add(-48, "hours"))
+            ) {
+              flag = true;
+            }
+            return flag;
+          },
+          show_change_status: function (x) {
+            var flag = true;
+            if (moment().isAfter(moment(x.ReservationDate).add(24, "hours"))) {
+              flag = false;
+            }
+            return flag;
+          },
+          dateFormat: function (time) {
+            return moment(time).format("YYYY-MM-DD HH:mm");
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

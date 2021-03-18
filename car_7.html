@@ -1,0 +1,1894 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-158769656-1');
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+		<script type="text/javascript" src = "https://cdn.polyfill.io/v2/polyfill.min.js?features=es6"></script>
+	<script src="js/yyyymmdd.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>新北長照交通接送平台營運端</title>
+	<link rel="stylesheet" href="css/ui_index.css">
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/Chart.css" />
+	<link rel="stylesheet" href="css/style1.css" />
+	<link rel="stylesheet" href="css/mobileMenu.css" />
+	<style>
+		body {
+			position: relative;
+		}
+
+		.black {
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.6);
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: -1;
+			opacity: 0;
+			transition-duration: 0.2s;
+		}
+
+		.show_b {
+			opacity: 1;
+			z-index: 999;
+		}
+        .more-d-close {
+			position: absolute;
+			top: 5px;
+			right: 20px;			
+		}
+		.more-d {
+			width: 1217px;
+			height: 300px;
+			background-color: #fff;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin: -150px 0 0 -608.5px;
+			z-index: -1;
+			opacity: 0;
+			overflow-y: scroll;
+			transition-duration: 0.2s;
+		}
+
+		.more-b {
+			overflow: hidden;
+			border-style: solid;
+			border-width: 0 0 1px 0;
+			border-color: #666;
+		}
+
+		.show_more {
+			opacity: 1;
+			z-index: 1002;
+		}
+
+		.more-d-d1 {
+			width: 20%;
+			height: 100%;
+			padding: 20px;
+			box-sizing: border-box;
+			background-color: #F3981A;
+			float: left;
+		}
+
+		.more-d-d1-d1 {
+			height: 50px;
+			color: #fff;
+			font-weight: bold;
+			font-size: 20px;
+
+		}
+
+		.more-d-d1-d2 {
+			height: 70px;
+			margin: 140px 0 0 0;
+		}
+
+		.more-d-d1-d2-d {
+			color: #fff;
+			font-weight: bold;
+			font-size: 16px;
+		}
+
+		.more-d-d2 {
+			width: 60%;
+			height: 100%;
+			box-sizing: border-box;
+			background-color: #fff;
+			float: left;
+		}
+
+		.more-d-d2-d1 {
+			height: 40px;
+			padding: 0 10px;
+			border-style: solid;
+			border-width: 0 0 1px 0;
+			border-color: #666;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+
+		.more-d-d2-d1-l {
+			height: 40px;
+			line-height: 40px;
+			float: left;
+		}
+
+		.more-d-d2-d1-r {
+			height: 40px;
+			line-height: 40px;
+			float: right;
+		}
+
+		.more-d-d2-d2 {
+			height: 260px;
+			box-sizing: border-box;
+		}
+
+		.more-d-d2-d2-l {
+			width: 50%;
+			height: 100%;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			border-color: #666;
+			box-sizing: border-box;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			float: left;
+		}
+
+		.more-d-d2-d2-l-d {
+			width: 300px;
+			height: 100px;
+			box-sizing: border-box;
+			display: flex;
+		}
+
+		.more-d-d2-d2-r {
+			width: 50%;
+			height: 100%;
+			padding: 20px;
+			box-sizing: border-box;
+			float: left;
+		}
+
+		.more-d-d2-d2-l-d-img {
+			width: 100px;
+			height: 100px;
+			margin: 0 10px 0 0;
+			float: left;
+			box-sizing: border-box;
+		}
+
+		.more-d-d2-d2-l-d-r {
+			width: 200px;
+			height: 100px;
+			box-sizing: border-box;
+		}
+
+		.more-d-d2-d2-l-d-r-name {
+			font-size: 30px;
+			font-weight: bold;
+		}
+
+		.more-d-d2-d2-r-s-s {
+			font-size: 20px;
+			font-weight: bold;
+			margin: 0 0 10px 0;
+		}
+
+		.more-d-d2-d2-r-s-s1 {
+			font-size: 20px;
+			font-weight: bold;
+			color: #888;
+		}
+
+		.more-d-d2-d2-r-dd-bb {
+			width: 460px;
+			height: 100px;
+			box-sizing: border-box;
+		}
+
+		.more-d-d2-d2-r-dd {
+			box-sizing: border-box;
+			margin: 20px 10px 0 0;
+			float: left;
+		}
+
+		.more-d-d2-d2-r-dd-img {
+			width: 50px;
+			height: 50px;
+			margin: 0 10px 0 0;
+			border-radius: 100%;
+			float: left;
+		}
+
+		.more-d-d2-d2-r-dd-name {
+			font-weight: bold;
+			margin: 0 0 10px 0;
+			text-align: center;
+		}
+
+		.more-d-d2-d2-r-dd-b {
+			width: 60px;
+			padding: 10px 0;
+			border-radius: 30px;
+			background-color: #666;
+			color: #fff;
+			float: left;
+			text-align: center;
+		}
+
+		.more-d-d2-d2-r-dd-rbb {
+			float: left;
+		}
+
+		.more-d-d3 {
+			width: 20%;
+			height: 300px;
+			padding: 20px;
+			box-sizing: border-box;
+			background-color: #343434;
+			float: left;
+			font-size: 25px;
+			color: #fff;
+			font-weight: bold;
+			text-align: center;
+		}
+
+		.more-d-d3-b {
+			height: 30px;
+			line-height: 30px;
+			color: #fff;
+			text-align: center;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #fff;
+			font-size: 18px;
+			border-radius: 10px;
+			margin: 10px 0 0 0;
+		}
+
+		.header {
+			box-shadow: 0 0 5px #222;
+		}
+
+		.main-d {
+			padding: 20px;
+			transition-duration: 0.2s;
+		}
+
+		.main-d-top {
+			height: 50px;
+			border-style: solid;
+			border-width: 0 0 1px 0;
+			border-color: #666;
+			padding: 0 0 10px 0;
+			margin: 0 0 10px 0;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.main-d-top-l {
+			height: 50px;
+			float: left;
+			display: flex;
+			align-items: center;
+		}
+
+		.main-d-top-l-d {
+			margin: 0 10px 0 0;
+			padding: 0 10px 0 0;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			border-color: #666;
+			float: left;
+		}
+
+		.big {
+			font-size: 30px;
+			border-width: 0;
+		}
+
+		.main-d-top-r {
+			height: 50px;
+			float: right;
+			display: flex;
+			align-items: center;
+		}
+
+		.b {
+			padding: 10px;
+			margin: 0 10px 0 0;
+			border-radius: 30px;
+			background-color: #666;
+			color: #fff;
+			float: left;
+		}
+
+		.list {
+			height: 500px;
+			background-color: #fff;
+			overflow: hidden;
+			transition-duration: 0.2s;
+		}
+
+		.zoom {
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 998;
+			background-color: #fff;
+		}
+
+		.blackm {
+			background-color: #2D2D2D;
+			color: #fff;
+		}
+
+		.blackm .list {
+			background-color: #2D2D2D;
+		}
+
+		.blackm .list-order {
+			background-color: #2D2D2D;
+		}
+
+		.blackm .list-car-top {
+			background-color: #2D2D2D;
+			color: #fff;
+		}
+
+		.blackm .list-car-top .list-time-d1 {
+			background-color: #2D2D2D;
+			color: #fff;
+		}
+
+		.blackm .list-car-d1 {
+			background-color: #2D2D2D;
+		}
+
+		.blackm .list-time {
+			background-color: #2D2D2D;
+			color: #fff;
+		}
+
+		.zoom .list {
+			height: 600px;
+		}
+
+		.list-b {
+			white-space: nowrap;
+			display: inline-block;
+			height: 500px;
+		}
+
+		.list-order {
+			padding: 10px;
+			height: 500px;
+			overflow-y: scroll;
+			float: left;
+			background-color: #fff;
+			position: relative;
+			z-index: 201;
+		}
+
+		.zoom .list-order {
+			height: 600px;
+		}
+
+		.list-order-d {
+			width: 350px;
+			height: 120px;
+			margin: 0 0 10px 0;
+			background-color: #f00;
+			text-align: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			line-height: 1.3;
+			position: relative;
+			font-weight: bold;
+		}
+
+		.list-order-d-d1 {
+			width: 230px;
+			height: 120px;
+			display: inline-block;
+			word-break: break-all;
+			color: #000;
+			background-color: #fff;
+			box-sizing: border-box;
+			padding: 10px;
+			display: flex;
+			align-items: center;
+		}
+
+		.list-order-d-d1 div {
+			width: 100%;
+			word-break: break-all;
+		}
+
+		.list-order-d-d2 {
+			width: 120px;
+			height: 120px;
+			display: inline-block;
+			color: #fff;
+			box-sizing: border-box;
+			padding: 10px;
+			display: flex;
+			align-items: center;
+		}
+
+		.list-time {
+			background-color: #fff;
+			width: 100px;
+			display: inline-block;
+			float: left;
+			position: relative;
+			z-index: 199;
+		}
+
+		.list-time-d1 {
+			width: 100px;
+			height: 100px;
+			text-align: center;
+			float: left;
+			box-sizing: border-box;
+			display: inline-block;
+		}
+
+		.list-car {
+			width: 240px;
+			display: inline-block;
+		}
+
+		.list-car-img {
+			width: 30px;
+			height: 30px;
+			margin: 0 10px 0 0;
+			border-radius: 100%;
+		}
+
+		.list-car-d {
+			width: 240px;
+			height: 100px;
+			line-height: 100px;
+			text-align: center;
+			box-sizing: border-box;
+			display: inline-block;
+			font-size: 25px;
+			white-space: nowrap;
+			position: relative;
+		}
+
+		.list-car-d1 {
+			width: 240px;
+			height: 100px;
+			float: left;
+			text-align: center;
+			background-color: #fff;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 3px;
+			border-color: #ddd;
+			position: relative;
+		}
+
+		.list-car-d1-d {
+			float: left;
+			height: 100%;
+			line-height: 1.3;
+		}
+
+		.c8 {
+			width: calc(100% / 4);
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			border-color: #fff;
+			position: relative;
+		}
+
+		.c4 {
+			width: calc(100% / 3);
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			border-color: #fff;
+			position: relative;
+		}
+
+		.c2 {
+			width: calc(100% / 2);
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			border-color: #fff;
+			position: relative;
+		}
+
+		.hr1 {
+			width: 100%;
+			height: 194px;
+			position: absolute;
+			background-color: #ff0;
+			top: 0;
+			left: 0;
+			z-index: 100;
+		}
+
+		.w {
+			background-color: #fff;
+		}
+
+		.right-mu {
+			width: 200px;
+			position: absolute;
+			bottom: -80px;
+			right: -190px;
+			border-radius: 10px;
+			background-color: #fff;
+			box-shadow: 0 0 5px #222;
+			z-index: 101;
+			overflow: hidden;
+			display: none;
+			color: #222;
+		}
+
+		.right-mu-d {
+			height: 50px;
+			line-height: 50px;
+			border-style: solid;
+			border-width: 0 0 1px 0;
+			border-color: #666;
+			font-size: 16px;
+		}
+
+		.right-mu-d:hover {
+			background-color: #666;
+			color: #fff;
+		}
+
+		.s1 {
+			background-color: #F18024;
+			color: #fff;
+		}
+
+		.s2 {
+			background-color: #18A2B8;
+			color: #fff;
+		}
+
+		.bc-y {
+			width: 30px;
+			height: 30px;
+			margin: 0 10px 0 10px;
+			border-radius: 100%;
+			background-color: #F18024;
+		}
+
+		.bc-b {
+			width: 30px;
+			height: 30px;
+			margin: 0 10px 0 10px;
+			border-radius: 100%;
+			background-color: #353535;
+		}
+
+		.bc-bl {
+			width: 30px;
+			height: 30px;
+			margin: 0 10px 0 10px;
+			border-radius: 100%;
+			background-color: #18A2B8;
+		}
+
+		.list-car-top {
+			background-color: #fff;
+			position: relative;
+			z-index: 200;
+			white-space: nowrap;
+		}
+
+		.list-car-table {
+			white-space: nowrap;
+			height: 420px;
+			display: inline-block;
+		}
+
+		.list-car-table-b {
+			white-space: nowrap;
+			display: inline-block;
+		}
+
+		.list-car-d-s {
+			display: inline-block;
+
+		}
+
+		.d-b .list-car-d1 {
+			background-color: #888;
+			border-color: #888;
+		}
+
+		.d-b {
+			background-color: #888;
+		}
+
+		.el-date-editor--date {
+			margin: 0 10px 0 0;
+		}
+
+		.el-input__inner {
+			border-radius: 30px;
+		}
+
+		.merge-s {
+			font-size: 30px;
+		}
+
+		.timeorcar {
+			position: relative;
+			z-index: 201;
+			background-color: #fff;
+			line-height: 100px;
+		}
+
+		.div1 {
+			width: 58.5px;
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			position: relative;
+			padding: 10px;
+		}
+
+		.div2 {
+			width: 117px;
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			position: relative;
+			padding: 10px;
+		}
+
+		.div3 {
+			width: 175.5px;
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			position: relative;
+			padding: 10px;
+		}
+
+		.div4 {
+			width: 234px;
+			height: 100%;
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			position: relative;
+			padding: 10px;
+		}
+
+		.div5 {
+			width: 234px;
+			height: calc(200% + 6px);
+			float: left;
+			box-sizing: border-box;
+			border-style: solid;
+			border-width: 0 1px 0 0;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 2;
+			box-sizing: border-box;
+			padding: 10px;
+		}
+
+		.d-b2 {
+			background-color: #888;
+		}
+
+		[v-cloak] {
+			display: none;
+		}
+
+		.c_driver {
+			width: 500px;
+			height: 300px;
+			padding: 20px 100px;
+			margin: -150px 0 0 -250px;
+			background-color: #fff;
+			box-sizing: border-box;
+			border-radius: 10px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			opacity: 0;
+			z-index: -2;
+			transition-duration: 0.2s;
+		}
+
+		.c_driver-on {
+			opacity: 1;
+			z-index: 1000;
+		}
+
+		.c_driver-s {
+			font-size: 20px;
+			font-weight: bold;
+			color: #666;
+			margin: 0 0 20px 0;
+		}
+
+		.c_driver-sel {
+			width: 100%;
+			border-radius: 10px;
+			padding: 10px;
+			font-size: 20px;
+			margin: 0 0 20px 0;
+			height: 50px;
+		}
+
+		.c_driver-d1 {
+			height: 80px;
+			margin: 0 0 20px 0;
+		}
+
+		.c_driver-d1-img {
+			width: 80px;
+			height: 80px;
+			border-radius: 100%;
+			margin: 0 20px 0 0;
+			float: left;
+		}
+
+		.c_driver-d1-r {
+			height: 80px;
+			float: left;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.c_driver-d1-r-s1 {
+			font-size: 22px;
+			font-weight: bold;
+			color: #666;
+			margin: 0 0 20px 0;
+		}
+
+		.c_driver-d1-r-s2 {
+			font-size: 18px;
+			font-weight: bold;
+			color: #666;
+		}
+
+		.c_driver .b {
+			width: 100%;
+			text-align: center;
+			background-color: #F29700;
+		}
+
+		.list-car-data {
+			width: 100%;
+			height: 16px;
+			font-size: 16px;
+			position: absolute;
+			bottom: 0px;
+			left: 0px;
+			line-height: 0px;
+		}
+		.re-d-d {
+			 display: flex;
+			 align-items: center;
+		}
+		.re-d-d-name {
+			 width: 20%;
+		}
+	</style>
+</head>
+
+<body id="body">
+	<div class="all" v-cloak>
+			<div class="ex-black" v-if="show_ex" @click="show_ex=!show_ex"></div>
+			<div class="ex-table" v-if="show_ex">
+			  <div class="ex-table-h">匯出車輛使用證明單</div>
+			  <div class="ex-talbe-r-c">
+				<input type="text" class="ex-talbe-r-c-in" placeholder="請輸入訂單編號" v-model="ex_no">
+				<el-date-picker v-model="ex_data1" type="date" placeholder="選擇開始日期" value-format="yyyy-MM-dd"></el-date-picker>
+				<el-date-picker v-model="ex_data2" type="date" placeholder="選擇結束日期" value-format="yyyy-MM-dd"></el-date-picker>
+				<div class="ex-talbe-r-c-b" @click="export_table">確定匯出</div>
+			  </div>
+			</div>
+
+			<div class="ex-black" v-if="show_re" @click="show_re=!show_re"></div>
+			<div class="ex-table" style="width: 600px;height: 700px;margin: -350px 0 0 -300px;overflow-y: scroll;" v-if="show_re">
+			  <div class="ex-table-h">預約訂車</div>
+			  <div class="ex-talbe-r-c">
+						 <div>
+								<div class="re-d-d">預約時間 : {{re_data.ReservationDate}}</div>
+								<div class="re-d-d">指派司機 : {{re_data.driverData.CarNo}} ({{re_data.driverData.DriverInfo.DriverName}})</div>
+								<div class="re-d-d">
+									 <div class="re-d-d-name">個案ID</div>
+										<input type="text" class="ex-talbe-r-c-in" placeholder="請輸入個案名稱或個案身分證字號" v-model="re_data.CaseUserId">
+										<div class="re-d-d-more">
+											 <div class="re-d-d-more-d" v-for="(item,index) in get_search_caseuser" :key="index" @click="re_data.CaseUserId=item.Id">{{item.Name}} ({{item.UID}})</div>
+										</div>
+								</div>
+								<div class="re-d-d">
+									 <div class="re-d-d-name">搭車地點</div>
+									 <input type="text" class="ex-talbe-r-c-in" placeholder="請輸入搭車地點" v-model="re_data.FromAddr">
+								</div>
+								<div class="re-d-d">
+									 <div class="re-d-d-name">下車地點</div>
+										<input type="text" class="ex-talbe-r-c-in" placeholder="請輸入下車地點" v-model="re_data.ToAddr">
+								</div>
+								<div class="re-d-d">
+									<div class="re-d-d-name">簡訊號碼</div>
+									<input type="text" class="ex-talbe-r-c-in" placeholder="請輸入簡訊號碼" v-model="re_data.NoticePhone">
+							</div>
+								<div class="re-d-d">
+								  <div class="re-d-d-name">訂車人身分</div>
+							  	<select class="ex-talbe-r-c-in" placeholder="訂車人身分" v-model="re_data.OrderIdentity">
+									  	<option value="">訂車人身分</option>
+									  	<option value="本人">本人</option>
+									  	<option value="家屬">家屬</option>
+									  	<option value="A單位">A單位</option>
+										  <option value="B單位">B單位</option>
+								  </select>
+							</div>
+							<div class="re-d-d">
+								<div class="re-d-d-name">預約回程</div>
+								<select class="ex-talbe-r-c-in" placeholder="預約回程" v-model="re_data.hasback">
+										<option value="true">是</option>
+										<option value="false">否</option>
+								</select>
+							</div>
+							<div class="re-d-d">
+								<div class="re-d-d-name">願意共乘</div>
+								<select class="ex-talbe-r-c-in" placeholder="願意共乘" v-model="re_data.CanShared">
+									 <option value="true">是</option>
+									 <option value="false">否</option>
+								</select>
+							</div>
+							<div class="re-d-d">
+								<div class="re-d-d-name">陪同人數</div>
+								<select class="ex-talbe-r-c-in" placeholder="陪同人數" v-model="re_data.FamilyWith">
+									 <option value=0>0人</option>
+									 <option v-for="(item,index) in 7" :value="item">{{item}}人</option>
+								</select>
+							</div>
+							<div class="re-d-d">
+								<div class="re-d-d-name">車種類型</div>
+								<select class="ex-talbe-r-c-in" placeholder="車種類型" v-model="re_data.CarCategoryId">
+									 <option value=236>一般車</option>
+									 <option value=214>福祉車</option>
+								</select>
+							</div>
+							<div class="re-d-d">
+								<div class="re-d-d-name">輪椅類型</div>
+								<select class="ex-talbe-r-c-in" placeholder="輪椅類型" v-model="re_data.WheelchairId">
+									 <option value="普通輪椅">普通輪椅</option>
+										<option value="高背輪椅">高背輪椅</option>
+										<option value="電動輪椅">電動輪椅</option>
+										<option value="電動高背輪椅">電動高背輪椅</option>
+								</select>
+							</div>
+
+							<template v-for="(item,index) in amt_list">
+							<div style="padding: 20px;" v-if="amt_list&&amt_list[index]">
+								<h3>{{index==0 ? "去程":"回程"}}</h3>
+							<div class="re-d-d">
+								 預估距離:{{amt_list[index].TotalMileage/1000}}
+							</div>	
+							<div class="re-d-d">
+								 預估時間:{{amt_list[index].ExpectedMinute}}
+						</div>	
+						<div class="re-d-d">
+							  車資總額:{{amt_list[index].TotalAmt - amt_list[index].OtherAmt}}
+					 </div>	
+					 <div class="re-d-d">
+							政府補助:{{amt_list[index].TotalAmt-amt_list[index].SelfPayAmt-amt_list[index].OtherAmt}}
+			  	</div>	
+				  <div class="re-d-d">
+							自負額:{{amt_list[index].SelfPayAmt}}
+			   </div>	
+			   <div class="re-d-d">
+							陪同總額:{{amt_list[index].OtherAmt}}
+		    </div>	
+		    <div class="re-d-d">
+							個案負擔:{{amt_list[index].SelfPayAmt+amt_list[index].OtherAmt}}
+						</div>	
+						</div>
+      </template>
+						
+							</div>
+							<div class="ex-talbe-r-c-b" style="margin: 0 0 10px 0;" v-if="!amt_list" @click="get_amt">下一步</div>
+							<div class="ex-talbe-r-c-b" style="margin: 0 0 10px 0;" v-if="amt_list" @click="amt_list=''">上一步</div>
+				   <div class="ex-talbe-r-c-b" style="margin: 0 0 10px 0;" v-if="amt_list" @click="sub_c_order">預約訂車</div>
+			  </div>
+			</div>
+
+		<div class="loading-black" v-if="loading">
+			<img src="img/spinner.gif">
+		</div>
+		<div class="black" :class="{'show_b':show_b==true}" @click="show_b=false;c_driver_d=false;show_more_d=false;show_set_time=false">
+		</div>
+		<div class="c_driver" :class="{'c_driver-on':c_driver_d}" v-if="c_driver!=-1">
+			<div class="c_driver-s">更換司機</div>
+			<select class="c_driver-sel" v-model="c_driver">
+				<option v-for="(item,index) in driver" :value="item.Id">{{item.DriverName}}</option>
+			</select>
+			<div class="c_driver-d1">
+				<img :src="driver[driverid_index(c_driver)].Pic" class="c_driver-d1-img">
+				<div class="c_driver-d1-r">
+					<div>
+						<div class="c_driver-d1-r-s1">{{driver[driverid_index(c_driver)].DriverName}}</div>
+						<div class="c_driver-d1-r-s2">手機: {{driver[driverid_index(c_driver)].Phone}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="b" @click="change_driver(c_des_des,c_driver,c_des_car)">確定更換司機</div>
+		</div>
+		<div class="more-d" :class="{'show_more':show_more_d==true}" v-if="c_more!=''">
+				<img src="img/icons8-delete_sign.png" alt="" class="more-d-close" @click="show_b=false;c_driver_d=false;show_more_d=false;show_set_time=false">
+			<div class="more-b" v-for="(item,index) in c_more">
+				<div class="more-d-d1">
+					<div class="more-d-d1-d1">訂單編號:<br>{{item.SOrderNo||item.OrderDetails.SOrderNo}}</div>
+					<div class="more-d-d1-d2">
+						<div class="more-d-d1-d2-d" v-if="more_mode">行程:{{item.IsBack ? "回程":"去程"}}</div>
+						<div class="more-d-d1-d2-d" v-if="!more_mode">行程:{{item.OrderDetails.IsBack ? "回程":"去程"}}</div>
+						<div class="more-d-d1-d2-d" v-if="item.CaseUserPhone||item.CaseUser">個案手機:{{item.CaseUserPhone||item.CaseUser.Phone}}</div>
+						<div class="more-d-d1-d2-d" v-if="item.CaseUserTel||item.CaseUser">個案市話:{{item.CaseUserTel||item.CaseUser.Tel}}</div>
+						<div class="more-d-d1-d2-d" v-if="more_mode">預約搭乘時間:{{item.ReservationDate}}</div>
+						<div class="more-d-d1-d2-d" v-if="!more_mode">預約搭乘時間:{{dateFormat1(item.OrderDetails.ReservationDate)}}</div>
+					</div>
+				</div>
+				<div class="more-d-d2">
+					<div class="more-d-d2-d1">
+						<div class="more-d-d2-d1-l" v-if="more_mode">{{item.CanShared ? "可共乘":"不可共乘"}}</div>
+						<div class="more-d-d2-d1-l" v-if="!more_mode">{{item.OrderDetails.CanShared ? "可共乘":"不可共乘"}}</div>
+						<div class="more-d-d2-d1-r">
+							<span v-if="more_mode">輪椅類型:{{item.WheelchairId||"無"}} /</span>
+							<span v-if="!more_mode">輪椅類型:{{item.OrderDetails.WheelchairId||"無"}} /</span>
+							<span v-if="more_mode">陪同人數:{{item.FamilyWith}}人</span>
+							<span v-if="!more_mode">陪同人數:{{item.OrderDetails.FamilyWith}}人</span>
+						</div>
+					</div>
+					<div class="more-d-d2-d2">
+						<div class="more-d-d2-d2-l">
+							<div class="more-d-d2-d2-l-d">
+								<!--<img class="more-d-d2-d2-l-d-img" :src="item.CaseUserPic||item.CaseUser.Pic">-->
+								<div class="more-d-d2-d2-l-d-r">
+									<div class="more-d-d2-d2-l-d-r-name" v-if="item.CaseUserName||item.CaseUser">{{item.CaseUserName||item.CaseUser.Name}}</div><br>
+									<p v-if="item.CaseUserUID||item.CaseUser">個案編號:<br>{{item.CaseUserNo||item.CaseUser.CaseUserNo}}</p>
+									<p v-if="item.CaseUserUID||item.CaseUser">身份證字號:<br>{{item.CaseUserUID||item.CaseUser.UID}}</p>
+								</div>
+							</div>
+						</div>
+						<div class="more-d-d2-d2-r">
+							<div class="more-d-d2-d2-r-s">
+					            <div class="more-d-d2-d2-r-s-s" v-if="item.OrderDetails">{{item.OrderDetails.FromAddrRemark}}</div>
+								<div class="more-d-d2-d2-r-s-s" v-if="item.FromAddr||item.OrderDetails">{{item.FromAddr||item.OrderDetails.FromAddr}}</div>
+								<div class="more-d-d2-d2-r-s-s" v-if="item.OrderDetails">{{item.OrderDetails.ToAddrRemark}}</div>
+								<div class="more-d-d2-d2-r-s-s" v-if="item.ToAddr||item.OrderDetails">{{item.ToAddr||item.OrderDetails.ToAddr}}</div>
+								<!--<div class="more-d-d2-d2-r-s-s1">{{c_more.}}</div>-->
+							</div>
+							<!--<div class="more-d-d2-d2-r-dd-bb">
+			  <div class="more-d-d2-d2-r-dd">
+			    <img class="more-d-d2-d2-r-dd-img" src="http://images.uncyc.org/commons/thumb/8/8e/7ttWHuQ.jpg/300px-7ttWHuQ.jpg">
+                <div class="more-d-d2-d2-r-dd-rbb">
+				  <div class="more-d-d2-d2-r-dd-name">{{order[num].driver}}</div>
+                  <div class="more-d-d2-d2-r-dd-b">班表</div>					
+			    </div>
+			  </div>
+			  <div class="more-d-d2-d2-r-dd">
+			    <img class="more-d-d2-d2-r-dd-img" :src="order[num].img">
+                <div class="more-d-d2-d2-r-dd-rbb">                  
+				  <div class="more-d-d2-d2-r-dd-name">{{order[num].id}}</div>
+                  <div class="more-d-d2-d2-r-dd-b">更多</div>					
+			    </div>
+			  </div>
+			</div>-->
+						</div>
+					</div>
+				</div>
+				<div class="more-d-d3">
+					<div class="more-d-d3-s" style="margin:0 0 20px 0;" v-if="item.TotalAmt||item.OrderDetails">總金額${{item.TotalAmt||item.OrderDetails.TotalAmt}}</div>
+					<div class="more-d-d3-s" v-if="item.SelfPayAmt||item.OrderDetails">個案負擔${{item.SelfPayAmt||item.OrderDetails.SelfPayAmt}}</div>
+					<div class="more-d-d3-b" @click="t_order(item.Id);$forceUpdate()" v-if="moment().isBefore(item.re_time)&&more_mode&&false">轉單</div>
+					<div class="more-d-d3-b" @click="show_set_time=!show_set_time" v-if="more_mode">變更時間</div>
+					<div v-if="show_set_time">
+					  <select v-model="show_c_time_time">
+                        <option v-for="(item2,index2) in time" :value="item2" v-if="show_time_list(item,item2)">{{item2}}</option>
+					  </select>
+					  <div class="more-d-d3-b" @click="to_change_time(item)">確定變更</div>
+					</div>
+					<div class="more-d-d3-b" @click="merge_del(item.OrderDetails.Id);$forceUpdate()" v-if="index!=0">取消併單</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="console_main">
+			<!-- header -->
+			<user-header :user="user"></user-header>
+			<user-header-m :user="user" :menu="menu_id"></user-header-m>
+			<!-- 側拉選單 -->
+			<div class="content">
+				<div style="height: 100%;">
+					<left-menu :mc=3 :cc=32 :menu="menu_id"></left-menu>
+					<!-- main -->
+					<main class="main" :class="{'active' : isMainleft}" style="height:100%;">
+						<div class="main-d" style="height: 100%;"
+							:class="{'zoom':zoom==true,'blackm':black_mode==true}">
+							<div class="main-d-top">
+								<div class="main-d-top-l">
+									<div class="main-d-top-l-d big">調度控制台</div>
+									<div class="main-d-top-l-d">{{now_time}}</div>
+									<!--<div class="main-d-top-l-d">今日趟數:50趟</div>-->
+									<div class="bc-y"></div>公費
+									<div class="bc-bl"></div>自費
+								</div>
+								<div class="main-d-top-r">
+									<el-date-picker v-model="now_time" type="date" placeholder="選擇日期"
+										value-format="yyyy-MM-dd" @change="get_or();get_dp();$forceUpdate()">
+									</el-date-picker>
+									<div class="b" @click="open_voice=!open_voice;" v-if="false">{{open_voice_text}}</div>
+									<div class="b" @click="putdata">排班完成發送推播</div>
+									<a class="addList" @click="show_ex=!show_ex">車輛使用證明單</a>
+									<img src="img/icons8-expand.png" v-if="!zoom" @click="zoom=!zoom">
+									<img src="img/icons8-collapse.png" v-if="zoom" @click="zoom=!zoom">
+								</div>
+							</div>
+							<div class="list" style="height: 100%;" @click="close_right()">
+								<div class="list-b" style="height: 100%;">
+
+									<div class="list-order" style="height: 100%;">
+										<div class="list-order-d" v-for="(item,index) in order"
+											:class="{'s1':item.SubsidyMode==1,'s2':item.SubsidyMode==0}"
+											draggable="true" @dblclick="more_mode=true;show_more([item],false)"
+											@dragstart="dragStart($event,index)">
+											<div class="list-order-d-d1">
+												<div style="width:100%;">
+													<div style="font-size:20px;margin:0 0 2px 0;">{{item.CaseUserName}}
+													</div>
+													<span>{{item.ReservationDate}}</span> |
+													<span>{{item.km}}公里</span> |
+													<span>{{item.ExpectedMinute}}分鐘</span>
+													<div style="white-space: normal;font-size:13px;margin:2px 0 0 0;">
+														{{item.FromAddr}}</div>
+													<div style="white-space: normal;font-size:13px;margin:2px 0 0 0;">
+														{{item.ToAddr}}</div>
+												</div>
+											</div>
+											<div class="list-order-d-d2">
+												<div style="width:100%;">
+													<div>{{item.CarCategoryId==236 ? "一般車":"福祉車"}}</div>
+													<div v-if="item.CanShared">可共乘</div>
+													<div v-else>不可共乘</div>
+													<div v-if="item.WheelchairId!=''">{{item.WheelchairId}}</div>
+													<div>陪同 : {{item.FamilyWith}}人</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="list-car-top">
+										<div class="list-time-d1 timeorcar">時間/車輛</div>
+										<div class="list-car-d-s" style="background-color: #fff">
+											<div class="list-car-d" @contextmenu="show_right($event)"
+												v-for="(item,index) in car" :id="item.Id">
+												<img class="list-car-img" :src="item.CarPic">{{item.CarNo}} <span v-if="item.DriverInfo">({{item.DriverInfo.DriverName}})</span>
+												<div class="list-car-data">
+													<span>座位 : {{item.SeatNum}}</span> |
+													<span>輪椅 : {{item.WheelchairNum}}</span> |
+													<span v-if="item.CarCategory&&item.CarCategory[0]">{{item.CarCategory[0].CarTypeName}}</span>
+												</div>
+												<div class="right-mu">
+													<div class="right-mu-d">查看車輛基本資料</div>
+													<div class="right-mu-d">查看車輛檢查紀錄</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="list-time">
+										<div class="list-time-d1" v-for="(item,index) in time">{{item}}</div>
+									</div>
+
+									<div class="list-car-table">
+										<div class="list-car-table-b">
+											<template v-for="(item,index) in car">
+												<div class="list-car" @dragover="bu($event)" @dragleave="bf($event)"
+													@drop="cdrop($event,index,item.Id,item.DriverId,item);$forceUpdate()">
+													<div class="list-car-d-b">
+														<template v-for="(item2,index2) in time">
+															<div class="list-car-d1" @dblclick="to_re(item2,item)">
+
+																<template v-for="(item3,index3) in detail">
+																	<div class="list-car-d1-d"
+																		@dblclick="more_mode=false;show_more(item3,true)"
+																		@dragover.stop="bu2($event)"
+																		@dragleave.stop="bf2($event)"
+																		@drop.stop="merge_order($event,item3.DespatchId);$forceUpdate()"
+																		@contextmenu="show_right($event)"
+																		v-if="item3.time==item2&&item3.DespatchDetails[0].Despatch.CarId==item.Id">
+																		<!--@contextmenu="show_right($event)"-->
+																		<div
+																			:class="{'s1':item3.DespatchDetails[0].OrderDetails.SubsidyMode==1,'s2':item3.DespatchDetails[0].OrderDetails.SubsidyMode==0}">
+																			<div
+																				v-for="(item4,index4) in item3.DespatchDetails">
+																				{{item4.CaseUser.Name}}
+																			</div>
+																			<div>
+																				{{show_max(item3)}}分鐘
+																			</div>
+																			<div class="right-mu">
+																				<div class="right-mu-d" @click.stop="c_put_data(item3.DespatchId)">推播此訂單</div>
+																				<div class="right-mu-d"
+																					@click.stop="c_driver_d=true;show_b=true;c_des_des=item3.DespatchId;c_des_car=item3.DespatchDetails[0].Despatch.CarId;c_driver=item3.DespatchDetails[0].Despatch.DriverInfoId">
+																					司機{{item3.DespatchDetails[0].DriverName}}
+																					改變司機</div>
+																				<div class="right-mu-d"
+																					@click.stop="del(item3.DespatchDetails[0].OrderDetails.Id)" v-if="item3.DespatchDetails.length==1">
+																					刪除訂單</div>
+																			</div>
+																		</div>
+																	</div>
+																</template>
+
+															</div>
+														</template>
+													</div>
+												</div>
+											</template>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</main>
+				</div>
+			</div>
+
+			<!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+		</div>
+	</div>
+	<script src="js/moment.js"></script>
+	<script src="js/iscroll-probe.js"></script>
+	<script src="js/jquery-1.8.0.js"></script>
+	<script type="text/javascript" src="js/Chart.bundle.js"></script>
+	<script src="js/lodash.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/axios.js"></script>
+	<script src="js/element-ui.js"></script>
+	<script src="js/token.js"></script>
+	<script src="js/leftmenu2.js?v=123"></script>
+	<script src="js/header1.js?v=124"></script>
+	<script src="js/header1_m.js"></script>
+</body>
+<script>
+	let console_main = new Vue({
+		el: '.all',
+		data: {
+			show_re:false,
+			re_data:{
+				"driverData":"",
+				"CaseUserId":"",
+				"OrderId": "",
+    "CompanyId": "",
+    "WheelchairId": "",
+    "ReservationDate": "",
+    "DisabilityId": 10,
+    "FromAddr": "",
+    "FromAddrRemark":"",
+    "ToAddr": "",
+    "ToAddrRemark":"",
+    "OrderIdentity":"",
+    "FamilyWith": 0,
+    "ForeignFamilyWith": 0,
+    "NeedLadder": false,
+    "CanShared": false,
+    "Remark": "",
+    "SubsidyMode": 0,
+		  "CarCategoryId":"",
+		  "NoticePhone":"",
+		  "OrderDetailsCompany":[
+					 {
+				    "CompanyId": "",
+        "Sort": 1
+						}
+				],
+				"hasback":false,
+			},
+			more_mode:true,
+			nav_status: 1,
+			isLeft: true,
+			isMainleft: true,
+			num: 0,
+			loading: true,
+			zoom: false,
+			show_b: false,
+			show_more_d: false,
+			black_mode: false,
+			c_driver_d: false,
+			c_index: 0,
+			c_driver: -1,
+			c_des_des: 0,
+			c_des_car: 0,
+			max_time: 0,
+			detail: [],
+			now_time: "",
+			show_ex:false,
+			ex_no:"",
+			ex_data1:"",
+			ex_data2:"",
+			open_voice: false,
+			open_voice_text: "語音系統關閉",
+			c_more: "",
+			s_car: "",
+			show_set_time:false,
+			show_c_time_time:"",
+			caseuser_list:"",
+			amt_list:"",
+			time: ["05:00","05:15","05:30","05:45","06:00","06:15","06:30","06:45","07:00","07:15","07:30","07:45","08:00","08:15", "08:30","08:45", "09:00","09:15", "09:30","09:45", "10:00","10:15", "10:30","10:45", "11:00","11:15", "11:30","11:45", "12:00","12:15","12:30","12:45", "13:00","13:15", "13:30","13:45", "14:00","14:15", "14:30","14:45", "15:00","15:15", "15:30","15:45", "16:00","16:15", "16:30","16:45", "17:00","17:15", "17:30","17:45", "18:00","18:15", "18:30","18:45", "19:00","19:15", "19:30","19:45", "20:00","20:15", "20:30","20:45", "21:00", "21:15","21:30","21:45", "22:00","22:15","22:30","22:45","23:00", "23:15","23:30","23:45"],
+			car: [
+				{ id: "EZR-1234", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+				{ id: "EZR-2222", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+				{ id: "EZR-3333", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+				{ id: "EZR-4444", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+				{ id: "EZR-5555", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+				{ id: "EZR-6666", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+				{ id: "EZR-7777", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+			],
+			data_time: [
+				{
+					time: "2019-10-05", car: [
+						{ id: "EZR-1234", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+						{ id: "EZR-2222", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+						{ id: "EZR-3333", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+						{ id: "EZR-4444", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+						{ id: "EZR-5555", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+						{ id: "EZR-6666", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+						{ id: "EZR-7777", img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", work: [] },
+					]
+				}
+			],
+			order: [
+				{ id: "GOT72639111", time: "8:00", m: 7.5, c_m: 7.5, div: [1], s: 1, name: "用戶1", cost: 100, driver: "熊貓", pn: "臺大醫院", km: 10, case_id: "F111111119", got: "去回程", case_time: "2019/07/23", share: "可共乘", wtype: "一般輪椅", meb: "1", meb2: "1", p1: "台北市中山區中山北路三段100號", p2: "馬偕紀念醫院", p2lo: "台北市中山區中山北路三段92號", driver_img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", case_img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", place: false, merge: [] },
+				{ id: "GOT72639112", time: "8:30", m: 15, c_m: 15, div: [2], s: 2, name: "用戶2", cost: 100, driver: "陳靜香", pn: "臺大醫院", km: 10, case_id: "F111111119", got: "去回程", case_time: "2019/07/23", share: "可共乘", wtype: "一般輪椅", meb: "1", meb2: "1", p1: "台北市中山區中山北路三段100號", p2: "馬偕紀念醫院", p2lo: "台北市中山區中山北路三段92號", driver_img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", case_img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", place: false, merge: [] },
+				{ id: "GOT72639153", time: "11:30", m: 45, c_m: 45, div: [6], s: 1, name: "用戶43", cost: 100, driver: "陳靜香", pn: "臺大醫院", km: 10, case_id: "F111111119", got: "去回程", case_time: "2019/07/23", share: "可共乘", wtype: "一般輪椅", meb: "1", meb2: "1", p1: "台北市中山區中山北路三段100號", p2: "馬偕紀念醫院", p2lo: "台北市中山區中山北路三段92號", driver_img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", case_img: "http://n.sinaimg.cn/translate/20160718/IbOI-fxuapvs8743116.jpg", place: false, merge: [] },
+
+			],
+			driver: [
+				{ id: "AAA001", img: "https://truth.bahamut.com.tw/s01/201603/fde3aa5c229bb35c28c77a745aac3176.JPG", name: "同仁", phone: "0987654321" },
+				{ id: "AAA002", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtccZ-PiMeB_uhGxdgA1kvgOcsUGpYiaOfxjpkxaq5q8dYxlzH", name: "康妮", phone: "0987654321" },
+				{ id: "AAA003", img: "https://storage.googleapis.com/www-cw-com-tw/article/201905/article-5ccc215628e3a.jpg", name: "大民", phone: "0987654321" },
+				{ id: "AAA004", img: "https://s.yimg.com/ny/api/res/1.2/F6jbArXjz_8viJ2zuyrtOA--~A/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9ODAw/http://media.zenfs.com/zh-Hant-TW/homerun/nownews.com/b70a3e8c84b8b8b022f199f39a2ca553", name: "小民", phone: "0987654321" },
+			],
+			user: ""
+		},
+		computed: {
+			c_time: function () {
+				var arr = new Date().yyyymmdd()
+				return arr[0] + "-" + arr[1] + "-" + arr[2]
+			},
+			get_search_caseuser:function() {
+				 var arr=[]
+					if(!this.re_data.CaseUserId) return arr
+					for(let item of this.caseuser_list) {
+       if(item.Name.indexOf(this.re_data.CaseUserId)!=-1||item.UID.indexOf(this.re_data.CaseUserId)!=-1) {
+         arr.push(item)
+							}
+					}
+					return arr
+			}
+		},
+		mounted: async function () {
+			await this.check_login()
+			this.now_time = this.c_time
+			var a = document.querySelectorAll(".list-car-table-b")[0]
+			a.style.width = a.clientWidth + 500 + "px";
+			a.style.height = a.clientHeight + 100 + "px";
+			await this.get_or();
+			await axios.get("https://api.donkeymove.com/api/Cars/GetCarsWithCarTypeNoPage?carType=0&isDescending=false")
+				.then(res => {
+					this.car = res.data.response;
+					for (let i in this.car) {
+						this.car[i].work = []
+					}
+					console.log(this.car)
+				})
+			await this.get_dp();
+			await this.get_dr();
+			await this.get_caseuser();
+			document.querySelectorAll(".list-car-table-b")[0].style.width=240*this.car.length+"px"
+			loaded();
+			
+			this.loading = false
+		},
+		watch: {
+			open_voice: function () {
+				if (this.open_voice) {
+					voices = synth.getVoices();
+					var utterThis = new SpeechSynthesisUtterance("語音系統開啟");
+					utterThis.pitch = 1;
+					utterThis.rate = 1;
+					utterThis.voice = voices[20];
+					synth.speak(utterThis);
+					this.open_voice_text = "語音系統開啟"
+					console.log("語音系統開啟")
+				}
+				else {
+					voices = synth.getVoices();
+					var utterThis = new SpeechSynthesisUtterance("語音系統關閉");
+					utterThis.pitch = 1;
+					utterThis.rate = 1;
+					utterThis.voice = voices[20];
+					synth.speak(utterThis);
+					this.open_voice_text = "語音系統關閉"
+					console.log("語音系統關閉")
+				}
+			}
+		},
+		methods: {
+			selectNav: function (number) {
+				this.nav_status = number;
+			},
+			openNav2: function () {
+				this.isLeft = false;
+				this.isMainleft = false;
+			},
+
+			openNav: function () {
+				this.isLeft = !this.isLeft;
+				this.isMainleft = !this.isMainleft;
+			},
+			show_right: function (e) {
+				e.preventDefault();
+				this.close_right()
+				e.currentTarget.querySelectorAll(".right-mu")[0].style.display = "block"
+			},
+			close_right: function () {
+				let rd = document.querySelectorAll(".right-mu")
+				for (let i = 0; i < rd.length; i++) {
+					rd[i].style.display = "none"
+				}
+			},
+			show_more: function (x, y) {
+				if (!y) {
+					this.c_more = x
+				}
+				else {
+					this.c_more = x.DespatchDetails
+				}
+				this.show_b = true
+				this.show_more_d = true
+			},
+			get_data: function (index, time) {
+				let arr = [0, 0]
+				for (let i in this.car[index].work) {
+					if (this.order[this.car[index].work[i]].time == time) {
+						for (let j in this.order[this.car[index].work[i]].div) {
+							arr[0] += this.order[this.car[index].work[i]].div[j]
+						}
+						arr[1] += this.order[this.car[index].work[i]].m
+					}
+				}
+				return arr
+			},
+			merge_order: async function (e, index) {  //合併訂單
+				e.preventDefault();
+				e.currentTarget.children[0].classList.remove('d-b2')
+				this.loading = true
+				let dno = ""
+				let data = JSON.parse(e.dataTransfer.getData("Text"))
+				let obj = {
+					"Id": index,
+					"DriverInfoId": 0,
+					"CarId": 0,
+					"OrderDetailId": this.order[data].Id
+				}
+				let mapd = this.detail.map(x => x.DespatchId)
+				for (let i in mapd) {
+					if (index == mapd[i]) {
+						dno = i
+					}
+				}
+				if (this.order[data].CanShared && this.detail[dno].DespatchDetails[0].OrderDetails.CanShared) {
+					await axios.post("https://api.donkeymove.com/api/Despatch/PostView", obj)  //合併調度單
+						.then(async res => {
+							if (res.data.msg == "添加成功") {
+								await this.get_or();
+								await this.get_dp();
+								this.$forceUpdate()
+								this.loading = false
+							}
+							else {
+								alert(res.data.msg)
+								this.loading = false
+							}
+						})
+				}
+				else {
+					alert("其中一張訂單不開放共乘")
+					this.loading = false
+					return 0;
+				}
+			},
+			show_time_list:function(x,y) {
+              var time=x.re_time.split("T")[0]+"T"+y
+              return moment().isBefore(time);
+            },
+			t_order:async function(x) {
+              var r = confirm("確定轉單?");
+              if (r == true) {
+              }
+              else {
+                return 0;
+              }
+              await axios.put("https://api.donkeymove.com/api/OrderDetails/PutDetailTransfer?OrderDetailId="+x).then(async res => {
+		        if(res.data.msg=="轉單成功") {
+                  alert("轉單成功")
+                  window.location.reload()
+			    }
+                else{
+                  alert(res.data.msg)
+                }
+              });
+            },
+			merge_del: async function (x) {  //刪除合併
+				this.loading = true
+				await axios.delete("https://api.donkeymove.com/api/Despatch/DeleteSubByODId?OrderDetailID=" + x)  //合併調度單
+					.then(async res => {
+					  if(res.data.msg=="刪除成功") {
+						this.show_b = false
+						this.show_more_d = false
+						await this.get_or();
+						await this.get_dp();
+						this.$forceUpdate()
+					  }
+					  else {
+						alert(res.data.msg)
+					  }
+					})
+				this.loading = false
+			},
+			cdrop: async function (e, index, carid, dri,s) {  //拖入後
+				e.preventDefault();
+				e.currentTarget.classList.remove('d-b2')
+				if(s.Status==0||s.DriverInfo.Status==0) {
+				  alert("該車子或司機不可派發")
+				  return 0
+				}
+				this.loading = true
+				/*if(this.car[index].driver_id!=-1) {
+				  return 0
+				}*/
+				let data = Number(e.dataTransfer.getData("Text"))
+				let order = this.order[data]
+				let arr = this.get_data(index, order.time)
+				var obj = { car_id: carid, time: order.ReservationDate, order_id: order.Id, driver_id: dri }
+				var car_set = this.car.map(x => x.Id)
+				for (let i in car_set) {
+					if (car_set[i] == carid) {
+						car_set = this.car[i].SeatNum
+					}
+				}
+				if ((order.FamilyWith + order.ForeignFamilyWith) > car_set) {
+					alert("座位超載")
+					this.loading = false
+					return 0;
+				}
+				var flag = await this.add_despatch(obj)
+				await this.delay(0)
+				if (flag) {
+					await this.get_or();
+					await this.get_dp();
+				}
+				this.$forceUpdate()
+				this.loading = false
+			},
+			del: async function (x) {
+				this.loading = true
+				var flag = await this.del_despatch(x)
+				if (flag) {
+					await this.get_or()
+					await this.get_dp()
+				}
+				this.$forceUpdate()
+				this.loading = false
+			},
+			dragStart: function (e, id) {
+				console.log(e);
+				e.dataTransfer.setData("Text", String(id));
+			},
+			bu: function (e) {
+				e.currentTarget.classList.add('d-b')
+				event.preventDefault();
+			},
+			bf: function (e) {
+				e.currentTarget.classList.remove('d-b')
+			},
+			bu2: function (e) {
+				e.currentTarget.children[0].classList.add('d-b2')
+				event.preventDefault();
+			},
+			bf2: function (e) {
+				e.currentTarget.children[0].classList.remove('d-b2')
+			},
+			new_day: function () {
+
+			},
+			/*seach_car:function (){  //搜尋車輛
+			  let car=document.querySelectorAll("#"+this.s_car)[0]
+			  let x=car.offsetLeft
+			  myScroll.scrollBy(-(x-337),0,1000);
+			  document.querySelectorAll(".list-car-d-s")[0].style.transform = "translate("+-(x-337)+"px,0px) ";
+			},*/
+			max_time_de: function (x) {
+				this.max_time = x
+			},
+			max_time_up: function (x, y) {
+				if (this.order[y].m > this.order[x].m) {
+					this.order[x].c_m = this.order[y].m
+				}
+			},
+			delay: function (x) {
+				return new Promise(function (resolve) {
+					setTimeout(() => {
+						resolve();
+					}, x);
+				});
+			},
+			get_caseuser:async function() {
+				 await axios.get("https://api.donkeymove.com/api/CaseUser/GetAllCase")
+					.then(res => {
+       this.caseuser_list=res.data.response
+					})
+			},
+			add_despatch: async function (x) {  //新增調度單
+				var flag = false
+				var obj = {
+					"DriverInfoId": x.driver_id,
+					"CarId": x.car_id,
+					"StartDate": this.now_time + " " + x.time,
+					"DespatchDetail": [
+						{ "OrderDetailId": x.order_id }
+					]
+				}
+				await axios.post("https://api.donkeymove.com/api/Despatch/Post", obj)
+					.then(res => {
+						if (res.data.msg == "添加成功") {
+							flag = res.data.response
+							console.log("調度成功!")
+							console.log(res.data.response)
+						}
+						else {
+							flag = false
+							console.log("調度失敗!")
+							alert(res.data.msg)
+						}
+					})
+					.catch(e => {
+						flag = false
+						alert("調度失敗")
+					})
+				return flag
+			},
+			del_despatch: async function (x) {  //刪除調度單
+				var flag = false
+				await axios.delete("https://api.donkeymove.com/api/Despatch/DeleteSubByODId?OrderDetailID=" + x)
+					.then(res => {
+						if (res.data.msg == "刪除成功") {
+							console.log("刪除成功!")
+							flag = true
+						}
+						else {
+							console.log("刪除失敗!")
+							flag = false
+						}
+					})
+				return flag
+			},
+			get_or: async function () {  //獲取全部訂單
+				await axios.get("https://api.donkeymove.com/api/OrderDetails/GeOrderDetailtForDespatch/" + this.now_time)
+					.then(res => {
+						this.order = res.data.response;
+						for (let i in this.order) {
+							this.order[i].re_time=this.order[i].ReservationDate
+							this.order[i].ReservationDate = this.order[i].ReservationDate.split("T")[1].split(":")[0] + ":" + this.order[i].ReservationDate.split("T")[1].split(":")[1]
+							this.order[i].km = this.order[i].TotalMileage / 1000
+						}
+						console.log(this.order)
+					})
+					.catch(e => {
+                      location.reload()
+					})
+			},
+			get_dp: async function () {  //獲取全部調度單
+				await axios.get("https://api.donkeymove.com/api/Despatch/GetAllGroup?key=" + this.now_time)
+					.then(res => {
+						this.detail = res.data.response
+						for (let i in this.detail) {
+							this.detail[i].time = this.detail[i].DespatchDetails[0].Despatch.StartDate.split("T")[1].split(":")[0] + ":" + this.detail[i].DespatchDetails[0].Despatch.StartDate.split("T")[1].split(":")[1]
+							this.detail[i].m = this.detail[i].DespatchDetails[0].OrderDetails.ExpectedMinute
+						}
+						console.log(this.detail)
+					})
+					.catch(e => {
+                      location.reload()
+					})
+			},
+			get_dr: async function () {  //獲取全部司機
+				await axios.get("https://api.donkeymove.com/api/DriverInfo/GetNoPage?status=1&isDescending=false")
+					.then(res => {
+						this.driver = res.data.response
+						console.log(this.driver)
+					})
+					.catch(e => {
+                      location.reload()
+					})
+			},
+			check_login: async function (x) {
+				if (localStorage.dk2_user) {
+					this.user = JSON.parse(localStorage.dk2_user)
+					await get_left_menu(this.user.Id, async (re) => {
+						this.menu_id = re
+						this.$forceUpdate()
+					})
+				}
+				else {
+					location.href = 'login1.html';
+				}
+			},
+			change_driver: async function (x, y, z) {
+				var obj = {
+					"Id": x,
+					"DriverInfoId": y,
+					"CarId": z,
+				}
+				await axios.put("https://api.donkeymove.com/api/Despatch/Put", obj)
+					.then(async res => {
+						alert(res.data.msg)
+						await this.get_dp()
+						this.show_b = false;
+						this.c_driver_d = false;
+						this.show_more_d = false
+					})
+			},
+			put_header: async function (x) {
+				await axios.interceptors.request.use(
+					config => {
+						if (localStorage.dk_token) {
+							config.headers.Authorization = "Bearer " + x;
+						}
+						return config;
+					});
+			},
+			RefreshToken: async function () {
+				var obj = JSON.parse(localStorage.dk_token)
+				await axios.get("https://api.donkeymove.com/api/CompanyUser/RefreshToken/api/CompanyRefreshToken?token=" + obj.token).then(res => {
+					localStorage.dk_token = res.data.response.token;
+				})
+			},
+			driverid_index: function (x) {
+				var arr = this.driver.map(x => x.Id)
+				return arr.indexOf(x);
+			},
+			putdata: async function () {  //推播調度單
+				var obj = {
+					starDateTime: this.now_time
+				}
+				await axios.put("https://api.donkeymove.com/api/Despatch/PutDate?starDateTime=" + this.now_time)
+					.then(res => {
+						alert(res.data.msg)
+					})
+			},
+			to_change_time:async function(x) {
+        this.loading=true
+        var time=x.ReservationDay.split("T")[0]+"T"+this.show_c_time_time
+        await axios.post("https://api.donkeymove.com/api/OrderDetails/PutDetailTime?ordersDetailId="+x.Id+"&newReservationDate="+time)
+					.then(res => {
+            if(res.data.msg=="添加成功") {
+              alert("修改成功")
+              window.location.reload()
+            }
+            else {
+              alert(res.data.msg)
+              this.loading=false
+            }
+					})
+          .catch(e=>{
+            alert("時間變更失敗")
+            this.loading=false
+          })  
+      },
+	  show_max:function(x) {
+        var arr=x.DespatchDetails.map(x=>x.OrderDetails.ExpectedMinute)
+		return Math.max(...arr)
+	  },
+			dateFormat: function (time) {
+				var date = new Date(time);
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+				var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+				var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+				var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+				var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				return year + "-" + month + "-" + day +" "+hours+":"+minutes;
+			},
+			c_put_data:async function(x) {
+		this.loading=true
+		await axios.put("https://api.donkeymove.com/api/Despatch/PutDespatchById?DespatchId="+x)
+		.then(res => {
+		  alert(res.data.msg)
+		})    
+		this.loading=false
+	  },
+	  export_table:async function() {
+		  location.href="./car_prove.html?orderNo="+this.ex_no+"&startDate="+this.ex_data1+"&endDate="+this.ex_data2		
+   },
+			get_amt:async function() {
+				 this.loading = true
+				 await axios.get("https://api.donkeymove.com/api/OrderDetails/GetOrderAmt/100203,"+this.re_data.FromAddr+","+this.re_data.ToAddr+",236,0?_canShared="+this.re_data.CanShared+"&hasback="+this.re_data.hasback+"&rDate="+this.now_time)
+		   .then(res => {
+						 if(res.data.success) {
+						   this.amt_list=res.data.response
+							}
+					})
+					.catch(err=>{
+						 alert("資料請填完整")
+						 this.loading = false
+					})
+					this.loading = false
+			},
+			to_re:async function(x,y) {
+      this.re_data.ReservationDate=this.now_time+" "+x
+						this.re_data.driverData=y
+						this.show_re=true
+			},
+			sub_m_order:async function() {
+     var obj={
+						Id: 0,
+      MOrderNo: "string",
+      Minute: 0,
+						CaseUserId: this.re_data.CaseUserId
+					}
+				 return await axios.post("https://api.donkeymove.com/api/Orders/Post", obj)
+     .then(res => {
+       if (res.data.msg == "添加成功") {
+         return res.data.response
+       }
+     })
+			},
+			sub_c_order:async function() {
+				this.loading=true
+				this.re_data.OrderId=await this.sub_m_order()
+				this.re_data.CompanyId=this.user.CompanyId
+				this.re_data.OrderDetailsCompany[0].CompanyId=this.user.CompanyId
+				await axios.post("https://api.donkeymove.com/api/OrderDetails/Post", this.re_data)
+    .then(async (res) => {
+      if (res.data.msg == "添加成功") {
+							 var time=this.re_data.ReservationDate.split(" ")[1]
+							 var obj = { car_id: this.re_data.driverData.Id, time: time, order_id:res.data.response, driver_id: this.re_data.driverData.DriverId }
+        var flag = await this.add_despatch(obj)
+        if(flag) {
+									await this.get_or()
+					    await this.get_dp()
+									alert("訂單添加成功!")
+									this.loading=false
+								}
+								else {
+									this.loading=false
+								}
+						}
+      else {
+        alert(res.data.msg)
+								this.loading=false
+        return 0;
+      }
+     })
+     .catch(err => {
+      console.log(err);
+						this.loading=false
+     })
+					this.loading=false
+			},
+			dateFormat1: function (time) {
+				var date = new Date(time);
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+				var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+				var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+				var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+				var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				return hours+":"+minutes;
+			}
+			/*rez:function() {
+			  return 0
+			}*/
+		}
+	})
+	var myScroll;
+	function loaded() {
+		myScroll = new IScroll('.list-car-table', {
+			scrollX: true,
+			scrollY: true,
+			probeType: 3,
+			momentum: false,
+			mouseWheel: true
+		});
+		myScroll.on('scroll', function () {
+			document.querySelectorAll(".list-time")[0].style.transform = "translate(0px," + this.y + "px) ";
+			document.querySelectorAll(".list-car-d-s")[0].style.transform = "translate(" + this.x + "px,0px) ";
+		});
+	}
+//http://210.63.206.166/
+	/*
+	var socket = io('http://localhost:8081/');
+	socket.on('order-d',function (data) {
+	  console.log(data);
+	  speek(data.lo,data.lan);
+	});
+
+	var synth = window.speechSynthesis;
+	var voices=synth.getVoices()
+	function speek(x,lan) {
+	  voices = synth.getVoices();
+	  var utterThis = new SpeechSynthesisUtterance(x);
+	  utterThis.pitch = 1;
+	  utterThis.rate = 1;
+	  utterThis.voice = voices[lan];
+	  if(v.open_voice) {
+		synth.speak(utterThis);
+	  }
+	  console.log(x)
+	}
+	*/
+</script>
+
+</html>

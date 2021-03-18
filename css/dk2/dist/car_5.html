@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+ 
+  <link rel="stylesheet" href="css/DKdriver.css" />
+  <link rel="stylesheet" href="css/ui_index.css">
+   <link rel="stylesheet" href="css/style1.css" />
+   <link rel="stylesheet" href="css/style2.css" />
+  <style>
+    .li-onc {
+	  border-color:#fd8115;
+      border-style: solid;
+      border-width: 0 0 3px 0;
+	}
+	.page-d {
+	  padding:10px 0;
+	}
+	.page-v-c {
+	  width:30px;
+	  height:30px;
+	  line-height:30px;
+	  text-align:center;
+	  border-radius:100%;
+	  border:1px #000 solid;
+	  float:left;
+	  margin:0 10px 0 0;
+	}
+	.page-v-c-on {
+	  color: #fd8115;
+	  border:1px #fd8115 solid;
+	}
+	.isdel {
+	  background-color:#ccc;
+	}
+  .list-del {
+    background-color: #FFCCCC;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+      <div class="loading-black" v-if="loading">
+          <img src="img/spinner.gif">
+        </div>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=3 :cc=39 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1" :class="{'active' : isMainleft}">
+        <div class="main-d">
+          <div class="modalOrder" v-if="isOpen&&list2">
+            <div class="modalCenter">
+              <div class="modalX" @click="closeModal" style="cursor: pointer;">
+                <img src="img/icons8-delete_sign.png" alt="" />
+                <span>關閉</span>
+              </div>
+              <div class="modalBody">
+                <div class="top">
+                  <div class="left">
+                    <div class="number">
+                      <div>訂單編號</div>
+                      <div>{{list[c_id].SOrderNo}}</div>
+                    </div>
+                    <div class="context">
+                      <p>預約時間：{{ dateFormat(list[c_id].ReservationDate) }}</p>
+                      <p>狀態：{{status_arr[list[c_id].Status]}}</p>
+					  <p v-if="list[c_id].IsBack">行程：回程</p>
+					  <p v-else>行程：去程</p>
+                      <p>訂單建立時間：{{ dateFormat(list[c_id].CreateTime) }}</p>
+                    </div>
+                  </div>
+                  <div class="center">
+                    <div class="personal_information1">
+                      <p>
+                        <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                        <span class="otherColor" v-if="list[c_id].CanShared">可共乘</span>
+                        <span class="otherColor" v-else>不可共乘</span>
+                      </p>
+                      <p>
+                        <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                        <span>輪椅類型：</span>
+                        <span>{{list[c_id].WheelchairId}}</span>
+                        <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                        <span>陪同人員：</span>
+                        <span>{{list[c_id].FamilyWith}} 人</span>
+                      </p>
+                    </div>
+                    <div class="personal_information2">
+                      <div class="userData">
+                        <div class="d_flex">
+                          <div class="userPhoto">
+                            <img :src="list[c_id].CaseUserPic" alt="" />
+                          </div>
+                          <div class="userInfo">
+                            <h3>{{list[c_id].CaseUserName}}</h3>
+                            <div>
+                              <p>個 案 編 號：{{list[c_id].CaseUserId}}</p>
+                              <p>身分證字號：{{list[c_id].CaseUserUID}}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="userAddress">
+                        <div class="d_flex">
+                          <div class="arrowB">
+                            <img src="img/icons8-long_arrow_down_filled.svg" alt="" />
+                          </div>
+                          <div class="context">
+                            <p>{{list[c_id].FromAddr}}</p>
+                            <p></p>
+                            <p>{{list[c_id].ToAddr}}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div></div>
+                    </div>
+                  </div>
+                  <div class="right">
+                    <div class="driver">
+                      <p>
+                        <img src="img/icons8-arrow.svg" alt="" />
+                        <span>司機未達</span>
+                      </p>
+                    </div>
+                    <div class="fee">
+                      <p>
+                        <span>自費</span>
+                        <span>${{list[c_id].SelfPayAmt}}</span>
+                      </p>
+                      <p>
+                        <span>公費</span>
+                        <span>${{list[c_id].SubsidyAmt}}</span>
+                      </p>
+                      <a :href="'./reservation_order5.html#/get/'+list[c_id].Id">訂單歷程</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="bottom">
+                  <div class="left">
+                    <select style="width:100%;" v-model="c_point">
+					  <option value="">請選擇扣點點數</option>
+					  <option value=0>0點</option>
+					  <option value=1>1點</option>
+					  <option value=2>2點</option>
+					  <option value=3>3點</option>
+					  <option value=4>4點</option>
+					  <option value=5>5點</option>
+					</select>
+					<textarea cols="50" rows="5" style="width:100%;" placeholder="扣點理由" v-model="c_re">
+                    </textarea>
+                  </div>
+                  <div class="right">
+                    <div>
+                      <p>臨時取消扣點 1 點</p>
+                      <p>目前違規點數 {{list2.TotalViolationCount}}點</p>
+                      <p>1.乘車日前二天申請更改或取消服務者,累計三次,扣點一點</p>
+                      <p>2.於乘車當日用車前申請更改或取消服務者,扣點一點</p>
+                      <p>3.於約定乘車時間無故抵達約定乘車地點者(四小時內),扣點二點</p>
+                      <div class="orderdel" @click="to_del(list[c_id])" v-if="list[c_id].Status<2">確定取消此訂單</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <header>
+            <h1>調度控制台 - 列表式</h1>
+	        <el-date-picker v-model="c_data" type="date" placeholder="選擇日期" value-format="yyyy-MM-dd" @change="to_search"></el-date-picker>
+			    <div class="search">
+            <input type="text" v-model="key" @keyup.enter="to_search" placeholder="請輸入關鍵字">
+            <img src="img/icons8-search.png" alt="">
+          </div>
+            <div class="times" @click="isd=!isd;sort_list('ReservationDate')">
+              <!-- <div>
+                <el-date-picker class="birth" type="date" placeholder="" value-format="yyyy-MM-dd"
+                  @change="new_day();$forceUpdate()"></el-date-picker>
+              </div> -->
+              <span>排序: 預約時間</span>
+              <img src="img/icons8-generic_sorting_2.svg" alt="" />
+            </div>
+            <div class="alpha_sorfting" @click="isd=!isd;sort_list('CaseUserId')">
+              <span>個案編號</span>
+              <img src="img/icons8-alphabetical_sorting.svg" alt="" />
+            </div>
+            <button @click="putdata">確定推播</button>
+            <!-- <div>
+                  <el-date-picker
+                  class="birth"
+                    v-model="get_list.Birthday"
+                    type="date"
+                    placeholder=""
+                    value-format="yyyy-MM-dd"
+                    @change="new_day();$forceUpdate()"
+                  ></el-date-picker>
+                </div> -->
+
+          </header>
+          <div class="reservationOrder">
+            <div>
+              <div class="list-null" v-if="list==null">查無資料</div>
+              <div class="listReservePersonData"  v-for="(item,index) in list" >
+                <div class="listReservePersonData1" :class="{'isdel':item.Status==8||item.Status==9}">
+				  <div class="listReservePersonData11">
+                    <span>訂單編號</span>
+                    <span>{{item.SOrderNo}}</span>
+                  </div>
+                  <div class="listReservePersonData12">
+                    <ul>
+                      <li>預約時間：{{ dateFormat(item.ReservationDate) }}</li>
+                      <li>狀態：{{status_arr[item.Status]}}</li>
+					  <li v-if="item.IsBack">行程：回程</li>
+                      <li v-else>行程：去程</li>
+                      <li>建立時間：{{ dateFormat(item.CreateTime) }}</li>
+                      <li>車種：{{ item.CarCategoryId==236 ? "一般車" : "福祉車" }}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="listReservePersonData2">
+                  <div class="listReservePersonData21">
+                    <div class="shareable">
+                      <template v-if="item.CanShared">
+                        <img src="img/icons8-plasmid_filled.svg" alt="" />
+                        <span class="can">可共乘</span>
+                      </template>
+                      <template v-else>
+                        <img src="img/cantDoubleCircle.svg" alt="" />
+                        <span class="cant">不可共乘</span>
+                      </template>
+                    </div>
+                    <div class="typeChair">
+                      <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                      <span>輪椅類型：</span>
+                      <span>{{item.WheelchairId}}</span>
+                      <img src="img/icons8-plasmid_filledcopy.svg" alt="" />
+                      <span>陪同人員：</span>
+                      <span> {{item.FamilyWith}} 人 <!--/ 外籍 {{item.ForeignFamilyWith}} 人--></span>
+                      <div class="driver_list_d">
+                        <input type="text" class="driver_list_d_input" placeholder="請輸入司機名稱" v-model="driver_name[index]" @input="c_input_driver(driver_name[index],index)" :disabled="driver_dis[index]===2">
+                        <div class="driver_list_d_x" @click="driver_name[index]='';driver_dis[index]=0;$forceUpdate();">X</div>
+                        <div class="driver_list_d_d" v-if="driver_dis[index]===1">
+                          <div class="driver_list_d_d_d" v-for="(item2,index2) in true_list[index]" @click="in_order(item,item2,index,$event.target)">{{item2.DriverInfo.DriverName+" ("+item2.CarType.CarTypeName+") "}}</div>
+                        </div>
+                        </div>
+                        <button class="driver_list_d-b" @click="save_order(item)">排班</button>
+                    </div>
+                  </div>
+                  <div class="listReservePersonData22">
+                    <div class="listReservePersonData221">
+                      <div class="memberpicbox"><img :src="item.CaseUserPic" v-if="item.CaseUserPic" alt="" /></div>
+                      <div class="noPhoto" v-else>
+                        <img src="img/icons8-sheep2_filled.svg" alt="" />
+                        <span>未上傳相片</span>
+                      </div>
+                      <div>
+                        <h5>{{item.CaseUserName}}</h5>
+                        <div>個案編號：{{item.CaseUserNo}}</div>
+                        <div>身分證字號：{{item.CaseUserUID}}</div>
+                      </div>
+                    </div>
+                    <div class="listReservePersonData222">
+                      <div>
+                        <img src="img/icons8-long_arrow_down_filled.svg" alt="" />
+                        <div class="address">
+                          <h3>{{item.FromAddr}}<span v-if="item.FromAddrRemark">({{item.FromAddrRemark}})</span></h3>
+                          <h3></h3>
+                          <h5>{{item.ToAddr}}<span v-if="item.ToAddrRemark">({{item.ToAddrRemark}})</span></h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="listReservePersonData3">
+                  <div>
+                    <img src="img/icons8-arrow.svg" alt="" />
+                    <span>{{status_arr[item.Status]}}<button class="btntrn" @click="t_order(item.Id)" v-if="item.Status<2&&moment().isBefore(item.ReservationDate)">轉單</button></span>
+                  </div>
+                  <div>自費 ${{item.SelfPayAmt}}</div>
+                  <div>公費 ${{item.SubsidyAmt}}</div>
+                  <button class="btnbox orderpaper" @click="go_to('reservation_order2.html#/get/'+item.Id)">查看訂單</button>
+                  <button class="btnbox orderdel" @click.stop="c_id=index;get_more(item.Id);openModal()" v-if="item.Status<2">取消訂單</button>
+				  <a :href="'./reservation_order5.html#/get/'+item.Id" v-else><button class="btnbox">訂單歷程</button></a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- pagi -->
+          <div class="pagination">
+		    <page-v :pagen=page :countn=pageCount :urlex="'./reservation_order.html?pmod='+urlq.pmod+'&status='+urlq.status+'&key='+this.urlq.key+'&page='" v-if='page&&pageCount'></page-v>
+          </div>
+          </div>
+        </main>
+      </div>
+    </div> 
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+  <script src="js/yyyymmdd.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/url_q.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          status_arr: ["新訂單", "已排班", "已出發", "已抵達", "客上", "客下", "已完成","未執行","個案取消","服務單位取消","空趟","已轉單"],
+          nav_status: 1,
+          loading:false,
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          
+          isMainleft: true,
+          isOpen: false,
+          list: [],
+          c_id: 0,
+          true_list:[],
+          driver_list:[],
+          driver_name:[],
+          driver_dis:[],
+		  urlq:url_q(window.location.href),
+          user:"",
+          page: false,
+          pageCount: false,
+		  pmod:1,
+		  search:{
+		    isDispatch:false,
+			status:""
+		  },
+		  c_point:"",
+		  c_re:"",
+		  isd:false,
+		  list2:"",
+		  c_data:"",
+		  key:""
+        };
+      },
+
+      mounted: async function () {
+        this.loading=true
+	    await this.check_login()
+		var urlq=url_q(window.location.href)
+		this.page=Number(urlq.page)
+		this.pmod=urlq.pmod
+		if(!urlq.page) {
+		  document.location.href="http://210.63.206.166/web3/reservation_order.html?page=1&pmod=1"
+		}
+		if(this.urlq.status==-1) {
+		  this.urlq.status=""
+		}
+    await axios.get("http://wheat-tainan.1966.org.tw:20021/api/DriverInfo/GetDriversWithCar")
+    .then(res=>{
+      this.driver_list=res.data.response
+      console.log(this.driver_list)
+    })
+        await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/GeOrderDetailtView?page="+this.urlq.page+"&status="+this.urlq.status+"&pMode="+this.urlq.pmod+"&key="+this.urlq.key)
+          .then(res => {
+            this.list = res.data.response.data
+			this.pageCount = res.data.response.pageCount;
+            console.log(this.list)
+			console.log(this.pageCount)
+			if(this.urlq.status==="") {
+			  this.urlq.status=-1
+			}
+			if(res.data.response.data.length==0) {
+			  this.list=null
+			}
+            this.$nextTick(function () {
+              this.$forceUpdate();
+            })
+          })
+          this.loading=false
+      },
+      computed: {
+			c_time: function () {
+				var arr = new Date().yyyymmdd()
+				return arr[0] + "-" + arr[1] + "-" + arr[2]
+			}
+		},
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+
+        },
+        closeModal: function () {
+          this.isOpen = false;
+        },
+        openModal: function () {
+          this.isOpen = true;
+        },
+        go_to: function (x) {
+          document.location.href = x
+        },
+        new_day: function () {
+          let pos = this.data_time.map(function (e) {
+            return e.time;
+          });
+          let c_obj = JSON.parse(JSON.stringify(this.car));
+          if (pos.indexOf(this.c_time) == -1) {
+            this.data_time.push({ time: this.c_time, car: c_obj });
+            this.c_index = this.data_time.length - 1;
+            console.log(this.data_time);
+          } else {
+            this.c_index = pos.indexOf(this.c_time);
+          }
+        },
+        get_more:async function(x) {
+          await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/GetOrderDetailMappingView/"+x).then(res => {
+            this.list2=res.data.response
+          });
+		},
+        pageSelect: async function (c) {
+          await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/Get?page=" + c).then(res => {
+            this.page = res.data.response.page;
+            this.pageCount = res.data.response.pageCount;
+            this.personals = res.data.response.data;
+          });
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+		to_search:async function(x) {
+          await axios.get("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/GeOrderDetailtView?key="+this.key+"&page="+this.urlq.page+"&pMode="+this.urlq.pmod+"&date="+this.c_data).then(res => {
+            if(res.data.msg=="獲取成功") {
+			  this.page = res.data.response.page;
+              this.pageCount = res.data.response.pageCount;
+			  this.list = res.data.response.data;
+			  console.log(this.list)
+			  if(res.data.response.data.length==0) {
+			    this.list=null
+			  }
+            }
+			else {
+			  alert(res.data.msg)
+			}
+		  });
+		},
+		sort_list:function(x) {
+		  if(this.isd) {
+		    if(x=="CaseUserId") {
+		      this.list.sort(function(a, b) {
+		        return b[x] - a[x]
+		      })
+			}
+			else {
+		      this.list.sort(function(a, b) {
+		        return new Date(b[x]).getTime() - new Date(a[x]).getTime()
+		      })			
+			}
+		  }
+		  else {
+		    if(x=="CaseUserId") {
+		      this.list=this.list.sort(function(a, b) {
+		        return a[x] - b[x]
+		      })
+            }
+            else {
+		      this.list.sort(function(a, b) {
+		        return new Date(a[x]).getTime() - new Date(b[x]).getTime()
+		      })	
+            }			
+		  }
+		},
+		to_del:async function(x) {
+		  if(this.c_point==""||this.c_re=="") {
+		    alert("扣點點數或扣點理由未選擇")
+			return 0
+		  }
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+		  let obj={
+            "CaseUserId":x.CaseUserId,
+            "OrderDetailId": x.Id,
+            "Point": this.c_point,
+            "GrandCount": 0,
+            "Remark": this.c_re,
+		  }
+          await axios.post("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PostOrderViolation",obj).then(async res => {
+		    if(res.data.msg=="添加成功") {
+              await axios.put("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PutDetailStatus?OrderDetailId="+x.Id+"&StatusInt=9").then(res2 => {
+                if(res2.data.msg=="更新成功") {
+				  alert("取消成功")
+				  window.location.reload()
+				}
+				else {
+				  alert(res2.data.msg)
+				}
+              });
+            }
+            else {
+              alert(res.data.msg)
+            }			
+          });
+		  }
+		  else {
+		    return 0;
+		  }
+		},
+    t_order:async function(x) {
+      var r = confirm("確定轉單?");
+          if (r == true) {
+          }
+          else {
+            return 0;
+      }
+      await axios.put("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PutDetailTransfer?OrderDetailId="+x).then(async res => {
+		    if(res.data.msg=="轉單成功") {
+          alert("轉單成功")
+          window.location.reload()
+				}
+        else{
+          alert(res.data.msg)
+        }
+      });      
+    },
+    c_input_driver:function(x,y) {
+      if(x=="") {
+        this.driver_dis[y]=0
+        return 0
+      }
+      this.driver_dis[y]=1
+      this.true_list[y]=[]
+      for(let i in this.driver_list) {
+		    if(this.driver_list[i].DriverInfo.DriverName.indexOf(x)!=-1&&this.list[y].CarCategoryId==214&&this.driver_list[i].CarType.Id==214) {
+			    this.true_list[y].push(this.driver_list[i])
+			  }
+        else if(this.driver_list[i].DriverInfo.DriverName.indexOf(x)!=-1&&this.list[y].CarCategoryId==236){
+          this.true_list[y].push(this.driver_list[i])
+        }
+		  }
+    },
+    in_order:async function(x,y,z) {
+      x.d1=y.Id
+      x.d2=y.DriverInfo.Id
+      this.driver_name[z]=y.DriverInfo.DriverName+" ("+y.CarType.CarTypeName+") "
+      this.driver_dis[z]=2
+      this.$forceUpdate()
+    },
+    save_order:async function(x) {
+      this.loading=true
+      await axios.post("http://wheat-tainan.1966.org.tw:20021/api/Despatch/Post/"+x.Id+","+x.d1+","+x.d2).then(async res => {
+        alert(res.data.msg)
+        this.$forceUpdate()
+        this.loading=false
+      })
+      .catch(function(e) {
+        alert(e)
+        this.$forceUpdate()
+        this.loading=false
+      })
+    },
+    putdata: async function () {  //推播調度單
+        this.loading=true
+				var obj = {
+					starDateTime: this.c_time
+				}
+				await axios.put("http://wheat-tainan.1966.org.tw:20021/api/Despatch/PutDate?starDateTime=" + this.c_time)
+					.then(res => {
+            alert(res.data.msg)
+            window.location.reload()
+					})
+          .catch(e=>{
+            alert(e)
+            this.loading=false
+          })
+      },
+      to_change_time:async function(x,y) {
+        this.loading=true
+        var time=x.ReservationDate.split("T")[0]+"T"+this.show_c_time_time[y]
+        await axios.post("http://wheat-tainan.1966.org.tw:20021/api/OrderDetails/PutDetailTime?ordersDetailId="+x.Id+"&newReservationDate="+time)
+					.then(res => {
+            alert(res.data.msg)
+            window.location.reload()
+					})
+          .catch(e=>{
+            alert("時間變更失敗")
+            this.loading=false
+          })  
+      },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day+" "+hours+":"+minutes;
+}
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-158769656-1');
+      </script>
+    <script src="js/iscroll-lite.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/pagev.css">
+    <style>
+        .main {
+          height: auto;
+          overflow: hidden;
+          position: relative;
+        }
+        .header {
+          box-shadow: 0 0 5px #222;
+        }
+        .main-d {
+        }
+        .main-d-top {
+          height: 50px;
+          padding: 0 0 20px 0;
+          margin: 0 0 20px 0;
+          display: flex;
+          justify-content: space-between;
+        }
+        .main-d-top-l {
+          height: 50px;
+          float: left;
+          display: flex;
+          align-items: center;
+        }
+        .main-d-top-l-d {
+          margin: 0 10px 0 0;
+          padding: 0 10px 0 0;
+          border-style: solid;
+          border-width: 0 1px 0 0;
+          border-color: #666;
+          float: left;
+        }
+        .big {
+          font-size: 30px;
+          border-width: 0;
+        }
+        .main-d-top-r {
+          height: 50px;
+          float: right;
+          display: flex;
+          align-items: center;
+        }
+        .b {
+          /* padding: 10px; */
+          width: 100px;
+          height: 35px;
+          margin: 0 10px 0 0;
+          border-radius: 30px;
+          background: #565656;
+          border-radius: 25.64px;
+          border-radius: 25.64px;
+          color: #fff;
+          /* float: left; */
+  
+          font-size: 21px;
+          color: #ffffff;
+          letter-spacing: 1.75px;
+          text-align: center;
+  
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+  
+        .c {
+          width: 100px;
+          height: 35px;
+          margin: 0 10px 0 0;
+          border: 2px solid #f3981a;
+          border-radius: 25.64px;
+          border-radius: 25.64px;
+          /* float: left; */
+  
+          font-size: 21px;
+          color: #f3971a;
+          letter-spacing: 1.75px;
+          text-align: center;
+  
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .main-d1 {
+          border-style: solid;
+          border-width: 0 0 1px 0;
+          border-color: #666;
+          margin: 0 0 20px 0;
+          overflow: hidden;
+        }
+        .main-d1-d {
+          float: left;
+          width: 100px;
+          text-align: center;
+          padding: 0 0 10px 0;
+          margin: 0 20px 0 0;
+          border-style: solid;
+          border-width: 0 0 3px 0;
+          border-color: #f5f5f5;
+        }
+        .main-d1-d-on {
+          border-color: #f29700;
+        }
+        .list {
+          overflow: hidden;
+          margin: 0 0 20px 0;
+        }
+        .t1 {
+          width: 100%;
+          border-collapse: collapse;
+        }
+  
+        .t1 td {padding: 10px 0; line-height: 25px;}
+        .t1 td:nth-child(1), .t1 td:nth-child(2), .t1 td:nth-child(3) {width: 10%;    text-align: center;}
+        .t1 td:last-child {padding-right: 30px;}
+  
+        .t1 tr {
+        }
+        .t1-h div { display: inline-block;}
+        .t1 tr:nth-child(odd) {background-color: #fff; }
+        .t1 tr:nth-child(even) {background-color: #efefef;}
+        .t1-h {padding: 20px 0; background-color: #f29700; color: #fff;overflow: hidden;border-radius: 10px; margin: 0 0 10px 0;box-shadow: 0 1px 2px #222;}
+        .t1-h div:nth-child(1), .t1-h div:nth-child(2), .t1 td-h div:nth-child(3) {width: 10%;    text-align: center;}
+        .t1-h div:last-child {padding-right: 30px;}
+      </style>
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <left-menu :mc=5 :cc=52 :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main" :class="{'active' : isMainleft}">
+            <div class="main-d">
+              <div class="main-d-top">
+                <div class="main-d-top-l">
+                  <div class="main-d-top-l-d big">全部車輛檢查紀錄</div>
+                </div>
+                <div class="main-d-top-r">
+                  <div style="cursor: pointer;" class="b" @click="printDiv();show_div=3">列印</div>
+                  <a style="cursor: pointer;" class="c"  href="./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&orderby="> <div @click="show_div=3">回列表</div></a>
+                 
+                  <!-- <input type="text" class="main-d-top-r-in"> -->
+                </div>
+              </div>
+              <div class="main-d1">
+                <div style="cursor: pointer;"  class="main-d1-d" @click="sel(0,'all')">本月檢查紀錄</div>
+                <div style="cursor: pointer;"  class="main-d1-d" @click="sel(1,'歷史檢查紀錄')">
+                  歷史檢查紀錄
+                </div>
+              </div>
+              <div class="list">
+                <div class="t1-h">
+                  <div>
+                    檢查紀錄
+                  </div>
+                  <div>執行司機</div>
+                  <div>車號</div>
+                  <div>不合格項目</div>
+                </div>
+                <div class="list-null" v-if="list==null">查無資料</div>
+                <table class="t1" border="0">
+                  <tr v-for="(item,index) in show_list">
+                    <td>{{ dateFormat(item.CreateTime) }}</td>
+                    <td>{{ item.DriverInfo.DriverName }}</td>
+                    <td>{{  item.Cars.CarNo  }}</td>
+                    <td>{{ item.NoChecked  }}</td>
+                  </tr>
+                </table>
+				<page-v :pagen=page :countn=pageCount :urlex="'./driverVehicle_examine.html?page='" v-if='page&&pageCount'></page-v>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/city_sel.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script></script>
+  </body>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: {
+        isLeft: true,
+        isMainleft: true,
+        nav_status: 1,
+		urlq:url_q(window.location.href),
+        list: [
+          {
+            name: "2019-03-22   AM 8:22  ",
+            ach: "梁幼紋",
+            lo: " 15項  應合格項目：21"
+          },
+          {
+            name: "2019-03-22   AM 8:22  ",
+            ach: "梁幼紋",
+            lo: " 15項  應合格項目：21"
+          },
+          {
+            name: "2019-03-22   AM 8:22  ",
+            ach: "梁幼紋",
+            lo: " 15項  應合格項目：21"
+          },
+          {
+            name: "2019-03-22   AM 8:22  ",
+            ach: "梁幼紋",
+            lo: " 15項  應合格項目：21"
+          },
+          {
+            name: "2019-03-22   AM 8:22  ",
+            ach: "梁幼紋",
+            lo: " 15項  應合格項目：21"
+          },
+          {
+            name: "2019-03-22   AM 8:22  ",
+            ach: "梁幼紋",
+            lo: " 15項  應合格項目：21"
+          }
+        ],
+        show_list: [],
+		user:"",
+		page:"",
+		pageCount:""
+      },
+      mounted:async function() {
+	    await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/CheckResult/GetCheckCarMapping?page="+this.urlq.page)
+        .then(res=>{
+		  this.page=res.data.response.page
+		  this.pageCount=res.data.response.pageCount
+	      this.list=res.data.response.data
+		  console.log(res.data.response.data)
+	    })
+		if(this.list.length==0) {
+		  this.list=null
+		}
+        this.sel(0, "all");
+      },
+      methods: {
+        selectNav:function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+        printDiv: function() {
+          window.print();
+        },
+        openNav: function() {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        open_black: function(e) {
+          e.preventDefault();
+          this.close_black();
+          e.currentTarget.querySelectorAll(".list-d-black")[0].style.display = "block";
+        },
+        close_black: function() {
+          let b = document.querySelectorAll(".list-d-black");
+          for (let i = 0; i < b.length; i++) {
+            b[i].style.display = "none";
+          }
+        },
+        sel: function(e, x) {
+          let d = document.querySelectorAll(".main-d1-d");
+          for (let i = 0; i < d.length; i++) {
+            d[i].classList.remove("main-d1-d-on");
+          }
+          d[e].classList.add("main-d1-d-on");
+          this.show_list = [];
+          for (let i in this.list) {
+            if (this.list[i].city == x || x == "all") {
+              this.show_list.push(this.list[i]);
+            }
+          }
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+dateFormat:function(time) {
+    var date=new Date(time);
+    var year=date.getFullYear();
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    return year+"-"+month+"-"+day;
+}
+      }
+    });
+
+    /*document.querySelectorAll(".list-b")[0].addEventListener("pointermove",function() {
+      alert(213)
+    })*/
+  </script>
+</html>

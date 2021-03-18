@@ -1,0 +1,565 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158769656-1");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+    <!--小尺寸選單-->
+    <!---->
+    <link rel="stylesheet" href="css/resizelayout.css" />
+    <link rel="stylesheet" href="css/mobileMenu.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <!--小尺寸選單-->
+    <style>
+      .page-d {
+        padding: 10px 0;
+      }
+      .page-v-c {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 100%;
+        border: 1px #000 solid;
+        float: left;
+        margin: 0 10px 0 0;
+      }
+      .page-v-c-on {
+        color: #fd8115;
+        border: 1px #fd8115 solid;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="console_main" v-cloak>
+      <input
+        type="file"
+        ref="file1"
+        name="avatar"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        @change="import_data($event)"
+        style="display: none"
+      />
+      <user-header :user="user"></user-header>
+      <!-- 側拉選單 -->
+
+      <div class="content">
+        <div>
+          <left-menu :mc="5" :cc="51" :menu="menu_id"></left-menu>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header>
+              <h1>全部車輛一覽表</h1>
+              <!-- <div class="select_container"> -->
+              <select
+                name="YourLocation"
+                class="selectStyle"
+                style="margin-right: 26px"
+                v-model="urlq.compId"
+                @change="to_search"
+              >
+                <option value="">請選擇公司</option>
+                <option v-for="(item,index) in comp" :value="item.Id">
+                  {{item.CompanyName}}
+                </option>
+              </select>
+              <select
+                name="YourLocation"
+                class="selectStyle"
+                v-model="urlq.carType"
+                @change="to_search"
+              >
+                <option value="0">請選擇車種</option>
+                <option v-for="(item,index) in cartype" :value="item.Id">
+                  {{item.CarTypeName}}
+                </option>
+                <!-- <option value="Taoyuan">不可派發</option> -->
+              </select>
+              <!-- </div> -->
+              <!-- <div class="select_container"> -->
+              <select
+                name="YourLocation"
+                class="selectStyle"
+                v-model="urlq.Status"
+                @change="to_search"
+              >
+                <option value="">請選擇狀態</option>
+                <option value="true">可派發</option>
+                <option value="false">不可派發</option>
+              </select>
+              <!-- </div> -->
+              <div class="search">
+                <input
+                  class="input2"
+                  type="text"
+                  placeholder="關鍵字搜尋"
+                  v-model="urlq.key"
+                  @keyup.enter="to_search"
+                />
+                <img src="img/icons8-search.png" alt="" />
+              </div>
+              <div class="times" @click="urlq.orderby='Id';to_search()">
+                <span>建立時間</span>
+                <img src="img/icons8-generic_sorting_2.svg" alt="" />
+              </div>
+              <div
+                class="alpha_sorfting"
+                @click="urlq.orderby='CarNo';to_search()"
+              >
+                <span>車牌號碼</span>
+                <img src="img/icons8-alphabetical_sorting.svg" alt="" />
+              </div>
+              <a class="addList" @click.prevent="$refs.file1.click()">匯入</a>
+              <a
+                href="./download/司機車輛匯入範例.xlsx"
+                class="addList"
+                download
+                >下載匯入範本</a
+              >
+              <a class="addList" href="driverVehicle2_edit.html#/add">新增</a>
+            </header>
+            <div class="reservationOrder">
+              <!-- <div class="listReserve">
+                <ul>
+                  <li>預約訂單</li>
+                  <li>新訂單</li>
+                  <li>客戶取消</li>
+                  <li>服務單位取消</li>
+                  <li>未執行</li>
+                  <li>規劃中</li>
+                  <li>已排班</li>
+                  <li>已出發</li>
+                  <li>抵達搭車地點</li>
+                  <li>客上</li>
+                  <li>空趟</li>
+                  <li>已完成</li>
+                </ul>
+                <hr />
+              </div> -->
+              <div class="driverVehicle">
+                <ul class="driverVehicleTitle">
+                  <li>照片</li>
+                  <li @click="search.orderby='CarNo';to_search()">車牌號碼</li>
+                  <li @click="search.orderby='WheelchairNum';to_search()">
+                    輪椅數量
+                  </li>
+                  <li @click="search.orderby='SeatNum';to_search()">
+                    座椅數量
+                  </li>
+                  <li @click="search.orderby='CarTop';to_search()">車頂</li>
+                  <li @click="search.orderby='CarNo';to_search()">廠牌型號</li>
+                  <li @click="search.orderby='CarFuel';to_search()">車種</li>
+                  <li @click="search.orderby='Status';to_search()">系統功能</li>
+                </ul>
+                <div class="list-null" v-if="list==null">查無資料</div>
+                <ul
+                  class="driverVehicleList"
+                  v-for="(car,i) in list"
+                  style="cursor: pointer"
+                >
+                  <li data-tittle="照    片">
+                    <div class="sheepPhoto">
+                      <img :src="car.CarPic" alt="" />
+                    </div>
+                  </li>
+                  <li data-tittle="車牌號碼">{{ car.CarNo }}</li>
+                  <li data-tittle="輪椅數量">{{ car.WheelchairNum }}</li>
+                  <li data-tittle="座椅數量">{{ car.SeatNum }}</li>
+                  <li data-tittle="車　　頂">{{ car.CarTop }}</li>
+                  <li data-tittle="廠牌型號">{{ car.FactoryType }}</li>
+                  <li data-tittle="車　　種">
+                    <span v-if="car.CarCategory&&car.CarCategory[0]"
+                      >{{ car.CarCategory[0].CarTypeName }}</span
+                    >
+                  </li>
+                  <li data-tittle="系統功能">
+                    <div class="hoverAvai avai" v-if="car.Status==1">
+                      可派發
+                    </div>
+                    <div class="hoverAvai avaiNot" v-else>不可派發</div>
+                    <div class="color1 color" title="保養紀錄">
+                      <a
+                        :href="'./driverVehicle_maintenance.html?id='+car.Id+'&compId='+car.CompanyId+'&page=1'"
+                      >
+                        <img
+                          src="img/icons8-report_card.svg"
+                          alt="保養紀錄"
+                          class="iconimg"
+                        />
+                      </a>
+                    </div>
+                    <div class="color2 color" title="編輯">
+                      <a :href="'driverVehicle2_edit.html#/edit/'+car.Id">
+                        <img
+                          src="img/icons8-create_new_filled.svg"
+                          alt="編輯"
+                          class="iconimg"
+                        />
+                      </a>
+                    </div>
+                    <div
+                      @click.stop="car_del(car.Id)"
+                      class="color3 color"
+                      title="刪除"
+                      v-if="user.RoleId!=34"
+                    >
+                      <img
+                        src="img/icons8-trash.svg"
+                        alt="刪除"
+                        class="iconimg"
+                      />
+                    </div>
+                    <div
+                      @click="user_link(car.Id)"
+                      class="color4 color"
+                      title="更多"
+                    >
+                      <img
+                        src="img/icons8-more_filled.svg"
+                        alt="更多"
+                        class="iconimg"
+                      />
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- <ul class="driverVehicleList">
+                  <li>
+                    <div class="sheepPhoto">
+                      <img src="img/icons8-sheep2_filled.svg" alt="" />
+                    </div>
+                  </li>
+                  <li>MAE-9384</li>
+                  <li>4 把</li>
+                  <li>2 位</li>
+                  <li>高頂</li>
+                  <li>Buick</li>
+                  <li>柴油</li>
+                  <li>
+                    <div class="hoverAvai avaiNot">不可派發</div>
+                    <div class="hoverdis color1 color">
+                      <img src="img/icons8-report_card.svg" alt="" />
+                    </div>
+                    <div class="hoverdis color2 color">
+                      <img src="img/icons8-create_new_filled.svg" alt="" />
+                    </div>
+                    <div class="hoverdis color3 color">
+                      <img src="img/icons8-trash.svg" alt="" />
+                    </div>
+                    <div class="color4  color">
+                      <img src="img/icons8-more_filled.svg" alt="" />
+                    </div>
+                  </li>
+                </ul> -->
+
+                <!-- <ul class="driverVehicleList">
+                  <li>
+                    <div class="sheepPhoto">
+                      <img src="img/icons8-sheep2_filled.svg" alt="" />
+                    </div>
+                  </li>
+                  <li>MAE-9384</li>
+                  <li>4 把</li>
+                  <li>2 位</li>
+                  <li>高頂</li>
+                  <li>Buick</li>
+                  <li>柴油</li>
+                  <li>
+                    <div class="hoverAvai avai">可派發</div>
+                    <div class="hoverdis color1 color">
+                      <img src="img/icons8-report_card.svg" alt="" />
+                    </div>
+                    <div class="hoverdis color2 color">
+                      <img src="img/icons8-create_new_filled.svg" alt="" />
+                    </div>
+                    <div class="hoverdis color3 color">
+                      <img src="img/icons8-trash.svg" alt="" />
+                    </div>
+                    <div class="color4  color">
+                      <img src="img/icons8-more_filled.svg" alt="" />
+                    </div>
+                  </li>
+                </ul> -->
+                <div class="pagination">
+                  <page-v
+                    :pagen="page"
+                    :countn="pageCount"
+                    :urlex="'./driverVehicle.html?carType='+urlq.carType+'&Status='+urlq.Status+'&key='+urlq.key+'&isDescending='+urlq.isDescending+'&orderby='+urlq.orderby+'&compId='+urlq.compId+'&page='"
+                    v-if="page&&pageCount"
+                  ></page-v>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/leftmenu2.js?v=123"></script>
+    <script src="js/header1.js?v=124"></script>
+    <script src="js/header1_m.js"></script>
+    <script src="js/pagev.js"></script>
+    <script src="js/url_q.js"></script>
+    <script src="js/polyfill.js"></script>
+    <script>
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function () {
+          return {
+            name: "韓寒寒",
+            img:
+              "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+
+            nav_status: 1,
+            // Cars_GetCarsWithCarType: [],
+
+            urlq: url_q(window.location.href),
+            list: [], //Cars_Get
+            listid: [],
+            Cars_Post: [],
+            Cars_Put: [],
+            Cars_Delete: [],
+
+            CarType_Get: [],
+            CarType_Getid: [],
+            CarType_Post: [],
+            CarType_Put: [],
+            CarType_Delete: [],
+            comp: "",
+            c_comp: "",
+            cartype: "",
+
+            page: 1,
+            pageCount: 1,
+            user: "",
+            search: {
+              key: "",
+              carType: "",
+              Status: false,
+              orderby: "Id",
+              isDescending: false,
+            },
+          };
+        },
+        mounted: async function () {
+          this.urlq.key = decodeURI(this.urlq.key);
+          await this.check_login();
+          if (
+            !this.urlq.compId &&
+            this.user.RoleId != 30 &&
+            this.user.RoleId != 31
+          ) {
+            location.href =
+              "./driverVehicle.html?page=1&carType=0&Status=&key=&isDescending=true&orderby=&compId=" +
+              this.user.CompanyId;
+          }
+          // https://api.donkeymove.com/api/Cars/Get?page=1
+          await axios
+            .get("https://api.donkeymove.com/api/CarCompanys/Get")
+            .then((res) => {
+              this.comp = res.data.response;
+              this.c_comp = res.data.response[0].Id;
+              console.log(this.comp);
+            });
+          await axios
+            .get("https://api.donkeymove.com/api/CarsType/Get?parentID=8")
+            .then((res) => {
+              //車種
+              this.cartype = res.data.response.data;
+            });
+          await axios
+            .get(
+              "https://api.donkeymove.com/api/Cars/GetCarsWithCarType?page=" +
+                this.urlq.page +
+                "&carType=" +
+                this.urlq.carType +
+                "&Status=" +
+                this.urlq.Status +
+                "&key=" +
+                this.urlq.key +
+                "&orderby=" +
+                this.urlq.orderby +
+                "&isDescending=" +
+                this.urlq.isDescending +
+                "&compId=" +
+                this.urlq.compId
+            )
+            .then((res) => {
+              this.page = res.data.response.page;
+              this.pageCount = res.data.response.pageCount;
+              this.list = res.data.response.data;
+              if (this.list.length == 0) {
+                this.list = null;
+              }
+            });
+        },
+        methods: {
+          user_link: function (x) {
+            location.href = "driverVehicle2.html#/get/" + x;
+          },
+          selectNav: function (number) {
+            this.nav_status = number;
+          },
+          openNav2: function () {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function () {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          },
+          car_get: async function () {
+            //獲取全部車輛 before data https://api.donkeymove.com/api/Cars/Get?page=1
+            await axios
+              .get("https://api.donkeymove.com/api/Cars/GetCarsWithCarType")
+              .then((res) => {
+                this.list = res.data.response.data;
+              });
+          },
+          car_del: async function (which) {
+            // this.list[0].Id
+            var r = confirm("確定刪除?");
+            if (r == true) {
+              await axios
+                .delete(
+                  "https://api.donkeymove.com/api/Cars/Delete?id=" + which
+                )
+                .then((res) => {
+                  alert("刪除成功");
+                  this.to_search();
+                });
+            } else {
+              return 0;
+            }
+          },
+          pageSelect: async function (c) {
+            // https://api.donkeymove.com/api/Cars/Get?page=1
+            await axios
+              .get("https://api.donkeymove.com/api/Cars/Get?page=" + c)
+              .then((res) => {
+                this.page = res.data.response.page;
+                this.pageCount = res.data.response.pageCount;
+                this.personals = res.data.response.data;
+              });
+          },
+          check_login: async function (x) {
+            if (localStorage.dk2_user) {
+              this.user = JSON.parse(localStorage.dk2_user);
+              await get_left_menu(this.user.Id, async (re) => {
+                this.menu_id = re;
+                this.$forceUpdate();
+              });
+            } else {
+              location.href = "login1.html";
+            }
+          },
+          to_search: async function () {
+            this.urlq.isDescending == "true"
+              ? (this.urlq.isDescending = "false")
+              : (this.urlq.isDescending = "true");
+            location.href =
+              "./driverVehicle.html?page=1&carType=" +
+              this.urlq.carType +
+              "&Status=" +
+              this.urlq.Status +
+              "&key=" +
+              this.urlq.key +
+              "&isDescending=" +
+              this.urlq.isDescending +
+              "&orderby=" +
+              this.urlq.orderby +
+              "&compId=" +
+              this.urlq.compId;
+          },
+          input_search: function () {
+            location.href =
+              "./driverVehicle.html?page=1&carType=0&Status=&key=" +
+              this.urlq.key +
+              "&isDescending=true&orderby=";
+          },
+          put_header: async function (x) {
+            await axios.interceptors.request.use((config) => {
+              if (localStorage.dk_token) {
+                config.headers.Authorization = "Bearer " + x;
+              }
+              return config;
+            });
+          },
+          RefreshToken: async function () {
+            var obj = JSON.parse(localStorage.dk_token);
+            await axios
+              .get(
+                "https://api.donkeymove.com/api/CompanyUser/RefreshToken/api/CompanyRefreshToken?token=" +
+                  obj.token
+              )
+              .then((res) => {
+                localStorage.dk_token = res.data.response.token;
+              });
+          },
+          import_data: async function (e) {
+            let file = e.target.files[0];
+            let formData = new FormData();
+            formData.append("file", file);
+            axios
+              .post(
+                "https://api.donkeymove.com/api/DriverInfo/ImportDriverCarExcel/xlsx",
+                formData,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
+                }
+              )
+              .then((res) => {
+                alert(res.data.msg);
+                location.reload();
+              })
+              .catch((e) => {
+                alert("匯入失敗，失敗原因:" + e.response.data.Message);
+                //console.log(e.response.data.Message)
+              });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

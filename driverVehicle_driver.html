@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-158769656-1');
+		</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/pagev.css" />
+  <style>
+    .sheepPhoto-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+    <!-- header -->
+    <input type="file" ref="file1" name="avatar" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="import_data($event)" style="display:none;" /> 
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=5 :cc=54 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1 drivermainlist" :class="{'active' : isMainleft}">
+          <header>
+            <h1>全部駕駛一覽表</h1>
+            <!-- <div class="select_container"> -->
+            <!-- <select name="YourLocation" class="selectStyle">
+                  <option value="Taipei">多元計程車</option> -->
+            <!-- <option value="Taoyuan">不可派發</option> -->
+            <!-- </select> -->
+            <!-- </div> -->
+            <!-- <div class="select_container"> -->
+                <select name="YourLocation" class="selectStyle" style="margin-right: 26px;" v-model="urlq.compId" @change="to_search">
+                  <option value="">請選擇公司</option>
+                  <option v-for="(item,index) in comp" :value="item.Id">{{item.CompanyName}}</option>
+                </select>
+            <select name="YourLocation" class="selectStyle" style="margin-right: 26px;" v-model="urlq.status" @change="to_search">
+              <option value="">請選擇</option>
+              <option value=1>可派發</option>
+              <option value=0>不可派發</option>
+            </select>
+            <!-- </div> -->
+            <div class="search">
+              <input class="input2" type="text" placeholder="關鍵字搜尋" v-model="urlq.key" @keyup.enter="to_search" />
+              <img src="img/icons8-search.png" alt="" />
+            </div>
+            <div class="times" @click="urlq.orderby='Id';to_search()">
+              <span>建立時間</span>
+              <img src="img/icons8-generic_sorting_2.svg" alt="" />
+            </div>
+            <div class="alpha_sorfting" @click="urlq.orderby='DriverName';to_search()">
+              <span>司機姓名</span>
+              <img src="img/icons8-alphabetical_sorting.svg" alt="" />
+            </div>
+            <a class="addList" @click.prevent="$refs.file1.click()">匯入</a>
+            <a href="./download/司機車輛匯入範例.xlsx" class="addList" download>下載匯入範本</a>
+            <a class="addList" href="driverVehicle3_edit.html#/add">新增司機</a>
+          </header>
+          <div class="reservationOrder">
+            <!-- <div class="listReserve">
+                <ul>
+                  <li>預約訂單</li>
+                  <li>新訂單</li>
+                  <li>客戶取消</li>
+                  <li>服務單位取消</li>
+                  <li>未執行</li>
+                  <li>規劃中</li>
+                  <li>已排班</li>
+                  <li>已出發</li>
+                  <li>抵達搭車地點</li>
+                  <li>客上</li>
+                  <li>空趟</li>
+                  <li>已完成</li>
+                </ul>
+                <hr />
+              </div> -->
+            <div class="driverVehicle">
+              <ul class="driverVehicleTitle">
+                <li>照片</li>
+                <li @click="search.orderby='DriverName';to_search()">姓名</li>
+                <li @click="search.orderby='UID';to_search()">身分證字號</li>
+                <li @click="search.orderby='Email';to_search()">電子郵件</li>
+                <li @click="search.orderby='Phone';to_search()">手機</li>
+                <li @click="search.orderby='CarNo';to_search()">駕照</li>
+                <li @click="search.orderby='Status';to_search()">系統功能</li>
+              </ul>
+              <div class="list-null" v-if="list==null">查無資料</div>
+              <ul class="driverVehicleList" v-for="(item,index) in list">
+                <li data-tittle="照    片">
+                  <div class="sheepPhoto">
+                    <img class="sheepPhoto-img" :src="item.Pic" alt="" />
+                  </div>
+                </li>
+                <li data-tittle="姓    名">{{ item.DriverName }}</li>
+                <li data-tittle="身分證字號">{{ item.UID }}</li>
+                <li data-tittle="電子郵件">{{ item.Email }}</li>
+                <li data-tittle="手    機">{{ item.Phone }}</li>
+                <li data-tittle="駕    照"><span v-if="get_card(item).length!=0">{{get_card(item)[0].CarType.CarTypeName}}</span></li>
+                <li data-tittle="系統功能">
+                  <div class="avai" v-if="item.Status">可派發</div>
+                  <div class="avai no_avai" v-else>不可派發</div>
+                  <!--<div class="color1 color" title="身心檢查">
+                    <a :href="'./driverVehicle_bodyHeart.html?driverId='+item.Id+'&page=1'">
+                      <img src="img/icons8-report_card.svg" alt="身心檢查" class="iconimg"/>
+                    </a>
+                    </div>-->
+                  <div class="color2 color" title="編輯">
+                    <a :href="'driverVehicle3_edit.html#/edit/'+item.Id"><img src="img/icons8-create_new_filled.svg" alt="編輯" class="iconimg"/></a>
+                  </div>
+                  <div class="color3 color" title="刪除" @click.stop="driver_del(item.Id)" v-if="user.RoleId!=34">
+                    <img src="img/icons8-trash.svg" alt="刪除" class="iconimg"/>
+                  </div>
+                  <div class="color4  color" title="更多" @click="user_link(item.Id)">
+                    <img src="img/icons8-more_filled.svg" alt="更多" class="iconimg"/>
+                  </div>
+                  <button  @click="unlock(item)" v-if="item.PasswordLib&&item.PasswordLib.plErrorCount>=10&&user.RoleId==34">解鎖</button>
+                </li>  
+              </ul>
+              
+              <div class="pagination">
+                <page-v :pagen=page :countn=pageCount :urlex="'./driverVehicle_driver.html?key='+urlq.key+'&orderby='+urlq.orderby+'&status='+urlq.status+'&isDescending='+urlq.isDescending+'&compId='+urlq.compId+'&page='" v-if='page&&pageCount'></page-v>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/url_q.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          isRotate: false,
+          isMainleft: true,
+          nav_status: 1,
+          list: [],
+          menu_id:"",
+		  user:"",
+      comp:"",
+      c_comp:"",
+		  urlq:url_q(window.location.href),
+		  page: 1,
+          pageCount: 1,
+		  search:{
+		    key:"",
+			orderby:"Id",
+			isDescending:false,
+		  }
+        };
+      },
+      mounted:async function () {
+        this.urlq.key=decodeURI(this.urlq.key)
+      await this.check_login()
+      if(!this.urlq.compId&&(this.user.RoleId!=30&&this.user.RoleId!=31)) {
+          location.href="./driverVehicle_driver.html?key=&orderby=&status=&isDescending=true&compId="+this.user.CompanyId+"&page=1"
+        }
+      await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            this.c_comp=res.data.response[0].Id
+            console.log(this.comp);
+          });
+      await axios.get("https://api.donkeymove.com/api/DriverInfo/Get?page="+this.urlq.page+"&key="+this.urlq.key+"&orderby="+this.urlq.orderby+"&isDescending="+this.urlq.isDescending+"&status="+this.urlq.status+"&compId="+this.urlq.compId).then(res => {
+            this.list = res.data.response.data;
+            this.page=res.data.response.page
+		        this.pageCount=res.data.response.pageCount
+            console.log(this.list);
+            if(this.list.length==0) {
+		          this.list=null
+		        }
+          });	
+      },
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        driver_del: function (x) {
+	      var r = confirm("確定刪除?");
+		  if (r == true) {
+            axios.delete("https://api.donkeymove.com/api/DriverInfo/Delete?id=" + x).then(res => {
+              if(res.data.msg=="刪除成功") {
+			    alert("刪除成功")
+			    window.location.reload();
+			  }
+			  else {
+			    alert(res.data.msg)
+			  }
+            });
+		  }
+		  else {
+		    return 0;
+		  }
+        },
+        user_link: function (x) {
+          location.href = "driverVehicle3.html#/get/" + x;
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+      to_search:async function() {
+      this.urlq.isDescending=="true" ? this.urlq.isDescending="false" : this.urlq.isDescending="true"
+      location.href="./driverVehicle_driver.html?page=1&key="+this.urlq.key+"&orderby="+this.urlq.orderby+"&isDescending="+this.urlq.isDescending+"&status="+this.urlq.status+"&compId="+this.urlq.compId
+		},
+    unlock:function(x) {
+      var r = confirm("是否解鎖"+x.DriverName+"帳號?");
+      if(!r) {
+        return 0
+      }
+          axios.put("https://api.donkeymove.com/api/DriverInfo/PutUnlock?cAccount="+x.PasswordLib.plAccountName).then(res => {
+            alert(res.data.msg)
+            location.reload()
+          })
+        },
+    input_search:function() {
+      location.href="./driverVehicle_driver.html?page=1&key="+this.urlq.key+"&orderby=&isDescending=true"+"&status="+this.urlq.status
+    },
+    get_card:function(x) {
+      var arr = x.DriverMapper.filter(re => re.CarType&&re.CarType.ParentID==9);
+      console.log(arr)
+      return arr
+    },
+    import_data:async function(e) {
+      let file=e.target.files[0]
+      let formData = new FormData();
+        formData.append('file', file);
+        axios.post("https://api.donkeymove.com/api/DriverInfo/importDriverCarExcel/xlsx",formData,{
+		    headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+        })
+		    .then(res=>{
+          alert(res.data.msg)
+          location.reload()
+		    })
+        .catch(e=>{
+          alert("匯入失敗，失敗原因:"+e.response.data.Message)
+          //console.log(e.response.data.Message)
+        })
+    }
+      }
+    });
+  </script>
+</body>
+
+</html>

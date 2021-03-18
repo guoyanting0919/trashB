@@ -1,0 +1,141 @@
+.monthlycont {background: #fff;padding: 25px 15px;line-height: 55px;}
+.monthlycont .monthlylistbox {padding: 5px;}
+.monthlycont .datelist {padding-left: 15px;display: inline-block;margin: 0;}
+
+        .monthlycont .datelist li {list-style: none;display: inline-block;}
+        .monthlycont .datelist li label {cursor: pointer;}
+        .monthlycont .datelist input[type=radio],
+        .monthlycont .datelist input[type=checkbox] {
+            display: inline-block;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            margin-left: 5px;
+            appearance: none;
+            /**css3属性，不支持ie和opera**/
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: transparent;
+            border: 0;
+            outline: 0 !important;
+            line-height: 20px;
+            color: #d8d8d8;
+            cursor: pointer;
+        }
+
+        .monthlycont .datelist input[type=radio]::after {
+            content: "";
+            display: block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 14px;
+            font-size: 16px;
+            color: #fff;
+            border: 2px solid #ddd;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .monthlycont .datelist input[type=checkbox]::after {
+            content: "";
+            display: block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 14px;
+            font-size: 16px;
+            color: #fff;
+            border: 2px solid #ddd;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .monthlycont .datelist input[type=checkbox]:checked::after {content: "\2713";border-color: #37AF6E;background-color: #37AF6E;}
+        .monthlycont .datelist #mycheck1:checked::after {content: "\2714";border-color: #37AF6E;background-color: #37AF6E;}
+        .monthlycont .datelist input[type=radio]:checked::after {
+            content: "L";
+            transform: matrix(-0.766044, -0.642788, -0.642788, 0.766044, 0, 0);
+            -webkit-transform: matrix(-0.766044, -0.642788, -0.642788, 0.766044, 0, 0);
+            -ms-transform: matrix(-0.766044, -0.642788, -0.642788, 0.766044, 0, 0);
+            /*兼容ie9+ */
+            -moz-transform: matrix(-0.766044, -0.642788, -0.642788, 0.766044, 0, 0);
+            /*兼容ie9+ */
+            border-color: #37AF6E;
+            background-color: #37AF6E;
+        }
+
+        .monthlycont .datelist #myRadio1:checked::after {
+            content: "\2022";
+            font-size: 22px;
+            border-color: #37AF6E;
+            background-color: #37AF6E;
+        }
+
+        .monthlycont .title {display: inline-block;width: 100px;text-align: right;}
+
+        .toggle {position: relative;display: block;width: 40px;height: 20px;cursor: pointer;-webkit-tap-highlight-color: transparent;transform: translate3d(0, 0, 0);        }
+
+        .toggle:before {
+            content: "";
+            position: relative;
+            top: 3px;
+            left: 3px;
+            width: 34px;
+            height: 14px;
+            display: block;
+            background: #9A9999;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .toggle span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            display: block;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(154, 153, 153, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .toggle span:before {
+            content: "";
+            position: absolute;
+            display: block;
+            margin: -18px;
+            width: 56px;
+            height: 56px;
+            background: rgba(79, 46, 220, 0.5);
+            border-radius: 50%;
+            transform: scale(0);
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        #cbx1:checked+.toggle:before {background: #947ADA;}
+
+        #cbx1:checked+.toggle span {
+            background: #4F2EDC;
+            transform: translateX(20px);
+            transition: all 0.2s cubic-bezier(0.8, 0.4, 0.3, 1.25), background 0.15s ease;
+            box-shadow: 0 3px 8px rgba(79, 46, 220, 0.2);
+        }
+
+        #cbx1:checked+.toggle span:before {transform: scale(1);opacity: 0;transition: all 0.4s ease;}
+
+        #cbx2:checked+.toggle:before {background: #947ADA;}
+        #cbx2:checked+.toggle span {background: #4F2EDC;transform: translateX(20px);transition: all 0.2s cubic-bezier(0.8, 0.4, 0.3, 1.25), background 0.15s ease;box-shadow: 0 3px 8px rgba(79, 46, 220, 0.2);        }
+        #cbx2:checked+.toggle span:before {transform: scale(1);opacity: 0;transition: all 0.4s ease;}
+        .distance .selectbox select {width: 100%;border: solid 1px #c1c1c1;appearance: none;-moz-appearance: none;-webkit-appearance: none;background: #FFF url(../img/arrow.png) no-repeat scroll right center;
+            padding: 4px 17px 4px 5px;border-radius: 3px;}
+        .distance {display: inline-block;padding: 5px 15px;}
+        .distance .selectbox select::-ms-expand {display: none;}
+        .distance div {display: inline-block;}
+        .distance .distancecheck {vertical-align: middle;}
+        .distance .selectbox {margin-left: 10px;min-width: 150px;}
+        .distance .textinfo {width: 75px;text-align: right;}

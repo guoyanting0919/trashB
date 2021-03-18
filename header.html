@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/ui_index.css">
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/resizelayout.css" />
+  <link rel="stylesheet" href="css/mobileMenu.css">
+</head>
+<body>
+  <div class="console_main" v-cloak>
+    <div class="loading-black" v-if="loading">
+      <img src="img/spinner.gif">
+    </div>
+    <user-header :user="user"></user-header>
+    <user-header-m :user="user" :menu="menu_id"></user-header-m>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=1 :cc=12 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1" :class="{'active' : isMainleft}">
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/header1_m.js"></script>
+  <script>
+    var c1t;
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          menu_id: "",
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          isRotate: false,
+          isMainleft: true,
+          nav_status: 1,
+          loading: false,
+          user: "",
+          data1: "",
+          data2: "",
+          city_no: "",
+          c_city: 0,
+          comp: "",
+          c_comp: 0,
+          list: "",
+          pickerOptions: {
+            disabledDate(time) {
+              return time.getTime() > Date.now();
+            }
+          }
+        };
+      },
+      mounted: async function () {
+        await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/TaiwanCountry/Get/189").then(res => {
+          this.city_no = res.data.response;
+          console.log(this.city_no);
+        });
+        await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+          this.comp = res.data.response;
+          this.c_comp = res.data.response[0].Id
+          if (this.user.RoleId != 34) {
+            this.c_comp = 0
+          }
+          console.log(this.comp);
+        });
+        await this.draw()
+      },
+      methods: {
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        get_city: function (x) {
+          var arr = this.city_no.map(x => x.CountyCode)
+          return arr.indexOf(x);
+        },
+        get_comp: function (x) {
+          var arr = this.comp.map(x => x.Id)
+          return arr.indexOf(x);
+        },
+        to_search: async function () {
+          await axios.get("https://api.donkeymove.com/api/Report/GetCarUseRate?_datestart=" + this.data1 + "&_dateend=" + this.data2 + "&_countyid=0&_companid=0&sort=1")
+            .then(res => {
+              this.list = res.data.response
+              console.log(res.data.response)
+              this.$nextTick(function () {
+                for (let i = 0; i < this.list.length; i++) {
+                  var obj = [
+                    {
+                      label: 'Dataset 2',
+                      backgroundColor: ['rgb(255, 99, 132)', "rgba(0,0,0,0.1)"],
+                      data: [this.list[i].UseRate, 100 - this.list[i].UseRate]
+                    }
+                  ]
+                  var ctx = this.$refs["ccd" + i]
+                  drew_chart(ctx, 'doughnut', ["使用率", "未使用率"], obj, true)
+                }
+              })
+            })
+        },
+        draw: async function () {
+          await axios.get("https://api.donkeymove.com/api/Report/GetCarUseRate?_datestart=" + this.data1 + "&_dateend=" + this.data2 + "&_companid=" + this.c_comp + "&_countyid=" + this.c_city + "&sort=1")
+            .then(res => {
+              this.list = res.data.response
+              console.log(res.data.response)
+              var arr1 = this.list.map(x => x.CarNo)
+              var arr2 = this.list.map(x => x.UseRate)
+              var arr_color = []
+              this.$nextTick(function () {
+                for (let i in this.list) {
+                  arr_color.push(r_color())
+                }
+                for (let i = 0; i < this.list.length; i++) {
+                  var obj = [
+                    {
+                      backgroundColor: arr_color,
+                      data: [this.list[i].UseRate, 100 - this.list[i].UseRate]
+                    }
+                  ]
+                  var ctx = this.$refs["ccd" + i]
+                  var cv1 = drew_chart(ctx, 'doughnut', ["使用率", "未使用率"], obj, true)
+                }
+                var c1 = document.getElementById('myChart1');
+                var obj2 = [
+                  {
+                    label: '使用率',
+                    backgroundColor: arr_color,
+                    data: arr2
+                  }
+                ]
+                if (c1t) {
+                  c1t.destroy()
+                }
+                c1t = drew_chart_remove_lab(c1, 'bar', arr1, obj2)
+              })
+            })
+        },
+        check_login: async function (x) {
+          if (localStorage.dk2_user) {
+            this.user = JSON.parse(localStorage.dk2_user)
+            await get_left_menu(this.user.Id, async (re) => {
+              this.menu_id = re
+              this.$forceUpdate()
+            })
+          }
+          else {
+            location.href = 'login1.html';
+          }
+        },
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>新北長照交通接送平台營運端</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/Chart.css" />
+    <link rel="stylesheet" href="css/style1.css" />
+  </head>
+  <body>
+    <div class="console_main"  v-cloak>
+      <!-- header -->
+      <header class="header">
+        <img class="header_logo" src="img/logo-light.png" alt="" />
+        <div class="header_wrap">
+          <div class="header_block1">
+            <div class="hamburger">
+              <img src="img/icons8-list.png" alt="" />
+            </div>
+            <div class="search">
+              <input type="text" placeholder="快速搜尋訂單編號" />
+              <img src="img/icons8-search.png" alt="" />
+            </div>
+          </div>
+
+          <div class="header_block3">
+            <div class="user_personal">
+              <img src="img/userPhoto.png" alt="" />
+              <span>林株貝</span>
+            </div>
+            <a href="http://">登出</a>
+          </div>
+        </div>
+        <!-- <hr /> -->
+      </header>
+      <!-- 側拉選單 -->
+      <div class="content">
+        <div>
+          <nav class="nav">
+            <!-- 父選單 -->
+            <div class="nav_fathers">
+              <div @click="selectNav(1);openNav2();" class="nav_father active">
+                <img src="img/icons8-combo_chart.png" alt="" />
+                <span>控制台</span>
+              </div>
+              <div @click="selectNav(2);openNav2();" class="nav_father">
+                <img src="img/icons8-check.png" alt="" />
+                <span>預約訂單</span>
+              </div>
+              <div @click="selectNav(3);openNav2();" class="nav_father">
+                <img src="img/icons8-car_rental.png" alt="" />
+                <span>派車調度</span>
+              </div>
+              <div @click="selectNav(4);openNav2();" class="nav_father">
+                <img src="img/icons8-user_folder.png" alt="" />
+                <span>個案資料</span>
+              </div>
+              <div @click="selectNav(5);openNav2();" class="nav_father">
+                <img src="img/icons8-time_card_filled.png" alt="" />
+                <span>司機車輛管理</span>
+              </div>
+              <div @click="selectNav(6);openNav2();" class="nav_father">
+                <img src="img/icons8-maintenance.png" alt="" />
+                <span>系統資料管理</span>
+              </div>
+            </div>
+            <!-- 子選單1 -->
+            <div class="nav_sonsArrow " :class="{'active': isLeft}">
+              <div class="nav_sons">
+                <!-- 01 控制台-->
+                <div v-if="nav_status=== 1" class="nav_son_absolute">
+                  <div class="nav_son">
+                    <a href="./console1.html">
+                      <img src="img/icons8-sine_filledcopy.svg" alt="" />
+                      <span>本日接送狀況</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console2.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>車輛使用率比較表</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console3.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>司機個人營收</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console4.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>司機個人營收報表</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console5.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>出發區域比率</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console6.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>縣市月報表</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console7.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>出發區域比率</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console8.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>返回區域比率</span>
+                    </a>
+                  </div>
+
+                  <div class="nav_son">
+                    <a href="./console9.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>全國月報表 </span>
+                    </a>
+                  </div>
+
+                  <div class="nav_son">
+                    <a href="./console10.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>縣市月報表</span>
+                    </a>
+                  </div>
+                </div>
+                <!-- 02 預約訂單 -->
+                <div v-else-if="nav_status=== 2" class="nav_son_absolute">
+                  <div class="nav_son">
+                    <a href="./reservation_order.html">
+                      <img src="img/icons8-sine_filledcopy.svg" alt="" />
+                      <span>全部資料</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./reservation_order.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>今日任務</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./reservation_order.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>本週任務</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./reservation_order.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>本月任務</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./reservation_order.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>今年任務</span>
+                    </a>
+                  </div>
+                </div>
+                <!-- 03 派車調度 -->
+                <div v-else-if="nav_status=== 3" class="nav_son_absolute">
+                  <div class="nav_son">
+                    <a href="./car_1.html">
+                      <img src="img/icons8-sine_filledcopy.svg" alt="" />
+                      <span>調度單搜尋</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./car_2 _new.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>調度控制台</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./car_3.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>車籍配對管理</span>
+                    </a>
+                  </div>
+                </div>
+                <!-- 04 個案資料-->
+                <div v-else-if="nav_status=== 4" class="nav_son_absolute">
+                  <div class="nav_son">
+                    <a href="./personal.html">
+                      <img src="img/icons8-sine_filledcopy.svg" alt="" />
+                      <span>全部個案資料</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./personal.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>新申請未審核</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./personal.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>自費個案</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./personal.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>輔助個案</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./personal.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>已封存個案</span>
+                    </a>
+                  </div>
+                </div>
+                <!-- 05 司機車輛管理-->
+                <div v-else-if="nav_status=== 5" class="nav_son_absolute">
+                  <div class="nav_son">
+                    <a href="./driverVehicle.html">
+                      <img src="img/icons8-sine_filledcopy.svg" alt="" />
+                      <span>車輛資料</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./driverVehicle_examine.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>車輛檢查紀錄</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./driverVehicle_maintenance.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>車輛保養紀錄</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./driverVehicle_driver.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>駕駛資料</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./driverVehicle_bodyHeart.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>身心檢查紀錄</span>
+                    </a>
+                  </div>
+                </div>
+                <!-- 06 系統資料管理-->
+                <div v-else-if="nav_status=== 6" class="nav_son_absolute">
+                  <div class="nav_son">
+                    <a href="./s_2.html">
+                      <img src="img/icons8-sine_filledcopy.svg" alt="" />
+                      <span>派車調度設定</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>補助車資參數</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./s_1.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>司機車輛設定</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./s_2.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>司機個人營收報表</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./s_3.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>營運單位設定</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./s_4.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>醫療院所管理</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./s_5.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>系統管理員設定</span>
+                    </a>
+                  </div>
+                  <div class="nav_son">
+                    <a href="./console8.html">
+                      <img src="img/icons8-time_card_filled.png" alt="" />
+                      <span>其他系統設定</span>
+                    </a>
+                  </div>
+                </div>
+                <div class="nav_arrow_button" @click="openNav">
+                  <img src="img/icons8-forward.png" alt="" />
+                </div>
+              </div>
+              <!-- <div class="nav_arrow">
+              <div class="nav_arrow_button">
+                <img src="img/icons8-forward.png" alt="">
+              </div>
+            </div> -->
+            </div>
+
+            <!-- 陰影 button -->
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </nav>
+          <!-- main -->
+          <main class="main main1" :class="{'active' : isMainleft}">
+            <header>
+              <h1>營運系統控制台</h1>
+
+              <div class="select_container">
+                <select name="YourLocation" class="selectStyle">
+                  <option value="Taipei">2019-03-22</option>
+                </select>
+              </div>
+              <div class="select_container">
+                <select name="YourLocation" class="selectStyle">
+                  <option value="Taipei">台北</option>
+                  <option value="Taoyuan">桃園</option>
+                  <option value="Hsinchu">新竹</option>
+                  <option value="Miaoli">苗栗</option>
+                </select>
+              </div>
+              <div class="select_container">
+                <select name="YourLocation" class="selectStyle">
+                  <option value="Taipei">綜合單位1</option>
+                  <option value="Taoyuan">綜合單位2</option>
+                  <option value="Hsinchu">綜合單位3</option>
+                  <option value="Miaoli">綜合單位4</option>
+                </select>
+              </div>
+            </header>
+            <div class="console10">
+              <h2>縣市月報表</h2>
+              <hr />
+              <div class="canvasContainer">
+                <h3>台北市</h3>
+                <div id="canvas-holder">
+                  <canvas id="myChart1"></canvas>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- <header></header>
+      <nav></nav>
+      <section></section>
+      <main></main>
+      <figcaption>
+        <img src="t013.JPG" />
+        <figure>自製羊毛氈手機套</figure>
+       </figcaption>
+      <footer></footer> -->
+    </div>
+
+    <script src="js/jquery-1.8.0.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <script src="js/lodash.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+  	<script src="js/leftmenu1.js"></script>
+	<script src="js/header1.js?v=124"></script>
+
+    <script src="js/polyfill.js"></script>
+    <script>
+      let console_main = new Vue({
+        el: ".console_main",
+        data: function() {
+          return {
+            name: "韓寒寒",
+            img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+            isLeft: true,
+            isRotate: false,
+            isMainleft: true,
+            nav_status: 1
+          };
+        },
+        mounted: function() {},
+        methods: {
+          selectNav: function(number) {
+            this.nav_status = number;
+          },
+          openNav2: function() {
+            this.isLeft = false;
+            this.isMainleft = false;
+          },
+          openNav: function() {
+            this.isLeft = !this.isLeft;
+            this.isMainleft = !this.isMainleft;
+          }
+        }
+      });
+
+      var ctx1 = document.getElementById("myChart1").getContext("2d");
+      var jsonfile = {
+        jsonarray: [
+          {
+            name: "Jan",
+            age: 50
+          },
+          {
+            name: "Feb",
+            age: 100
+          },
+          {
+            name: "Mar",
+            age: 150
+          },
+          {
+            name: "Apr",
+            age: 50
+          },
+          {
+            name: "May",
+            age: 100
+          },
+          {
+            name: "Jun",
+            age: 150
+          },
+          {
+            name: "Jul",
+            age: 50
+          },
+          {
+            name: "Aug",
+            age: 100
+          },
+          {
+            name: "Sep",
+            age: 100
+          },
+          {
+            name: "Oct",
+            age: 150
+          },
+          {
+            name: "Nov",
+            age: 50
+          },
+          {
+            name: "Dec",
+            age: 100
+          }
+        ]
+      };
+
+      var labels = jsonfile.jsonarray.map(function(e) {
+        return e.name;
+      });
+      var data = jsonfile.jsonarray.map(function(e) {
+        return e.age;
+      });
+
+      function draw(el, x) {
+        var myChart = new Chart(el, {
+          type: x,
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                fillColor: "#CCCCFF",
+                strokeColor: "rgba(220,220,220,1)",
+                label: "Tokyo",
+                data: [65, 59, 90, 81, 56, 55, 40, 65, 59, 90, 81, 56],
+                backgroundColor: [
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)",
+                  "rgba(55,106,255, 1)"
+                ]
+              },
+              {
+                fillColor: "#CCFFCC",
+                strokeColor: "#CCFFCC",
+                label: "New York",
+                data: [35, 89, 40, 31, 26, 85, 80, 35, 69, 30, 21, 26],
+                backgroundColor: [
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)",
+                  "rgba(39,44,49, 1)"
+                ]
+              },
+              {
+                fillColor: "#FFFFCC",
+                strokeColor: "#FFFFCC",
+                label: "London",
+                data: [25, 39, 80, 11, 96, 105, 10, 35, 69, 20, 51, 96],
+                backgroundColor: [
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)",
+                  "rgba(144,195,77, 1)"
+                ]
+              },
+              {
+                fillColor: "#99FFFF",
+                strokeColor: "#99FFFF",
+                label: "Berlin",
+                data: [65, 59, 90, 81, 56, 55, 40, 65, 59, 90, 81, 56],
+                backgroundColor: [
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)",
+                  "rgba(246,55,64, 1)"
+                ]
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false
+          }
+        });
+      }
+      draw(ctx1, "bar");
+    </script>
+  </body>
+</html>

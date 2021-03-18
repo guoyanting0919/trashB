@@ -1,0 +1,479 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-158769656-1');
+    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <link rel="stylesheet" href="css/style1.css" />
+  <link rel="stylesheet" href="css/ui_index.css" />
+  <link rel="stylesheet" href="css/resizelayout.css" />
+  <link rel="stylesheet" href="css/mobileMenu.css">
+  <style>
+    .main {
+      height: auto;
+      overflow: hidden;
+      position: relative;
+    }
+    .page-d {
+      padding: 10px 0;
+    }
+
+    .page-v-c {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 100%;
+      border: 1px #000 solid;
+      float: left;
+      margin: 0 10px 0 0;
+    }
+
+    .page-v-c-on {
+      color: #fd8115;
+      border: 1px #fd8115 solid;
+    } 
+ 
+
+    .list {
+      margin: 0 0 20px 0;
+    }
+
+    .list-d {
+      padding: 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #d8d8d8;
+    }
+    .list-d .list-ld{width: 100%;display: flex;align-items: center;}
+    .list-d-img {width: 50px;height: 50px;border-radius: 100%;margin: 0 20px 0 0; float: left; }
+
+    .list-d-d {display: inline-block;width:calc(15% - 15px);word-wrap: break-word;}
+    .list-d-d:last-child { width: auto;}
+    .list-d .list-ld img { display: none;}
+    .list-rd {float: right;}
+
+    .list-rd-d {width: 50px;height: 50px;margin-right: 5px;border-radius: 100%;float: left;display: flex;justify-content: center;align-items: center;cursor: pointer;}
+    .hover-dis {opacity: 0;}
+
+    .list-d:hover {}
+    .list-d:hover .hover-dis {opacity: 1;}
+    .reuse {color: #000;}
+    .searchBox {
+      margin: 0 0 20px 0;
+    }
+    .list-title {
+      padding: 5px 20px;
+      background-color: #fff;
+      border-bottom: 1px solid #d8d8d8;
+    }
+    .sfive_title {
+      display: flex;
+    }
+    .list-title-d { width: calc(15% - 15px); word-wrap: break-word; line-height: 60px;    }
+    .list-title-d:nth-child(3){width: 50%;}
+    @media (max-width:1024px) {
+      .list-d .list-ld{width: 100%;display: block;}
+      .list-d .list-rd{width: 100%;display: block;float: none;}
+      .list-d .list-rd .list-d-d{width: 100%; display: block;line-height: 30px;}
+      .list-d .list-rd .list-d-d:before {content: attr(data-tittle); width: 85px; text-align: left; display: inline-block;top: 0;left: 0;color: #3e3e3e;padding-top: 10px;box-sizing: border-box;}
+      .list-d .list-ld .list-d-d{width: 100%;display: block;    line-height: 22px;}
+      .list-d .list-ld .list-d-d:before {content: attr(data-tittle); width: 85px; text-align: left; display: inline-block;top: 0;left: 0;color: #3e3e3e;padding-top: 10px;box-sizing: border-box;}
+      .list-title {display: none;}
+      .list-rd-d{    display: inline-block; float: none; padding: 5px; width: 40px; height: 40px; text-align: center;}
+     }
+
+     .btn.stopus {background: none; border: none;}
+     .btn.stopus img {width:25px;}
+
+     .ex-table {
+      width:300px;
+      background-color:#fff;
+      border-radius:10px;
+      position:fixed;
+      top:30%;
+      left:50%;
+      margin:-150px 0 0 -150px;
+      overflow: hidden;
+      z-index:999;
+    }
+    .ex-table-h {
+      height:50px;
+      line-height: 50px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      background-color:#fc9236;
+      color:#fff;
+
+    }
+    .ex-talbe-r-c {
+      padding:10px 20px;
+    }
+    .ex-talbe-r-c-in {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px #000 solid;
+      font-size:20px;
+      padding:5px;
+      margin: 0 0 10px 0;     
+    }
+    .ex-talbe-r-c-b {
+      height:50px;
+      background-color:#fc9236;
+      color:#fff;
+      line-height: 50px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      border-radius: 10px;
+    }
+    .ex-black {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      position:fixed;
+      top:0px;
+      left:0px;
+      z-index:998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }    
+    .vtable {
+      width:100%;
+      border-collapse: collapse;
+      
+    }
+    .vtable td {
+      border:1px solid #000;
+      padding: 10px;
+    }
+    .menuButtonList {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+ 
+
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-cloak>
+      <div class="loading-black" v-if="loading">
+          <img src="img/spinner.gif">
+        </div>
+    <!-- header -->
+    <user-header :user="user"></user-header>
+    <user-header-m :user="user" :menu="menu_id"></user-header-m>
+    
+    <div class="ex-black" v-if="show_ex" @click="show_ex=!show_ex"></div>
+    <div class="ex-table" v-if="show_ex">
+      <div class="ex-table-h">匯出報表</div>
+      <div class="ex-talbe-r-c">
+        <div>
+        <el-date-picker v-model="exData.sDate" type="date" placeholder="選擇開始日期"
+          value-format="yyyy-MM-dd" style="width:100%;margin:0 0 10px 0;">
+        </el-date-picker>
+        <el-date-picker v-model="exData.eDate" type="date" placeholder="選擇結束日期"
+          value-format="yyyy-MM-dd" style="width:100%;margin:0 0 10px 0;">
+        </el-date-picker>
+        <el-select v-model="exData.compId" placeholder="請選擇車行" style="width:100%;margin:0 0 10px 0;">
+          <el-option v-for="(item,index) in comp" :label="item.CompanyName" :value="item.Id"></el-option>
+        </el-select>
+        </div>
+        <div class="ex-talbe-r-c-b" @click="export_table">確定匯出</div>
+      </div>
+    </div>
+
+    <div class="ex-black" v-if="show_vlist" @click="show_vlist=!show_vlist"></div>
+    <div class="ex-table" style="width:600px;margin-left:-300px;" v-if="show_vlist">
+      <div class="ex-table-h">各車行違規點數</div>
+      <div class="ex-talbe-r-c" style="height:600px;overflow-y: scroll;">
+        <div>
+          <table class="vtable" border=1>
+            <tr>
+              <td>車行</td>
+              <td>違規點數</td>
+              <td>停權到期日</td>
+            </tr>
+            <tr v-for="(item,index) in vlist">
+              <td>{{item.CompanyName}}</td>
+              <td>{{item.ViolationCount}}</td>
+              <td>{{item.IsStop ? dateFormat(item.ViolationDate) : "無"}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-black" v-if="show_pass" @click="show_pass=!show_pass"></div>
+    <div class="ex-table" style="width:600px;margin-left:-300px;" v-if="show_pass">
+      <div class="ex-table-h">審核通過</div>
+      <div class="ex-talbe-r-c" style="height:360px;overflow-y: scroll;">
+        <div>
+          <table class="vtable" border=1>
+            <tr>
+              <td>訂單編號</td>
+              <td>{{passData.SOrderNo}}</td>
+            </tr>
+            <tr>
+              <td>車行名稱</td>
+              <td>{{passData.CompanyName}}</td>
+            </tr>
+            <tr>
+              <td>變更狀態</td>
+              <td>{{passData.Remark}}</td>
+            </tr>
+            <tr>
+              <td>問題類型</td>
+              <td>{{passData.QuestionType}}</td>
+            </tr>
+            <tr>
+              <td>問題敘述</td>
+              <td>{{passData.QuestionDescription}}</td>
+            </tr>
+            <tr>
+              <td>申請變更時間</td>
+              <td>{{dateFormat(passData.CreateDate)}}</td>
+            </tr>
+          </table>
+          <div style="margin-top:10px;">
+            <p>請選擇記點點數</p>
+            <el-select v-model="vPoint" placeholder="請選擇車行" style="width:100%;margin:0 0 10px 0;">
+              <el-option label="0點" value="0"></el-option>
+              <el-option label="1點" value="1"></el-option>
+            </el-select>
+            <div class="menuButtonList">
+            <el-button type="primary" style="margin-top:10px;" @click="PutWrongStatusReview(passData,true)">確定送出</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=1 :cc="18" :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main" :class="{'active' : isMainleft}">
+            <div class="s_5">
+              <div class="main-d">
+                <div class="main-d-top">
+                  <div class="main-d-top-l">
+                    <div class="main-d-top-l-d big">系統操作問題單</div>
+                  </div>
+                </div>
+                <div class="searchBox">
+                  <el-date-picker v-model="search.sDate" type="date" placeholder="開始日" value-format="yyyy-MM-dd"></el-date-picker>
+                  <el-date-picker v-model="search.eDate" type="date" placeholder="結束日" value-format="yyyy-MM-dd"></el-date-picker>
+                  <el-select v-model="search.compId" placeholder="車行">
+                    <el-option :label="'全部'" :value="0"></el-option>
+                    <el-option v-for="item in comp" :key="item.value" :label="item.CompanyName" :value="item.Id"></el-option>
+                  </el-select>
+                  <el-button type="primary" @click="get_data">搜尋</el-button>
+                  <el-button type="primary" v-if="user.RoleId==31" @click="GetCompanyViolation">各車行違規點數</el-button>
+                  <el-button type="primary" v-if="user.RoleId==31" @click="show_ex=!show_ex">匯出</el-button>
+                </div>
+                <div class="list-title">
+                  <div class="sfive_title">
+                    <div class="list-title-d" style="width: 12%;">訂單編號</div>
+                    <div class="list-title-d" style="width: 12%;">車行名稱</div>
+                    <div class="list-title-d" style="width: 12%;">變更狀態</div>
+                    <div class="list-title-d" style="width: 12%;">問題類型</div>
+                    <div class="list-title-d" style="width: 18%;">問題敘述</div>
+                    <div class="list-title-d" style="width: 12%;">申請變更時間</div>
+                    <div class="list-title-d" style="width: 12%;">預約訂車時間</div>
+                    <div class="list-title-d" style="width: 12%;">審核</div>
+                  </div>
+                  <div ></div>
+                </div>
+                <div class="list" v-if="list.length>0">
+                  <ul class="list-d" v-for="(item,index) in list">
+                    <li class="list-ld">
+                      <div class="list-d-d" style="width: 12%;">{{ item.SOrderNo }}<div :style="{'color':item.IsReview ? '#0a0' : item.IsReview===null ? '#aaa' : '#f00'}">({{item.IsReview ? '審核通過' : item.IsReview===null ? '未審核' : '審核不通過'}})</div></div>
+                      <div class="list-d-d" style="width: 12%;">{{ item.CompanyName }}</div>
+                      <div class="list-d-d" style="width: 12%;">{{ item.Remark }}</div>
+                      <div class="list-d-d" style="width: 12%;">{{item.QuestionType}}</div>
+                      <div class="list-d-d" style="width: 18%;">{{item.QuestionDescription}}</div>
+                      <div class="list-d-d" style="width: 12%;">{{dateFormat(item.CreateDate)}}</div>
+                      <div class="list-d-d" style="width: 12%;">{{dateFormat(item.ReservationDate)}}</div>
+                      <div class="list-d-d" style="width: 12%;">
+                        <div v-if="item.IsReview===null">
+                        <button @click="showPass(item)">審核通過</button>
+                        <button @click="PutWrongStatusReview(item,false)">審核不通過</button>
+                        </div>
+                      </div>
+                    </li>
+                    <div class="clear"></div>
+                  </ul>
+                </div>
+                <div class="list-null" v-if="list.length==0">查無資料</div>
+              </div>
+            </div>
+  
+            </main>
+      </div>
+    </div>
+
+    
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/header1_m.js"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/pagev.js"></script>
+  <script src="js/url_q.js"></script>
+  <script src="js/xlsx.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script>
+    let console_main = new Vue({
+      el: ".console_main",
+      data: function () {
+        return {
+          show_ex:false,
+          show_vlist:false,
+          show_pass:false,
+          vPoint:0,
+          passData:"",
+          nav_status: 1,
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          loading:false,
+          isRotate: false,
+          isMainleft: true,
+          vlist:[],
+          personals: [],
+          status_arr: ["新訂單", "已排班", "已出發", "已抵達", "客上", "客下", "已完成","未執行","個案取消","服務單位取消","空趟","無派車","變更時間"],
+          nav_status: 1,
+          user:"",
+          list:"",
+          comp:"",
+          search:{
+            sDate:"",
+            eDate:"",
+            compId:0
+          },
+          exData: {
+            sDate:"",
+            eDate:"",
+            compId:""
+          }
+        };
+      },
+      mounted: async function () {
+        await this.check_login()
+        await this.get_comp()
+        await this.get_data()
+
+      },
+      methods: {
+        get_comp:async function() {
+          await axios.get("https://api.donkeymove.com/api/CarCompanys/Get").then(res => {
+            this.comp = res.data.response;
+            //this.search.compId=res.data.response[0].Id
+            //console.log(this.comp);
+          });
+		},
+        pageSelect: async function (c) {
+          await axios.get("https://api.donkeymove.com/api/CaseUser/Get?page=" + c).then(res => {
+            this.page = res.data.response.page;
+            this.pageCount = res.data.response.pageCount;
+            this.personals = res.data.response.data;
+          });
+        },
+        get_data:async function() {
+          this.loading=true
+          await axios.get("https://api.donkeymove.com/api/OrderDetails/GetWrongStatus?sDate="+this.search.sDate+"&eDate="+this.search.eDate+"&compId="+this.search.compId).then(res => {
+            this.list = res.data.response ? res.data.response : [];
+          });
+          this.loading=false    
+        },
+        PutWrongStatusReview:async function(x,y) {
+          var r = confirm(y ? "確定通過?" : "確定不通過?");
+          if(!r) return 0
+          x.IsReview=y
+          x.ViolationPoint=this.vPoint
+          await axios.post("https://api.donkeymove.com/api/OrderDetails/PutWrongStatusReview",x).then(async (res) => {
+            alert(res.data.msg)
+            await this.get_data()
+          });  
+          this.show_pass=false
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+          dateFormat:function(time) {
+            return moment(time).format("YYYY-MM-DD HH:mm")
+          },
+        RefreshToken: async function () {
+          var obj = JSON.parse(localStorage.dk_token)
+          await axios.get("https://api.donkeymove.com/api/CompanyUser/RefreshToken/api/CompanyRefreshToken?token=" + obj.token).then(res => {
+            localStorage.dk_token = res.data.response.token;
+          })
+        },
+        GetCompanyViolation:async function() {
+          this.loading=true
+          await axios.get("https://api.donkeymove.com/api/CarCompanys/GetCompanyViolation").then(res => {
+            this.vlist = res.data.response;
+            this.show_vlist=true
+          })
+          this.loading=false
+        },
+        showPass(x) {
+          this.passData=x
+          this.show_pass=true
+        },
+        async export_table() {
+          this.loading=true
+          await axios.get("https://api.donkeymove.com/api/OrderDetails/GetCompanyViolationExport",{ params:this.exData}).then(async (res) => {
+            let data=res.data.response
+            if(!data.length) {
+              alert("無資料")
+              return 0
+            }
+            else {
+              await convertAndExport(res.data.response) 
+            }
+          });
+          this.loading=false
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

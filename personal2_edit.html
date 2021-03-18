@@ -1,0 +1,1144 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158769656-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-158769656-1');
+    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>新北長照交通接送平台營運端</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/ui_index.css" />
+  <link rel="stylesheet" href="css/Chart.css" />
+  <!-- <link rel="stylesheet" href="css/normalize.css"> -->
+  <link rel="stylesheet" href="css/style1.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/resizelayout.css" />
+  <link rel="stylesheet" href="css/mobileMenu.css">
+  <style>
+    .personalLittle_edit_2>.personalLittle_edit_22>.personalLittle_edit_Datas1 .service>.floatKinds>.floatKinds-d {
+      background: #f3971a;
+      color: #ffffff;
+    }
+
+    .case-meg input {
+      border: 1px black solid;
+      font-size: 20px;
+      padding: 5px;
+      border-radius: 10px;
+    }
+
+    .case-meg-d {
+      margin: 0 0 10px 0;
+    }
+
+    .case-meg-s {
+      font-size: 20px;
+      margin: 0 10px 0 0;
+    }
+
+    .case-meg-h {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+    }
+    .rad-span {
+      color:#f00;
+      display: block;
+    }
+    .dead-input {
+      width: 248px;
+      margin-bottom: 10px;
+      border: 1px black solid;
+      font-size: 20px;
+      padding: 5px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="console_main" v-if="get_list.CaseUserCouponViewModel" v-cloak>
+    <!-- header -->
+    <div class="loading-black" v-if="loading">
+      <img src="img/spinner.gif">
+    </div>
+    <user-header :user="user"></user-header>
+    <!-- 側拉選單 -->
+    <div class="content">
+      <div>
+        <left-menu :mc=4 :cc=41 :menu="menu_id"></left-menu>
+        <!-- main -->
+        <main class="main main1 edit" :class="{'active' : isMainleft}">
+          <div class="main-d">
+          <header class="headerVehicle">
+            <h1 v-if="$route.path=='/add'">個案基本資料新增</h1>
+            <h1 v-else>個案基本資料編輯</h1>
+            <a style="display:none" href="" @click.prevent>列印</a>
+            <a :href="$route.path=='/add' ? './personal.html?page=1&key=&isDescending=true&pMode=1&orderby=':'./personal2.html#/get/'+get_list.Id">回上一頁</a>
+          </header>
+          <div class="personal2 personal2_edit">
+            <article class="articlePersonal1">
+              <div class="personalLittle_1">
+                <div class="personalLittle_11">
+                  <div class="personalLittle_111">
+                    <span>{{get_list.CaseUserNo}}</span>
+                  </div>
+                  <div class="personalLittle_112"><span v-if="$route.path!='/add'">註冊日期：
+                      {{ dateFormat(get_list.CreateTime) }}</span></div>
+                </div>
+                <div class="personalLittle_12">
+                  <!-- <img src="img/dot2.svg" alt="" /> -->
+                  <!-- <span>可派發</span> -->
+                </div>
+                <div class="personalLittle_13_edit">
+                  <!-- <img src="img/icons8-pencil_filled.svg" alt="" /> -->
+                  <span @click="sub">儲存</span>
+                </div>
+              </div>
+              <div class="personalLittle_edit_2">
+                <div class="personalLittle_edit_21">
+                  <div class="personalLittle_edit_211">
+                    <img src="img/man_edit.svg" alt="" @click="c_img" v-if="get_list.Pic=='string'||get_list.Pic==''">
+                    <img :src="get_list.Pic" @click="c_img" v-else>
+                    <input type="file" style="display:none;" class="img_up" accept="image/png, image/jpeg"
+                      @change="img_upf($event)">
+                    <select class="select1" name="" id="" v-model="get_list.Staus" :disabled="user.RoleId==34">
+                      <option value=1>可派送</option>
+                      <option value=0>不可派送</option>
+                    </select>
+
+                    <select class="select2" name="" id="" v-model="get_list.UserMode" :disabled="user.RoleId==34" @change="to_clear_data">
+                      <option value=1>公費個案</option>
+                      <option value=0>自費個案</option>
+                      <option value=2>結案</option>
+                    </select>
+                    <select class="select2" name="" id="" v-model="dead" :disabled="user.RoleId==34" v-if="get_list.UserMode==2">
+                      <option value="">請選擇結案原因</option>
+                      <option value="失能等級不符">失能等級不符</option>
+                      <option value="死亡">死亡</option>
+                      <option value="移出">移出</option>
+                      <option value="其他">其他</option>
+                    </select>
+                    <span class="rad-span" v-if="dead=='其他'">(必填)</span>
+                    <input type="text" class="dead-input" placeholder="請輸入結案原因" v-model="dead_res" v-if="dead=='其他'&&get_list.UserMode==2" :disabled="user.RoleId==34">
+                    <div>
+                      <span>額度控管留用首月<span class="rad-span">(必填)</span></span>
+                      <el-date-picker class="w154" v-model="get_list.ReviewDate" type="month" placeholder=""
+                        value-format="yyyy-MM" @change="$forceUpdate()" :disabled="user.RoleId==34"></el-date-picker>
+                    </div>
+                    <!--<div v-if="dead&&get_list.UserMode==2">
+                      <span v-if="dead">失效日期<span class="rad-span">(必填)</span></span>
+                      <el-date-picker class="w154" v-model="get_list.InvalidDate" type="date" placeholder=""
+                        value-format="yyyy-MM-dd" @change="$forceUpdate()" :disabled="user.RoleId==34"></el-date-picker>
+                    </div>-->
+                    <!-- <div>慶聲計程車行-多元化計程車</div> -->
+                  </div>
+                  <!-- <div class="personalLittle_edit_212">
+                      <h5>查看保養紀錄</h5>
+                    </div> -->
+                </div>
+                <div class="personalLittle_edit_22">
+                  <h4>基本資料編輯</h4>
+                  <hr />
+                  <div class="personalLittle_edit_Datas1">
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>個案編號<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <input type="text" v-model="get_list.CaseUserNo" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                      <ul class="w50">
+                        <li>A單位</dliv>
+                        <li>
+                          <!--<select class="list2-dd-r-d-row-sel" v-model="get_list.UnitId" :disabled="user.RoleId!=31&&user.RoleId!=32&&user.RoleId!=33">
+                            <option value="null">請選擇</option>
+                            <option v-for="(item,index) in list7" :value="item.Id">{{ item.UnitName }}</option>
+                          </select>-->
+                          <el-autocomplete style="width:100%;" v-model="get_list.cunit" :fetch-suggestions="querySearch" @select="handleSelect2" :disabled="user.RoleId==34||user.RoleId==33"></el-autocomplete>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>個案姓名<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <input type="text" v-model="get_list.Name" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                      <!---->
+                      <ul class="w50">
+                        <li>個案性別</li>
+                        <li>
+                          <select name="" id="" v-model="get_list.Sex" :disabled="user.RoleId==34">
+                            <option :value="null" disabled selected>請選擇</option>
+                            <option value=3>未填寫</option>
+                            <option value=1>男</option>
+                            <option value=2>女</option>
+                          </select>
+                        </li>
+                      </ul>
+                      <!---->
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>身分證字號<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <input type="text" v-model="get_list.UID" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                      <!---->
+                      <ul class="w50">
+                        <li>生日<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <el-date-picker :picker-options="pickerOptions" class="birth" v-model="get_list.Birthday"
+                            type="date" placeholder="" value-format="yyyy-MM-dd" @change="$forceUpdate()" :disabled="user.RoleId==34">
+                          </el-date-picker>
+                        </li>
+                      </ul>
+                      <!---->
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>社會福利身分<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <!-- v-model="list[0].economic_status" -->
+                          <select v-model="get_list.UserType" :disabled="user.RoleId==34">
+                            <option :value="null" disabled selected>請選擇</option>
+                            <option v-for="(item,index) in list2" :value="item.Id">{{item.TypeName}}</option>
+
+                            <!-- <option v-for="(item,index) in car_top" :value="item.Id">{{ item.CarTypeName }}</option> -->
+                            <!-- <option :value="null" disabled selected>請選擇</option>
+                              <option value="一般收入戶">一般收入戶</option>
+                              <option value="中低收入戶">中低收入戶</option>
+                              <option value="低收入戶">低收入戶</option>
+                              <option value="自費">自費</option> -->
+                          </select>
+                        </li>
+                      </ul>
+                      <ul class="w50">
+                        <li>綁定手機</li>
+                        <li v-if="get_list.ContactUser&&get_list.ContactUser.ContactPhone">
+                          {{get_list.ContactUser.ContactPhone}}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>手機<span class="rad-span">(手機市話擇一填)</span></li>
+                        <li>
+                          <input type="text" v-model="get_list.Phone" placeholder="格式 : 0987654321" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                      <ul class="w50">
+                        <li>電子信箱</li>
+                        <li>
+                          <input type="text" v-model="get_list.Email" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>市話<span class="rad-span">(手機市話擇一填)</span></li>
+                        <li>
+                          <input type="text" v-model="get_list.Tel" placeholder="格式 : 0287654321" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                      <ul class="w50">
+                        <li>失能等級<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <select name="" id="" v-model="get_list.DisabilityId" :disabled="user.RoleId==34">
+                            <option :value="null" disabled selected>請選擇</option>
+                            <option v-for="(item,index) in list3" :value="item.Id">{{item.TypeName}}</option>
+                          </select>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="d_flex" v-if="false">
+                      <ul class="w50">
+                        <li>聯絡人</li>
+                        <li>
+                            <el-autocomplete class="inline-input" v-model="get_list.ContactUserId" :fetch-suggestions="to_search" placeholder="請輸入聯絡人姓名" @select="handleSelect"></el-autocomplete>
+                            <span v-if="get_list.ContactUserId">({{get_list.ContactUser.ContactName}})</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w50">
+                        <li>緯度</li>
+                        <li>
+                          <input type="text" v-model="get_list.lat" />
+                        </li>
+                      </ul>
+                      <ul class="w50">
+                        <li>經度</li>
+                        <li>
+                          <input type="text" v-model="get_list.lon" />
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w100">
+                        <li>戶籍地址<span class="rad-span">(必填)</span></li>
+                        <li>
+                          <select class="list2-dd-r-d-row-sel" @change="loc_c()" v-model="get_list.CensusCounty" :disabled="user.RoleId==34">
+                            <option v-for="(item,index) in city_sel.city_no">{{ item }}</option>
+                          </select>
+                          <select class="list2-dd-r-d-row-sel" @change="loc_c()" v-model="get_list.CensusDistrict" :disabled="user.RoleId==34">
+                            <option v-for="(item,index) in city_sel[get_list.CensusCounty]">{{ item }}</option>
+                          </select>
+                          <!-- <input type="text" /> -->
+                          
+                        </li>
+                        <li>
+                          <input type="text" @input="loc_c()" v-model="get_list.CensusAddr" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                      <!---->
+                    </div>
+                    <div class="d_flex">
+                      <ul class="w100">
+                        <li>居住地址<span class="rad-span">(必填)</span><br><input type="checkbox" @change="lomodel=!lomodel;loc_c();" :checked="lomodel">同戶籍地址
+                        </li>
+                        <li>
+                          <select class="list2-dd-r-d-row-sel" v-model="get_list.CommCounty" @keyup="c_gmod();clear_lt();" :disabled="user.RoleId==34">
+                            <option v-for="(item,index) in city_sel.city_no">{{ item }}</option>
+                          </select>
+                          <select class="list2-dd-r-d-row-sel" v-model="get_list.CommDistrict" @keyup="clear_lt()" :disabled="user.RoleId==34">
+                            <option v-for="(item,index) in city_sel[get_list.CommCounty]">{{ item }}</option>
+                          </select>
+                        </li>
+                        <li>
+                          <input type="text" v-model="get_list.CommAddr" @keyup="clear_lt()" :disabled="user.RoleId==34" />
+                        </li>
+                      </ul>
+                
+                      <!---->
+                    </div>
+                    <div style="color:#f00;text-align: left;">居住地址若有異動，請同時更新經緯度；為避免無法成功預約訂車，門牌號碼及巷弄請使用半形數字，且勿填寫樓層及備註，若需備註請填寫於下方備註欄</div>
+                    <hr />
+                    <div class="black" v-if="false">
+                      <input type="checkbox" name="" id="" v-model="get_list.Enabled" :disabled="user.RoleId==34" />
+                      <label for="" class="">黑名單</label>
+                    </div>
+                    <textarea name="" id="" cols="30" rows="10" v-model="get_list.EnableRemark" v-if="false"></textarea>
+
+                    <div class="case_meg"
+                      v-if="$route.path!='/add'&&get_list.CaseUserCouponViewModel.GrantMode==0&&get_list.CaseUserCouponViewModel&&get_list.UserMode==1&&user.RoleId!=34">
+                      <h4 class="case-meg-h">個案可用補助</h4>
+                      <div class="monthNumber">
+                        <div class="case-meg-d">
+                          <span class="case-meg-s">使用趟次</span>
+                          <span
+                            style="font-size:20px;font-weight:bold;margin:0 20px 0;">{{ get_list.CaseUserCouponViewModel.UseCouponCount }}</span>
+                        </div>
+                        <div class="case-meg-d">
+                          <span class="case-meg-s">空趟趟次</span>
+                          <span
+                            style="font-size:20px;font-weight:bold;margin:0 20px 0 0;">{{ get_list.CaseUserCouponViewModel.MissBoarding }}</span>
+                        </div>
+                        <div class="case-meg-d">
+                          <span class="case-meg-s">剩餘趟次</span>
+                          <span>{{ get_list.CaseUserCouponViewModel.TotalCouponCount-get_list.CaseUserCouponViewModel.MissBoarding-get_list.CaseUserCouponViewModel.UseCouponCount }}</span>
+                        </div>
+                      </div>
+                      <div class="monthNumber">
+                        <span class="case-meg-s">本月可用趟次</span>
+                        <span>{{ get_list.CaseUserCouponViewModel.TotalCouponCount }}</span>
+                      </div>
+                      <div class="numberAdd">
+                        <span>新增趟次</span>
+                        <div class="numberAdd2">
+                          <div @click="c2--;if(c2==-1){c2=0}" style="cursor: pointer;">-</div>
+                          <div>{{ c2 }}</div>
+                          <div @click="c2++" style="cursor: pointer;">+</div>
+                        </div>
+                        <a href="" @click.prevent="c_carnum">變更趟次</a>
+                      </div>
+                    </div>
+
+                    <div class="case-meg"
+                      v-if="$route.path!='/add'&&get_list.CaseUserCouponViewModel.GrantMode==1&&get_list.CaseUserCouponViewModel&&get_list.UserMode==1&&user.RoleId!=34">
+                      <h4 class="case-meg-h">個案可用補助</h4>
+                      <div class="monthNumber">
+                        <div class="case-meg-d">
+                          <span class="case-meg-s">使用額度</span>
+                          <span>{{ Math.abs(get_list.CaseUserCouponViewModel.UseCouponAmt) }}</span>
+                        </div>
+                        <div class="case-meg-d">
+                          <span class="case-meg-s">剩餘餘額</span>
+                          <span>{{ get_list.CaseUserCouponViewModel.LastCouponAmt }}</span>
+                        </div>
+                      </div>
+                      <div class="monthNumber">
+                        <div class="case-meg-d">
+                          <span class="case-meg-s">本月可用額度</span>
+                          <span>{{ get_list.CaseUserCouponViewModel.TotalCouponAmt }}</span>
+                        </div>
+                      </div>
+                      <div class="numberAdd">
+                        <span class="case-meg-s">新增額度</span>
+                        <div class="numberAdd2">
+                          <input type="text" v-model="c2">
+                        </div>
+                        <a href="" @click.prevent="c_carnum">變更額度</a>
+                      </div>
+                    </div>
+
+                    <div class="service" v-if="false">
+                      <div class="serviceTitle">核定服務</div>
+                      <hr />
+                      <div class="floatKinds">
+                        <div class="floatKind" v-for="(item,index) in list4" :class="{'floatKinds-d':item.onc}"
+                          @click="item.onc=!item.onc;$forceUpdate();">
+                          {{item.TypeName}}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="service" v-if="user.RoleId!=34">
+                      <div class="serviceTitle">特約機構</div>
+                      <hr />
+                      <div class="floatKinds">
+                        <div class="floatKind" v-for="(item,index) in list5" :class="{'floatKinds-d':item.onc}"
+                          @click="item.onc=!item.onc;$forceUpdate();">
+                          {{item.CompanyName}}
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="service">
+                        <div class="serviceTitle">核定服務</div>
+                        <hr />
+                        <div class="floatKinds">
+                          <div
+                            :class="{ 'active' : list[1] }"
+                            @click="changeColor;$forceUpdate()"
+                            v-for="(list, i1) in lists"
+                            :key="i1"
+                          >
+                            {{ list[0] }}
+                          </div>
+                        </div>
+                      </div> -->
+
+                    <h4>個案備註</h4>
+                    <hr />
+                    <textarea name="" id="" cols="30" rows="10" v-model="get_list.Remark"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="personalLittle_edit_3" v-if="user.RoleId!=34">
+
+                <div class="personalInfo3">
+                  <h4 class="personalInfo3_title">緊急聯絡人資訊</h4>
+                  <hr />
+                  <div class="d_flex">
+                    <div class="w50">
+                      <div>聯絡人姓名</div>
+                      <div>
+                        <input type="text" v-model="get_list.UrgentName" />
+                      </div>
+                    </div>
+                    <div class="w50">
+                      <div>聯絡人市話</div>
+                      <div>
+                        <input type="text" v-model="get_list.UrgentTel" placeholder="格式 : 0287654321" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d_flex">
+                    <div class="w50">
+                      <div>電子信箱</div>
+                      <div>
+                        <input type="text" v-model="get_list.UrgentEmail" />
+                      </div>
+                    </div>
+                    <div class="w50">
+                      <div>關係</div>
+                      <div>
+                        <input type="text" v-model="get_list.UrgentRelationship" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d_flex">
+                    <div class="w50">
+                      <div>聯絡人手機</div>
+                      <div>
+                        <input type="text" v-model="get_list.UrgentPhone" placeholder="格式 : 0987654321" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div><!--main-d-->
+        </main>
+      </div>
+    </div>
+ 
+  </div>
+
+  <script src="js/jquery-1.8.0.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/Chart.bundle.js"></script>
+  <script src="js/lodash.js"></script>
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/header1.js?v=124"></script>
+  <script src="js/leftmenu2.js?v=123"></script>
+  <script src="js/city_sel.js"></script>
+  <script src="js/check.js"></script>
+  <script src="js/element-ui.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script src="js/vue-router.js"></script>
+  <script>
+    const routes = [
+      { path: '/edit/:id' },
+      { path: '/add' }
+    ]
+    const router = new VueRouter({
+      routes
+    })
+    let console_main = new Vue({
+      el: ".console_main",
+      router,
+      data: function () {
+        return {
+          loading:false,
+          nav_status: 1,
+          name: "韓寒寒",
+          img: "https://p2.bahamut.com.tw/S/2KU/37/a0a03ed3c88c8770dbe4ae87b4169pl5.JPG",
+          isLeft: true,
+          isRotate: false,
+          isMainleft: true,
+          isChangeColor: false,
+          c_time: "",
+          dead: "",
+          dead_res:"",
+          city_sel: city_sel,
+          city1: "",
+          city1_a: "",
+          city2: "",
+          city2_a: "",
+          c2: 0,
+          avaiC2: 6,
+          get_list: {},
+          user: "",
+          lomodel: false,
+          list16: [
+            ["居家服務", true],
+            ["居家喘息服務", false],
+            ["居家職能治療", false],
+            ["輔具購買租借及居家", false],
+            ["日間服務", false],
+            ["機構喘息服務", false],
+            ["社區職能治療", false],
+            ["無障礙環境改善服務", false],
+            ["家庭托顧", false],
+            ["居家護理", false],
+            ["社區物理治療", false],
+            ["老人營餐餐飲服務", false],
+            ["交通接送服務", false],
+            ["機構服務", false],
+            ["密集性照護", false],
+            ["其他", false]
+          ],
+          list: [
+            {
+              name: "曹偉建",
+              sex: "男",
+              certificationID: "A847587643",
+              birth: "1394-03-12",
+              Identity: "null",
+              economic_status: "null",
+              mobile: "0974-586-345",
+              pwd: "13940312",
+              tel: "055-7364-3748",
+              email: "gerardosweeneyESU@teleosaurs.xyz",
+              residential_address: "220 新北市板橋區大觀路一段59號",
+              communication_address: "220 新北市板橋區大觀路一段59號"
+            },
+            {
+              violation_points: "0",
+              suspension_due_date: "1934-01-11"
+            },
+            {
+              boarding_times: 20,
+              note_number: 8,
+              available_times: 12,
+              remaining_number_of_turns: 3,
+              empty_time: 2,
+              total_retained_times: 4,
+              retained_times: 7
+            },
+            {
+              selfPaying_amount_remarks: "第1公里内33元，1公里後，每230公尺1.7元"
+            },
+            {
+              approved_service_lists: [
+                ["居家服務", true],
+                ["居家喘息服務", false],
+                ["居家職能治療", false],
+                ["輔具購買租借及居家", false],
+                ["日間服務", false],
+                ["機構喘息服務", false],
+                ["社區職能治療", false],
+                ["無障礙環境改善服務", false],
+                ["家庭托顧", false],
+                ["居家護理", false],
+                ["社區物理治療", false],
+                ["老人營餐餐飲服務", false],
+                ["交通接送服務", false],
+                ["機構服務", false],
+                ["密集性照護", false],
+                ["其他", false]
+              ]
+              // approved_services: ["居家服務", "機構喘息服務", "交通接送服務", "機構服務"]
+            },
+            {
+              case_notes:
+                "需看護陪同，語言失能，無法溝通，搭車顛簸容易嘔吐，需特別注意在行車中血壓異常上升社工通常於每月月初安排醫院健康檢查"
+            },
+            {
+              case_records: [
+                {
+                  date: "2019-05-22",
+                  order_number: "asdfgh1234567890",
+                  journey: "去程",
+                  fee: "公費＄30",
+                  isfinish: "新訂單未審核",
+                  driver_car_data: ""
+                },
+                {
+                  date: "2019-05-22",
+                  order_number: "asdfgh1234567890",
+                  journey: "去回程",
+                  fee: "公費＄30",
+                  isfinish: "已完成",
+                  driver_car_data: "司機：王成至 車輛：KRI-4856"
+                },
+                {
+                  date: "2019-05-22",
+                  order_number: "asdfgh1234567890",
+                  journey: "去程",
+                  fee: "公費＄30",
+                  isfinish: "已完成",
+                  driver_car_data: "司機：王成至 車輛：KRI-4856"
+                }
+              ]
+            },
+            {
+              emergency_contact_img: "img/woman.png",
+              emergency_contact_name: "曹明明",
+              emergency_contact_email: "TGHERTH@gmail.com",
+              emergency_contact_sex: "女",
+              emergency_contact_tel: "055-9474-5986",
+              emergency_contact_phone: "0984-384-485",
+              emergency_contact_relationship: "女兒"
+            }
+          ],
+          allData_personal: [],
+          economic_load: [],
+          list1: "",
+          list2: "",
+          list3: "",
+          list4: "",
+          list5: "",
+          list6: "",
+          list7: "",
+          pickerOptions: {
+            disabledDate(time) {
+              return time.getTime() > Date.now() - 8.64e7;   //禁用以前的日期，今天不禁用
+              // return date.getTime() <= Date.now();    //禁用今天以及以前的日期
+            }
+          }
+        };
+      },
+      created() {
+        //如果沒有這句程式碼，select中初始化會是空白的，預設選中就無法實現
+        // this.couponSelected = this.couponList[0].id;
+      },
+      watch: {
+
+      },
+      mounted: async function () {
+        this.loading=true
+        await this.check_login()
+        await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=30")  //身分
+          .then(res => {
+            this.list1 = res.data.response.data
+            console.log(this.list1)
+          })
+        await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=1")  //經濟狀況
+          .then(res => {
+            this.list2 = res.data.response.data
+            console.log(this.list2)
+          })
+        await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=3")
+          .then(res => {
+            this.list3 = res.data.response.data
+            console.log(this.list3)
+          })
+        await axios.get("https://api.donkeymove.com/api/ContactUser/Get")  //聯絡人
+          .then(res => {
+            this.list6 = res.data.response.data
+            console.log(this.list6)
+          })
+        await axios.get("https://api.donkeymove.com/api/MainUnitA/GetNoPage")  //A單位
+          .then(res => {
+            this.list7 = res.data.response
+            for(let i in this.list7) {
+              this.list7[i].value=this.list7[i].UnitName
+            }
+            console.log(this.list7)
+          })
+        if (this.$route.path != "/add") {
+          await axios.get("https://api.donkeymove.com/api/CaseUser/Get/" + this.$route.params.id)
+            .then(res => {
+              res.data.response.cunit=""
+              this.get_list = res.data.response
+              if(this.user.RoleId!=34&&this.get_list.UnitId) this.get_list.cunit=this.list7.filter(re=>re.Id==this.get_list.UnitId)[0].UnitName
+              if(this.get_list.CaseCloseRemark==""||this.get_list.CaseCloseRemark=="失能等級不符"||this.get_list.CaseCloseRemark=="死亡"||this.get_list.CaseCloseRemark=="移出") {
+                this.dead=this.get_list.CaseCloseRemark
+              }
+              else {
+                this.dead="其他"
+                this.dead_res=this.get_list.CaseCloseRemark
+              }
+              console.log(res.data.response)
+            })
+        }
+        else {
+          this.get_list = {
+            "Id": 0,
+            "ContactUserId": null,
+            "CaseUserNo": "",
+            "UserType": 0,
+            "CaseUserCouponViewModel": {
+              "TotalCouponCount": 8,
+              "UseCouponCount": 0,
+              "LastCouponCount": 0,
+              "MissBoarding": 0,
+              "TotalCouponAmt": 1840,
+              "UseCouponAmt": 0,
+              "LastCouponAmt": 0,
+              "CreateTime": "2019-11-20T07:32:35.358Z",
+              "GrantMode": 0
+            },
+            "DisabilityId": null,
+            "Name": "",
+            "Pic": "",
+            "CompanyId": null,
+            "Sex": null,
+            "IdentityStatus": null,
+            "UID": "",
+            "Tel": "",
+            "Phone": "",
+            "Email": "",
+            "CensusCounty": "",
+            "CensusDistrict": "",
+            "CensusAddr": "",
+            "CommCounty": "",
+            "CommDistrict": "",
+            "CommAddr": "",
+            "UrgentName": "",
+            "UrgentRelationship": "",
+            "UrgentPhone": "",
+            "UrgentTel": "",
+            "UrgentEmail": "",
+            "UnitId": null,
+            "UserType": null,
+            "ApplySubsidy": true,
+            "Staus": 1,
+            "UserMode": 1,
+            "ReviewDate": null,
+            "ExpiredDate": null,
+            "Remark": "",
+            "IsDeleted": true,
+            "Enabled": false,
+            "lat":"",
+            "lon":"",
+            "CaseCloseRemark":"",
+            "cunit":""
+          }
+          if(this.user.RoleId==33) {
+            this.get_list.UnitId=this.list7[0].Id
+          }
+
+        }
+        await axios.get("https://api.donkeymove.com/api/CaseType/Get?parentID=4")
+          .then(res => {
+            this.list4 = res.data.response.data
+            for (let i in this.list4) {
+              for (let j in this.get_list.CaseTypes) {
+                if (this.list4[i].Id == this.get_list.CaseTypes[j].Id) {
+                  this.list4[i].onc = true
+                }
+              }
+            }
+            console.log(this.list4)
+          })
+        await axios.get("https://api.donkeymove.com/api/CarCompanys/Get")  //公司
+          .then(res => {
+            this.list5 = res.data.response
+            for (let i in this.list5) {
+              for (let j in this.get_list.CaseUserCompanyMapper) {
+                if (this.list5[i].Id == this.get_list.CaseUserCompanyMapper[j].CompanyId) {
+                  this.list5[i].onc = true
+                }
+              }
+            }
+            console.log(this.list5)
+          })
+        await axios.get("https://api.donkeymove.com/api/CaseType/GetChilds").then(res => {
+          console.log(res.data.response);
+          this.allData_personal = res.data.response;
+
+          this.economic_load = this.allData_personal.filter(function (item, index, array) {
+            return item.ParentID === 1; //ParentID==1  經濟狀況
+          });
+          console.log(this.economic_load);
+          console.log("economic_load");
+
+        });
+        this.loading=false
+        //$('.select2').selec2();
+      },
+      computed: {
+        lists: function () {
+          return this.list[4].approved_service_lists;
+        }
+      },
+      methods: {
+        dateSetting: function () {
+          var date = new Date();
+          var seperator1 = "-";
+          var year = date.getFullYear();
+          var month = date.getMonth() + 1;
+          var strDate = date.getDate();
+          if (month >= 1 && month <= 9) {
+            month = "0" + month;
+          }
+          if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+          }
+          var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+          var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+          var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+          var currentdate = year + seperator1 + month + seperator1 + strDate;
+          return currentdate;
+        },
+        selectNav: function (number) {
+          this.nav_status = number;
+        },
+        openNav2: function () {
+          this.isLeft = false;
+          this.isMainleft = false;
+        },
+        openNav: function () {
+          this.isLeft = !this.isLeft;
+          this.isMainleft = !this.isMainleft;
+        },
+        changeColor: function () {
+          this.isChangeColor = !this.isChangeColor;
+        },
+        changeC2: function () {
+          this.avaiC2 = this.c2;
+        },
+        sub:async function () {
+          this.get_list.CaseTypes = []
+          this.get_list.CaseUserCompanyMapper = []
+          for (let i in this.list4) {
+            if (this.list4[i].onc) {
+              this.get_list.CaseTypes.push({ Id: this.list4[i].Id })
+            }
+          }
+          for (let i in this.list5) {
+            if (this.list5[i].onc) {
+              this.get_list.CaseUserCompanyMapper.push({ CompanyId: this.list5[i].Id })
+            }
+          }
+
+          if(this.dead=="其他") {
+            this.get_list.CaseCloseRemark=this.dead_res
+          }
+          else {
+            this.get_list.CaseCloseRemark=this.dead
+          }
+
+          if (this.check_input()) {
+            if (this.$route.path == "/add") {
+              await this.user_add()
+            }
+            else {
+              await this.user_edit()
+            }
+          }
+        },
+        user_add:async function () {
+          this.loading=true
+          if(!this.get_list.Sex) this.get_list.Sex=3
+          if(!this.get_list.cunit) this.get_list.UnitId=null
+          await axios.post("https://api.donkeymove.com/api/CaseUser/Post", this.get_list)
+            .then(res => {
+              console.log(res)
+              if (res.data.msg == "添加成功") {
+                alert("新增成功")
+                location.href = 'personal.html?page=1&key=&isDescending=true&pMode=1&orderby=';
+              }
+              else {
+                alert(res.data.msg)
+              }
+            })
+            this.loading=false
+        },
+        user_edit:async function () {
+          this.loading=true
+          if(!this.get_list.Sex) this.get_list.Sex=3
+          if(!this.get_list.cunit) this.get_list.UnitId=null
+          await axios.put("https://api.donkeymove.com/api/CaseUser/PutOperate", this.get_list)
+            .then(res => {
+              if (res.data.msg == "更新成功") {
+                console.log(res)
+                alert("修改成功")
+                location.href = 'personal.html?page=1&key=&isDescending=true&pMode=1&orderby=';
+              }
+              else {
+                alert(res.data.msg)
+              }
+            })
+            this.loading=false
+        },
+        c_img: function () {
+          document.querySelectorAll('.img_up')[0].click()
+        },
+        img_upf: function (e) {
+          let file = e.target.files[0]
+          let formData = new FormData();
+          formData.append('img', file);
+          axios.post("https://api.donkeymove.com/api/Img/Pic", formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+            .then(res => {
+              if (res.data.msg == "上傳成功") {
+                console.log("圖片上傳成功!")
+                this.get_list.Pic = "https://api.donkeymove.com/UploadFolder/" + res.data.response
+              }
+            })
+        },
+
+
+        check_input: function () {
+          var flag = true
+          if(this.user.RoleId!=34&&this.get_list.UserMode==2&&!this.dead) {
+            alert("請選擇結案理由")
+            flag = false
+          }
+          if(this.user.RoleId!=34&&this.get_list.UserMode==2&&this.dead=="其他"&&!this.dead_res) {
+            alert("請輸入結案理由")
+            flag = false
+          }
+          if(!this.get_list.ReviewDate) {
+            alert("請輸入核定日期")
+            flag = false
+          }
+          if (this.get_list.CaseUserNo == "") {
+            alert("請輸入個案編號")
+            flag = false
+          }
+          else if (this.get_list.Name == "") {
+            alert("請輸入姓名")
+            flag = false
+          }
+          /*else if (!this.get_list.Sex) {
+            alert("請選擇性別")
+            flag = false
+          }*/
+          /*else if(!this.get_list.UnitId) {
+            alert("請選擇A單位")
+            flag = false
+          }
+          /*else if(!this.get_list.IdentityStatus) {
+            alert("請選擇身分")
+            flag = false
+          }*/
+          else if(!this.get_list.UserType) {
+            alert("請選擇社會福利身分")
+            flag = false
+          }
+          else if(!this.get_list.DisabilityId) {
+            alert("請選擇失能等級")
+            flag = false
+          }
+          else if (this.get_list.Tel == ""&&this.get_list.Phone=="") {
+            alert("手機跟市話至少擇一填")
+            flag = false
+          }
+          else if (this.get_list.UID == ""|| !check_uid(this.get_list.UID)) {//|| !check_uid(this.get_list.UID)
+            alert("未輸入身分證字號或身分證字號格式不符")
+            flag = false
+          }
+          else if(this.get_list.Birthday==null) {
+            alert("請選擇生日")
+            flag = false
+          }
+          else if (this.get_list.CensusCounty == "" || this.get_list.CensusDistrict == "" || this.get_list.CensusAddr == "") {
+            alert("請輸入戶籍地址")
+            flag = false
+          }
+          else if (this.get_list.CommCounty == "" || this.get_list.CommDistrict == "" || this.get_list.CommAddr == "") {
+            alert("請輸入通訊地址")
+            flag = false
+          }
+          /*else if(this.user.RoleId!=34&&this.dead&&!this.get_list.InvalidDate&&this.get_list.UserMode==2) {
+            alert("請輸入失效日期")
+            flag = false
+          }*/
+          else if(this.user.RoleId!=34&&this.dead=="其他"&&!this.dead_res&&this.get_list.UserMode==2) {
+            alert("請輸入結案原因")
+            flag = false
+          }
+          /*if(this.get_list.Tel||this.get_list.Phone) {
+            if(!check_tel(this.get_list.Tel)||!check_phone(this.get_list.Phone)) {
+              alert("市話或手機格式不正確")
+              flag = false
+            }
+          }*/
+          /*else if (this.get_list.UrgentName == "") {
+            alert("請輸入聯絡人姓名")
+            flag = false
+          }*/
+          /*else if (this.get_list.UrgentTel == "" || !check_tel(this.get_list.UrgentTel)) {
+            alert("未輸入聯絡人市話或聯絡人市話格式不符")
+            flag = false
+          }*/
+          /*else if (this.get_list.UserType == "") {
+            alert("請選擇聯絡人性別")
+            flag = false
+          }*/
+          /*else if (this.get_list.UrgentEmail == "" || !check_email(this.get_list.UrgentEmail)) {
+            alert("未輸入聯絡人Email或聯絡人Email格式不符")
+            flag = false
+          }*/
+          /*else if (this.get_list.UrgentPhone == "" || !check_phone(this.get_list.UrgentPhone)) {
+            alert("未輸入聯絡人手機或聯絡人手機格式不符")
+            flag = false
+          }*/
+          /*else if (this.get_list.UrgentRelationship == "") {
+            alert("請輸入關係")
+            flag = false
+          }*/
+          return flag
+        },
+        check_login:async function(x) {
+		    if(localStorage.dk2_user) {
+          this.user=JSON.parse(localStorage.dk2_user)
+          await get_left_menu(this.user.Id,async (re)=> {
+			      this.menu_id=re
+            this.$forceUpdate()
+          })
+			  }
+			  else {
+			    location.href = 'login1.html';
+			  }
+		  },
+        loc_c: function () {
+          if (this.lomodel) {
+            this.get_list.CommCounty = this.get_list.CensusCounty
+            this.get_list.CommDistrict = this.get_list.CensusDistrict
+            this.get_list.CommAddr = this.get_list.CensusAddr
+            this.c_gmod()
+          }
+        },
+        dateFormat: function (time) {
+          var date = new Date(time);
+          var year = date.getFullYear();
+          var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+          var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+          var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+          var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+          var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+          return year + "-" + month + "-" + day;
+        },
+        c_carnum: function () {
+          if (this.get_list.CaseUserCouponViewModel.GrantMode == 0) {
+            axios.put("https://api.donkeymove.com/api/CaseUser/PutCoupon?CaseId=" + this.get_list.Id + "&LastQty=" + this.c2)
+              .then(res => {
+                if (res.data.msg == "更新成功") {
+                  this.get_list.CaseUserCouponViewModel.TotalCouponCount = this.c2
+                  alert("趟次更新成功")
+                  this.c2 = 0
+                }
+              })
+          }
+          else if (this.get_list.CaseUserCouponViewModel.GrantMode == 1) {
+            axios.put("https://api.donkeymove.com/api/CaseUser/PutCouponAmt?CaseId=" + this.get_list.Id + "&UpdateAmt=" + this.c2)
+              .then(res => {
+                if (res.data.msg == "更新成功") {
+                  this.get_list.CaseUserCouponViewModel.LastCouponAmt += Number(this.c2)
+                  this.get_list.CaseUserCouponViewModel.TotalCouponAmt += Number(this.c2)
+                  alert("額度更新成功")
+                  this.c2 = 0
+                }
+              })
+          }
+        },
+        to_clear_data:function() {
+        if(this.get_list.UserMode!=2) {
+          this.dead_res=""
+          this.dead=""
+          this.get_list.CaseCloseRemark=""
+          this.get_list.InvalidDate=""
+        }
+      },
+        c_gmod: function () {
+          axios.get("https://api.donkeymove.com/api/TaiwanCountry/GetGrantMode?County=" + this.get_list.CommCounty)
+            .then(res => {
+              console.log(res.data.response)
+              this.get_list.CaseUserCouponViewModel.GrantMode = res.data.response
+            })
+        },
+        clear_lt:function() {
+          this.get_list.lat=""
+          this.get_list.lon=""
+        },
+        to_search:async function(queryString, callback) {
+          await axios.get("https://api.donkeymove.com/api/ContactUser/Get?page=1&key="+queryString)  //聯絡人
+          .then(res => {
+            for(let i of res.data.response.data){
+              i.value = i.ContactName;  //將想要展示的資料作為value
+            }
+            this.list6=res.data.response.data
+          })
+          callback(this.list6)
+        },
+        querySearch(queryString, cb) {
+          var results = queryString ? this.list7.filter(re=>re.UnitName.indexOf(queryString)!=-1) : [];
+          cb(results);
+        },
+        handleSelect2:function(x) {
+          this.get_list.UnitId=x.Id
+        },
+        handleSelect:function(x) {
+          this.get_list.ContactUserId=x.Id
+          this.get_list.ContactUser=x
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
